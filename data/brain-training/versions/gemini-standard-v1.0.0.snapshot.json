@@ -1,0 +1,19 @@
+{
+  "version": "v1.0.0",
+  "brainId": "gemini-standard",
+  "createdAt": "2026-11-23T20:55:59.461Z",
+  "trainingCycleId": null,
+  "domainGoal": "general-polymath",
+  "summaryAr": "الإصدار المرجعي القياسي لعقل جيميني للمقارنة الموضوعية.",
+  "addedPrinciples": [
+    "الاستجابة القياسية المباشرة دون حقن مناهج الرشاد."
+  ],
+  "addedPolicyDirectives": [],
+  "linkedDatasetIds": [],
+  "linkedModelId": "gemini-4-hydrogen",
+  "weightsSha256": null,
+  "preEvalScore": null,
+  "postEvalScore": null,
+  "active": true,
+  "snapshotSha256": "800c8acff908ee9b41b5c47cdd3b9824dff9771754ca4ff237ca26ba88e5e292"
+}

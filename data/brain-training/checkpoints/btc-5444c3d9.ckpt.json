@@ -1,0 +1,33 @@
+{
+  "cycleId": "btc-5444c3d9",
+  "brainId": "attia-advisor",
+  "brainVersionBefore": "v1.3.0",
+  "domainGoal": "programming-software",
+  "datasetId": "ds-fullstack-ts-sql",
+  "completedSteps": 2,
+  "totalSteps": 2,
+  "stagedPrinciples": [
+    "مبدأ الدفاع في العمق: يجب التعامل مع طلبات Express كبيئة غير موثوقة تستوجب التحقق من النوع والنمط والوجود قبل تنفيذ أي عملية منطقية.",
+    "مبدأ استباقية التصميم: دمج الفهارس (Indexes) وقيود البيانات (Constraints) في مستوى قاعدة البيانات يقلل من تكلفة اختبار المعالجة البرمجية ويحقق استجابة أسرع للأخطاء."
+  ],
+  "stagedDirectives": [
+    "تطهير كافة المدخلات القادمة من معاملات المسار (path parameters) باستخدام تعبيرات نمطية صارمة لمنع ثغرات Path Traversal وحقن الأوامر.",
+    "تطبيق قيود السلامة المرجعية (Constraints) مباشرة عند تصميم المخطط الهيكلي لقواعد البيانات لضمان اتساق البيانات وسلامتها قبل المعالجة البرمجية."
+  ],
+  "preEval": {
+    "evaluatedAt": "2026-11-24T11:39:52.817Z",
+    "mode": "live-llm",
+    "modelUsed": "gemini-3.1-flash-lite",
+    "prompt": "صمّم باختصار مسار API آمن في Express لقراءة ملفات من مجلد محدد مع منع Path Traversal ومعالجة الأخطاء وكتابة اختبار تحقق.",
+    "responsePreview": "بصفتي مستشاركم القانوني والتقني، أؤكد أن تأمين مسارات الملفات (File System Access) ليس مجرد ممارسة تقنية، بل هو **امتثال أمني** يتوافق مع معايير حماية البيانات (مثل GDPR/PDPL) لمنع تسريب المعلومات الحساسة غير المصرح بها.\n\nإليك التصميم المعماري الآمن باستخدام Node.js و Express:\n\n### 1. تنفيذ المسار (Controller Layer)\nنستخدم `path.normalize` و `path.resolve` مع التحقق من أن المسار الناتج يقع ضمن \"المجلد الآمن\" (Sandbox).\n\n```javascript\nconst express = require('express');\nconst path = require('path');\nconst fs = require('fs/promises');\n\nconst app = express();\nconst SECURE_DIR = path.resolve('./pu",
+    "responseCharCount": 2952,
+    "latencyMs": 3884,
+    "criteriaMatched": 6,
+    "criteriaTotal": 7,
+    "score": 61,
+    "errorsDetected": [
+      "ظهرت إشارات خطأ جوهري في مخرج التقييم."
+    ]
+  },
+  "savedAt": "2026-11-24T11:39:54.135Z"
+}

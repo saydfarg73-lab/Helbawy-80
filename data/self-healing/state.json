@@ -1,0 +1,1886 @@
+{
+  "lastPreflight": {
+    "runId": "PRE-20261124-88928E",
+    "checkedAt": "2026-11-24T22:18:36.076Z",
+    "durationMs": 102,
+    "overallStatus": "BLOCKED",
+    "summaryCounts": {
+      "PASS": 13,
+      "WARNING": 1,
+      "FAIL": 0,
+      "BLOCKED": 1,
+      "NOT TESTED": 0
+    },
+    "blockedCriticalModules": [],
+    "checks": [
+      {
+        "id": "pf-core-files",
+        "nameAr": "سلامة ملفات المشروع الأساسية",
+        "targetModule": "النواة الأساسية",
+        "status": "PASS",
+        "durationMs": 1,
+        "evidence": "تم التحقق من وجود وقابلية قراءة جميع الملفات الأساسية (11/11).",
+        "errorMessage": null,
+        "severity": "INFO",
+        "suggestedActionAr": "لا يلزم إجراء.",
+        "blocksCriticalLaunch": false,
+        "executedAt": "2026-11-24T22:18:36.079Z"
+      },
+      {
+        "id": "pf-env-config",
+        "nameAr": "سلامة إعدادات البيئة والتوافق",
+        "targetModule": "إعدادات التشغيل",
+        "status": "PASS",
+        "durationMs": 1,
+        "evidence": ".env.example=موجود · Node=v22.23.5 · PORT=3000",
+        "errorMessage": null,
+        "severity": "INFO",
+        "suggestedActionAr": "البيئة متوافقة.",
+        "blocksCriticalLaunch": false,
+        "executedAt": "2026-11-24T22:18:36.079Z"
+      },
+      {
+        "id": "pf-secrets-presence",
+        "nameAr": "توفر المتغيرات السرية المطلوبة (دون كشف القيم)",
+        "targetModule": "العقل الحواري ومصنع التطبيقات",
+        "status": "PASS",
+        "durationMs": 1,
+        "evidence": "GEMINI_API_KEY=CONFIGURED (masked) · APP_URL=CONFIGURED",
+        "errorMessage": null,
+        "severity": "INFO",
+        "suggestedActionAr": "المتغير السري مضبوط ومقنّع بأمان.",
+        "blocksCriticalLaunch": false,
+        "executedAt": "2026-11-24T22:18:36.079Z"
+      },
+      {
+        "id": "pf-store-db",
+        "nameAr": "سلامة قاعدة البيانات المحلية والاتصال بها",
+        "targetModule": "الذاكرة والمكتبة / المخزن الدائم",
+        "status": "PASS",
+        "durationMs": 2,
+        "evidence": "helbawey_store.json (139.9 KB): 1 مشاريع، 8 نماذج، 7 مجموعات بيانات.",
+        "errorMessage": null,
+        "severity": "INFO",
+        "suggestedActionAr": "البيانات سليمة وقابلة للقراءة والكتابة.",
+        "blocksCriticalLaunch": false,
+        "executedAt": "2026-11-24T22:18:36.081Z"
+      },
+      {
+        "id": "pf-internal-wiring",
+        "nameAr": "سلامة الاتصالات الداخلية بين الوحدات",
+        "targetModule": "وسيط التوجيه والمراقبة",
+        "status": "PASS",
+        "durationMs": 1,
+        "evidence": "تم التحقق من ربط 13/13 وحدة برمجية فعلياً بمسارات Express.",
+        "errorMessage": null,
+        "severity": "INFO",
+        "suggestedActionAr": "جميع الوحدات المعلنة مربوطة فعلياً بمراقب التشغيل.",
+        "blocksCriticalLaunch": false,
+        "executedAt": "2026-11-24T22:18:36.081Z"
+      },
+      {
+        "id": "pf-inference-engines",
+        "nameAr": "توفر محركات الاستدلال (السحابي والمحلي)",
+        "targetModule": "مصنع البيانات والعقول / العقل الحواري",
+        "status": "PASS",
+        "durationMs": 1,
+        "evidence": "llama-server=/app/applet/data/runtime/llama.cpp/llama-server · llama-cli=/app/applet/data/runtime/llama.cpp/llama-cli · ollama=غير مثبت · @google/genai=مثبت",
+        "errorMessage": null,
+        "severity": "INFO",
+        "suggestedActionAr": "المحركات المحلية جاهزة.",
+        "blocksCriticalLaunch": false,
+        "executedAt": "2026-11-24T22:18:36.082Z"
+      },
+      {
+        "id": "pf-models-weights",
+        "nameAr": "صلاحية ملفات النماذج والأوزان المسجلة",
+        "targetModule": "إدارة الأوزان",
+        "status": "BLOCKED",
+        "durationMs": 1,
+        "evidence": "ملفات أوزان مستوردة على القرص: 0 من أصل 8 · تعارضات SHA-256: 0",
+        "errorMessage": "لا توجد ملفات أوزان فعلية (.gguf/.onnx) داخل data/weights/ بعد.",
+        "severity": "WARNING",
+        "suggestedActionAr": "استورد ملف أوزان حقيقي عبر وحدة إدارة الأوزان قبل الاعتماد على التشغيل المحلي المستقل.",
+        "blocksCriticalLaunch": false,
+        "executedAt": "2026-11-24T22:18:36.083Z"
+      },
+      {
+        "id": "pf-storage-paths",
+        "nameAr": "سلامة مسارات التخزين والتنزيل والمساحة المتاحة",
+        "targetModule": "إدارة الأوزان والتصدير",
+        "status": "PASS",
+        "durationMs": 1,
+        "evidence": "جميع المجلدات (5) قابلة للكتابة · المساحة المتاحة: 282.47 GB · مجلد الأرشيف: موجود",
+        "errorMessage": null,
+        "severity": "INFO",
+        "suggestedActionAr": "مسارات التخزين سليمة.",
+        "blocksCriticalLaunch": false,
+        "executedAt": "2026-11-24T22:18:36.083Z"
+      },
+      {
+        "id": "pf-core-apis",
+        "nameAr": "فحص استجابة واجهات API الأساسية",
+        "targetModule": "الخادم المركزي Express",
+        "status": "PASS",
+        "durationMs": 75,
+        "evidence": "HTTP 200 OK من http://127.0.0.1:3000/api/bootstrap",
+        "errorMessage": null,
+        "severity": "INFO",
+        "suggestedActionAr": "الـ API الأساسي يستجيب بانتظام.",
+        "blocksCriticalLaunch": false,
+        "executedAt": "2026-11-24T22:18:36.158Z"
+      },
+      {
+        "id": "pf-auth-permissions",
+        "nameAr": "صلاحيات الوصول ونظام المستخدمين والمصادقة",
+        "targetModule": "نظام المستخدمين والمصادقة",
+        "status": "WARNING",
+        "durationMs": 1,
+        "evidence": "تعمل المنصة حالياً بنمط مالك منفرد (Single-Owner Studio) مع حراسة مسارات التعديل الحرجة (Tier 3 Forbidden)، ولا توجد طبقة تسجيل دخول متعددة الأدوار (RBAC/JWT) مفعلة بعد.",
+        "errorMessage": "تنبيه معماري: لا يوجد نظام مصادقة مستخدمين متعدد الأدوار حتى الآن.",
+        "severity": "WARNING",
+        "suggestedActionAr": "فعّل Firebase Auth أو طبقة جلسات RBAC قبل إتاحة المنصة لمستخدمين متعددين عبر الشبكة.",
+        "blocksCriticalLaunch": false,
+        "executedAt": "2026-11-24T22:18:36.158Z"
+      },
+      {
+        "id": "pf-upload-ocr",
+        "nameAr": "سلامة رفع الملفات ومعالجة المستندات وOCR",
+        "targetModule": "OCR وتحليل المستندات",
+        "status": "PASS",
+        "durationMs": 1,
+        "evidence": "documentParser.ts=موجود · mammoth=مثبت · xlsx=مثبت",
+        "errorMessage": null,
+        "severity": "INFO",
+        "suggestedActionAr": "محرك المستندات جاهز.",
+        "blocksCriticalLaunch": false,
+        "executedAt": "2026-11-24T22:18:36.158Z"
+      },
+      {
+        "id": "pf-export-packaging",
+        "nameAr": "سلامة عمليات التصدير وإنشاء الحزم وPDF العربي",
+        "targetModule": "التصدير والحزم / المذكرات القانونية",
+        "status": "PASS",
+        "durationMs": 16,
+        "evidence": "jszip=true · pdfkit=true · DejaVuSans=true · نتيجة التحقق القياسي للمشروع: INDEPENDENT_VERIFIED",
+        "errorMessage": null,
+        "severity": "INFO",
+        "suggestedActionAr": "التصدير وPDF جاهزان.",
+        "blocksCriticalLaunch": false,
+        "executedAt": "2026-11-24T22:18:36.174Z"
+      },
+      {
+        "id": "pf-build-ts",
+        "nameAr": "سلامة حزمة البناء Vite والاعتماديات (node_modules)",
+        "targetModule": "مصنع إنشاء البرامج",
+        "status": "PASS",
+        "durationMs": 1,
+        "evidence": "dist/index.html=مبني · الاعتماديات المثبتة: 18/18",
+        "errorMessage": null,
+        "severity": "INFO",
+        "suggestedActionAr": "البناء والاعتماديات مكتملة.",
+        "blocksCriticalLaunch": false,
+        "executedAt": "2026-11-24T22:18:36.174Z"
+      },
+      {
+        "id": "pf-port-conflicts",
+        "nameAr": "توافق المنفذ (3000) وعملية الخادم النشطة",
+        "targetModule": "بيئة التشغيل",
+        "status": "PASS",
+        "durationMs": 1,
+        "evidence": "العملية النشطة PID=2669 تعمل على المنفذ 3000 بنجاح دون تعارض منافذ.",
+        "errorMessage": null,
+        "severity": "INFO",
+        "suggestedActionAr": "لا يوجد تعارض منافذ.",
+        "blocksCriticalLaunch": false,
+        "executedAt": "2026-11-24T22:18:36.174Z"
+      },
+      {
+        "id": "pf-runtime-compat",
+        "nameAr": "توافق موارد الذاكرة والمعالج مع بيئة التشغيل",
+        "targetModule": "نظام التشغيل والموارد",
+        "status": "PASS",
+        "durationMs": 3,
+        "evidence": "النظام: linux/x64 · أنوية: 2 · الذاكرة الحرة: 2191 MB · استهلاك الخادم RSS: 412 MB",
+        "errorMessage": null,
+        "severity": "INFO",
+        "suggestedActionAr": "الموارد مستقرة.",
+        "blocksCriticalLaunch": false,
+        "executedAt": "2026-11-24T22:18:36.177Z"
+      }
+    ]
+  },
+  "repairs": [
+    {
+      "id": "rep-f1c5b9ba",
+      "createdAt": "2026-11-24T18:21:33.529Z",
+      "updatedAt": "2026-11-24T18:21:33.540Z",
+      "issueTitleAr": "اختبار Patch و Rollback الموثق بالـ SHA-256",
+      "moduleId": "data-factory",
+      "diagnosis": {
+        "id": "diag-d2cbd7c3",
+        "timestamp": "2026-11-24T18:21:33.529Z",
+        "failedFunction": "patch-sandbox-config",
+        "moduleId": "data-factory",
+        "relatedFileOrApi": "/app/applet/data/self-healing/cache/__acc_rollback_cfg__.json",
+        "category": "corrupted-file-or-model",
+        "transient": false,
+        "severity": "CRITICAL",
+        "tier": 2,
+        "evidence": "اختبار Patch و Rollback الموثق بالـ SHA-256",
+        "priorEventsSummary": "سُجل 1 إخفاق سابق مرتبط بهذه الوحدة في نافذة المراقبة الحية.",
+        "suggestedFixAr": "مطلوب اعتماد المالك أو إعادة استيراد الملف من المصدر الموثوق.",
+        "safeToAutoApply": false,
+        "blockedReasonAr": null
+      },
+      "stage": "RECOVERED",
+      "tier": 2,
+      "autoExecuted": false,
+      "approvedByOwner": true,
+      "affectedTargets": [
+        "data/self-healing/cache/__acc_rollback_cfg__.json"
+      ],
+      "actionTakenAr": "تطبيق Patch محدود وآمن على __acc_rollback_cfg__.json",
+      "resultStatus": "RECOVERED",
+      "postRepairVerificationAr": "تم التحقق من صحة الملف وتطابق البصمة بعد التعديل (post-SHA: e989988463dc...).",
+      "postRepairVerified": true,
+      "rollbackSnapshot": {
+        "snapshotId": "snap-d0c8a7",
+        "targetType": "file",
+        "targetPath": "data/self-healing/cache/__acc_rollback_cfg__.json",
+        "preSha256": "a76af28cb5f2f75c8ab45a2ae0f1b041ea5d9c03d1ef45423a5553c75ef2b9bf",
+        "postSha256": "e989988463dc8be7400dfa53aa587b88b505994a4a5b43212c867e02eacdff7e",
+        "backupRelativePath": "data/self-healing/backups/pre-1795544493530-__acc_rollback_cfg__.json.bak",
+        "patchDiffSummary": "تعديل __acc_rollback_cfg__.json (46 بايت)",
+        "reversible": true,
+        "rolledBackAt": "2026-11-24T18:21:33.540Z",
+        "postRollbackVerified": true
+      },
+      "stageTimeline": [
+        {
+          "stage": "DETECT",
+          "at": "2026-11-24T18:21:33.529Z",
+          "detailAr": "اكتشاف المشكلة: اختبار Patch و Rollback الموثق بالـ SHA-256"
+        },
+        {
+          "stage": "DIAGNOSE",
+          "at": "2026-11-24T18:21:33.529Z",
+          "detailAr": "السبب الجذري: corrupted-file-or-model | مؤقت=لا | المستوى=2"
+        },
+        {
+          "stage": "PLAN",
+          "at": "2026-11-24T18:21:33.529Z",
+          "detailAr": "مطلوب اعتماد المالك أو إعادة استيراد الملف من المصدر الموثوق."
+        },
+        {
+          "stage": "SAFETY CHECK",
+          "at": "2026-11-24T18:21:33.530Z",
+          "detailAr": "إجراء من المستوى الثاني — آمن للتجهيز، بانتظار موافقة المالك الصريحة."
+        },
+        {
+          "stage": "MANUAL APPROVAL REQUIRED",
+          "at": "2026-11-24T18:21:33.530Z",
+          "detailAr": "خطة الإصلاح جاهزة وبانتظار الاعتماد."
+        },
+        {
+          "stage": "SAFETY CHECK",
+          "at": "2026-11-24T18:21:33.533Z",
+          "detailAr": "تم اعتماد الخطة صراحةً من المالك بعد مراجعة التأثير."
+        },
+        {
+          "stage": "APPLY",
+          "at": "2026-11-24T18:21:33.534Z",
+          "detailAr": "تطبيق Patch محدود على data/self-healing/cache/__acc_rollback_cfg__.json."
+        },
+        {
+          "stage": "VERIFY",
+          "at": "2026-11-24T18:21:33.534Z",
+          "detailAr": "تم التحقق من صحة الملف وتطابق البصمة بعد التعديل (post-SHA: e989988463dc...)."
+        },
+        {
+          "stage": "RECOVERED",
+          "at": "2026-11-24T18:21:33.534Z",
+          "detailAr": "اجتازت الوظيفة اختبار ما بعد الإصلاح بنجاح."
+        },
+        {
+          "stage": "VERIFY",
+          "at": "2026-11-24T18:21:33.540Z",
+          "detailAr": "تم تنفيذ التراجع الآمن وتطابقت بصمة SHA-256 المستعادة مع الأصل (a76af28cb5f2)."
+        }
+      ]
+    },
+    {
+      "id": "rep-b80b504b",
+      "createdAt": "2026-11-24T18:21:33.520Z",
+      "updatedAt": "2026-11-24T18:21:33.520Z",
+      "issueTitleAr": "اختبار منع تعديل الأسرار والأوزان (المستوى 3)",
+      "moduleId": "weights-manager",
+      "diagnosis": {
+        "id": "diag-d684d58c",
+        "timestamp": "2026-11-24T18:21:33.520Z",
+        "failedFunction": "forbidden-tier3-test",
+        "moduleId": "weights-manager",
+        "relatedFileOrApi": ".env / GEMINI_API_KEY",
+        "category": "permissions",
+        "transient": false,
+        "severity": "CRITICAL",
+        "tier": 3,
+        "evidence": "attempt to modify-secrets and overwrite-weights",
+        "priorEventsSummary": "لا توجد إخفاقات متكررة مسجلة مسبقاً لهذه الوحدة.",
+        "suggestedFixAr": "إجراء محظور تلقائياً (المستوى الثالث) — يتطلب تدخلاً بشرياً مباشراً لحماية البيانات والأوزان والأسرار.",
+        "safeToAutoApply": false,
+        "blockedReasonAr": "محظور بموجب سياسة الحماية: يمنع المساس بالأسرار أو بيانات العملاء أو الأوزان الأصلية أو إعدادات الأمان."
+      },
+      "stage": "MANUAL APPROVAL REQUIRED",
+      "tier": 3,
+      "autoExecuted": false,
+      "approvedByOwner": null,
+      "affectedTargets": [
+        ".env / GEMINI_API_KEY"
+      ],
+      "actionTakenAr": "محظور بموجب سياسة الحماية: يمنع المساس بالأسرار أو بيانات العملاء أو الأوزان الأصلية أو إعدادات الأمان.",
+      "resultStatus": "MANUAL APPROVAL REQUIRED",
+      "postRepairVerificationAr": "لم يُعدّل أي ملف أو سجل؛ الحظر الأمني نجح.",
+      "postRepairVerified": false,
+      "rollbackSnapshot": null,
+      "stageTimeline": [
+        {
+          "stage": "DETECT",
+          "at": "2026-11-24T18:21:33.520Z",
+          "detailAr": "اكتشاف المشكلة: اختبار منع تعديل الأسرار والأوزان (المستوى 3)"
+        },
+        {
+          "stage": "DIAGNOSE",
+          "at": "2026-11-24T18:21:33.520Z",
+          "detailAr": "السبب الجذري: permissions | مؤقت=لا | المستوى=3"
+        },
+        {
+          "stage": "PLAN",
+          "at": "2026-11-24T18:21:33.520Z",
+          "detailAr": "إجراء محظور تلقائياً (المستوى الثالث) — يتطلب تدخلاً بشرياً مباشراً لحماية البيانات والأوزان والأسرار."
+        },
+        {
+          "stage": "SAFETY CHECK",
+          "at": "2026-11-24T18:21:33.520Z",
+          "detailAr": "محظور بموجب سياسة الحماية: يمنع المساس بالأسرار أو بيانات العملاء أو الأوزان الأصلية أو إعدادات الأمان."
+        },
+        {
+          "stage": "MANUAL APPROVAL REQUIRED",
+          "at": "2026-11-24T18:21:33.520Z",
+          "detailAr": "موقوف بحاجز الأمان — يتطلب تدخلاً بشرياً مباشراً."
+        }
+      ]
+    },
+    {
+      "id": "rep-2871e163",
+      "createdAt": "2026-11-24T18:21:33.514Z",
+      "updatedAt": "2026-11-24T18:21:33.514Z",
+      "issueTitleAr": "اختبار فشل الإصلاح عند غياب مصدر الاستعادة",
+      "moduleId": "data-factory",
+      "diagnosis": {
+        "id": "diag-95bb7d72",
+        "timestamp": "2026-11-24T18:21:33.514Z",
+        "failedFunction": "impossible-target-test",
+        "moduleId": "data-factory",
+        "relatedFileOrApi": "impossible-target-test",
+        "category": "configuration",
+        "transient": false,
+        "severity": "WARNING",
+        "tier": 1,
+        "evidence": "unrecoverable missing artifact test",
+        "priorEventsSummary": "سُجل 1 إخفاق سابق مرتبط بهذه الوحدة في نافذة المراقبة الحية.",
+        "suggestedFixAr": "مراجعة مسار الملف المفقود واعتماد استعادته يدوياً.",
+        "safeToAutoApply": false,
+        "blockedReasonAr": null
+      },
+      "stage": "FAILED",
+      "tier": 1,
+      "autoExecuted": true,
+      "approvedByOwner": null,
+      "affectedTargets": [
+        "data/self-healing/cache/__non_existent_unrecoverable__.bin"
+      ],
+      "actionTakenAr": "اختبار مسار فشل الإصلاح وعدم تزوير النجاح",
+      "resultStatus": "FAILED",
+      "postRepairVerificationAr": "فشل التحقق كما هو متوقع: الملف الهدف غير موجود ولا يوجد مصدر استعادة موثق.",
+      "postRepairVerified": false,
+      "rollbackSnapshot": null,
+      "stageTimeline": [
+        {
+          "stage": "DETECT",
+          "at": "2026-11-24T18:21:33.514Z",
+          "detailAr": "اكتشاف المشكلة: اختبار فشل الإصلاح عند غياب مصدر الاستعادة"
+        },
+        {
+          "stage": "DIAGNOSE",
+          "at": "2026-11-24T18:21:33.514Z",
+          "detailAr": "السبب الجذري: configuration | مؤقت=لا | المستوى=2"
+        },
+        {
+          "stage": "PLAN",
+          "at": "2026-11-24T18:21:33.514Z",
+          "detailAr": "مراجعة مسار الملف المفقود واعتماد استعادته يدوياً."
+        },
+        {
+          "stage": "SAFETY CHECK",
+          "at": "2026-11-24T18:21:33.514Z",
+          "detailAr": "اجتاز فحص الأمان والحدود دون المساس ببيانات العملاء أو الأسرار."
+        },
+        {
+          "stage": "APPLY",
+          "at": "2026-11-24T18:21:33.514Z",
+          "detailAr": "محاولة إصلاح هدف مفقود غير قابل للاستعادة التلقائية."
+        },
+        {
+          "stage": "VERIFY",
+          "at": "2026-11-24T18:21:33.514Z",
+          "detailAr": "فشل التحقق كما هو متوقع: الملف الهدف غير موجود ولا يوجد مصدر استعادة موثق."
+        },
+        {
+          "stage": "FAILED",
+          "at": "2026-11-24T18:21:33.514Z",
+          "detailAr": "فشل الإصلاح أو اختبار التحقق النهائي."
+        }
+      ]
+    },
+    {
+      "id": "rep-e38d09af",
+      "createdAt": "2026-11-24T18:21:33.505Z",
+      "updatedAt": "2026-11-24T18:21:33.507Z",
+      "issueTitleAr": "اختبار تنظيف ملف مؤقت يتيم (Sandbox)",
+      "moduleId": "export-packaging",
+      "diagnosis": {
+        "id": "diag-06cb70f0",
+        "timestamp": "2026-11-24T18:21:33.505Z",
+        "failedFunction": "clean-orphan-temp-files",
+        "moduleId": "export-packaging",
+        "relatedFileOrApi": "/app/applet/data/self-healing/cache/__acc_orphan_1795544493503.tmp",
+        "category": "configuration",
+        "transient": false,
+        "severity": "WARNING",
+        "tier": 1,
+        "evidence": "orphan temporary file detected in cache",
+        "priorEventsSummary": "لا توجد إخفاقات متكررة مسجلة مسبقاً لهذه الوحدة.",
+        "suggestedFixAr": "إعادة بناء مجلد أو ملف Cache القابل للاستعادة والتحقق من قراءته.",
+        "safeToAutoApply": true,
+        "blockedReasonAr": null
+      },
+      "stage": "RECOVERED",
+      "tier": 1,
+      "autoExecuted": true,
+      "approvedByOwner": null,
+      "affectedTargets": [
+        "data/self-healing/cache/__acc_orphan_1795544493503.tmp"
+      ],
+      "actionTakenAr": "تنظيف الملفات المؤقتة اليتيمة بأمان: data/self-healing/cache/__acc_orphan_1795544493503.tmp",
+      "resultStatus": "RECOVERED",
+      "postRepairVerificationAr": "تم التحقق: 0 ملفات مؤقتة متبقية في مسارات التخزين (حُذف: 1).",
+      "postRepairVerified": true,
+      "rollbackSnapshot": null,
+      "stageTimeline": [
+        {
+          "stage": "DETECT",
+          "at": "2026-11-24T18:21:33.505Z",
+          "detailAr": "اكتشاف المشكلة: اختبار تنظيف ملف مؤقت يتيم (Sandbox)"
+        },
+        {
+          "stage": "DIAGNOSE",
+          "at": "2026-11-24T18:21:33.505Z",
+          "detailAr": "السبب الجذري: configuration | مؤقت=لا | المستوى=1"
+        },
+        {
+          "stage": "PLAN",
+          "at": "2026-11-24T18:21:33.505Z",
+          "detailAr": "إعادة بناء مجلد أو ملف Cache القابل للاستعادة والتحقق من قراءته."
+        },
+        {
+          "stage": "SAFETY CHECK",
+          "at": "2026-11-24T18:21:33.505Z",
+          "detailAr": "اجتاز فحص الأمان والحدود دون المساس ببيانات العملاء أو الأسرار."
+        },
+        {
+          "stage": "APPLY",
+          "at": "2026-11-24T18:21:33.507Z",
+          "detailAr": "تم حذف 1 ملف مؤقت يتيم."
+        },
+        {
+          "stage": "VERIFY",
+          "at": "2026-11-24T18:21:33.507Z",
+          "detailAr": "تم التحقق: 0 ملفات مؤقتة متبقية في مسارات التخزين (حُذف: 1)."
+        },
+        {
+          "stage": "RECOVERED",
+          "at": "2026-11-24T18:21:33.507Z",
+          "detailAr": "اجتازت الوظيفة اختبار ما بعد الإصلاح بنجاح."
+        }
+      ]
+    },
+    {
+      "id": "rep-b3cf274e",
+      "createdAt": "2026-11-23T21:06:12.239Z",
+      "updatedAt": "2026-11-23T21:06:12.246Z",
+      "issueTitleAr": "اختبار Patch و Rollback الموثق بالـ SHA-256",
+      "moduleId": "data-factory",
+      "diagnosis": {
+        "id": "diag-4e263b09",
+        "timestamp": "2026-11-23T21:06:12.239Z",
+        "failedFunction": "patch-sandbox-config",
+        "moduleId": "data-factory",
+        "relatedFileOrApi": "/app/applet/data/self-healing/cache/__acc_rollback_cfg__.json",
+        "category": "corrupted-file-or-model",
+        "transient": false,
+        "severity": "CRITICAL",
+        "tier": 2,
+        "evidence": "اختبار Patch و Rollback الموثق بالـ SHA-256",
+        "priorEventsSummary": "سُجل 1 إخفاق سابق مرتبط بهذه الوحدة في نافذة المراقبة الحية.",
+        "suggestedFixAr": "مطلوب اعتماد المالك أو إعادة استيراد الملف من المصدر الموثوق.",
+        "safeToAutoApply": false,
+        "blockedReasonAr": null
+      },
+      "stage": "RECOVERED",
+      "tier": 2,
+      "autoExecuted": false,
+      "approvedByOwner": true,
+      "affectedTargets": [
+        "data/self-healing/cache/__acc_rollback_cfg__.json"
+      ],
+      "actionTakenAr": "تطبيق Patch محدود وآمن على __acc_rollback_cfg__.json",
+      "resultStatus": "RECOVERED",
+      "postRepairVerificationAr": "تم التحقق من صحة الملف وتطابق البصمة بعد التعديل (post-SHA: e989988463dc...).",
+      "postRepairVerified": true,
+      "rollbackSnapshot": {
+        "snapshotId": "snap-159aa1",
+        "targetType": "file",
+        "targetPath": "data/self-healing/cache/__acc_rollback_cfg__.json",
+        "preSha256": "a76af28cb5f2f75c8ab45a2ae0f1b041ea5d9c03d1ef45423a5553c75ef2b9bf",
+        "postSha256": "e989988463dc8be7400dfa53aa587b88b505994a4a5b43212c867e02eacdff7e",
+        "backupRelativePath": "data/self-healing/backups/pre-1795467972239-__acc_rollback_cfg__.json.bak",
+        "patchDiffSummary": "تعديل __acc_rollback_cfg__.json (46 بايت)",
+        "reversible": true,
+        "rolledBackAt": "2026-11-23T21:06:12.246Z",
+        "postRollbackVerified": true
+      },
+      "stageTimeline": [
+        {
+          "stage": "DETECT",
+          "at": "2026-11-23T21:06:12.239Z",
+          "detailAr": "اكتشاف المشكلة: اختبار Patch و Rollback الموثق بالـ SHA-256"
+        },
+        {
+          "stage": "DIAGNOSE",
+          "at": "2026-11-23T21:06:12.239Z",
+          "detailAr": "السبب الجذري: corrupted-file-or-model | مؤقت=لا | المستوى=2"
+        },
+        {
+          "stage": "PLAN",
+          "at": "2026-11-23T21:06:12.239Z",
+          "detailAr": "مطلوب اعتماد المالك أو إعادة استيراد الملف من المصدر الموثوق."
+        },
+        {
+          "stage": "SAFETY CHECK",
+          "at": "2026-11-23T21:06:12.239Z",
+          "detailAr": "إجراء من المستوى الثاني — آمن للتجهيز، بانتظار موافقة المالك الصريحة."
+        },
+        {
+          "stage": "MANUAL APPROVAL REQUIRED",
+          "at": "2026-11-23T21:06:12.239Z",
+          "detailAr": "خطة الإصلاح جاهزة وبانتظار الاعتماد."
+        },
+        {
+          "stage": "SAFETY CHECK",
+          "at": "2026-11-23T21:06:12.241Z",
+          "detailAr": "تم اعتماد الخطة صراحةً من المالك بعد مراجعة التأثير."
+        },
+        {
+          "stage": "APPLY",
+          "at": "2026-11-23T21:06:12.241Z",
+          "detailAr": "تطبيق Patch محدود على data/self-healing/cache/__acc_rollback_cfg__.json."
+        },
+        {
+          "stage": "VERIFY",
+          "at": "2026-11-23T21:06:12.241Z",
+          "detailAr": "تم التحقق من صحة الملف وتطابق البصمة بعد التعديل (post-SHA: e989988463dc...)."
+        },
+        {
+          "stage": "RECOVERED",
+          "at": "2026-11-23T21:06:12.241Z",
+          "detailAr": "اجتازت الوظيفة اختبار ما بعد الإصلاح بنجاح."
+        },
+        {
+          "stage": "VERIFY",
+          "at": "2026-11-23T21:06:12.246Z",
+          "detailAr": "تم تنفيذ التراجع الآمن وتطابقت بصمة SHA-256 المستعادة مع الأصل (a76af28cb5f2)."
+        }
+      ]
+    },
+    {
+      "id": "rep-f8c53bfa",
+      "createdAt": "2026-11-23T21:06:12.234Z",
+      "updatedAt": "2026-11-23T21:06:12.234Z",
+      "issueTitleAr": "اختبار منع تعديل الأسرار والأوزان (المستوى 3)",
+      "moduleId": "weights-manager",
+      "diagnosis": {
+        "id": "diag-cb5ce20f",
+        "timestamp": "2026-11-23T21:06:12.234Z",
+        "failedFunction": "forbidden-tier3-test",
+        "moduleId": "weights-manager",
+        "relatedFileOrApi": ".env / GEMINI_API_KEY",
+        "category": "permissions",
+        "transient": false,
+        "severity": "CRITICAL",
+        "tier": 3,
+        "evidence": "attempt to modify-secrets and overwrite-weights",
+        "priorEventsSummary": "لا توجد إخفاقات متكررة مسجلة مسبقاً لهذه الوحدة.",
+        "suggestedFixAr": "إجراء محظور تلقائياً (المستوى الثالث) — يتطلب تدخلاً بشرياً مباشراً لحماية البيانات والأوزان والأسرار.",
+        "safeToAutoApply": false,
+        "blockedReasonAr": "محظور بموجب سياسة الحماية: يمنع المساس بالأسرار أو بيانات العملاء أو الأوزان الأصلية أو إعدادات الأمان."
+      },
+      "stage": "MANUAL APPROVAL REQUIRED",
+      "tier": 3,
+      "autoExecuted": false,
+      "approvedByOwner": null,
+      "affectedTargets": [
+        ".env / GEMINI_API_KEY"
+      ],
+      "actionTakenAr": "محظور بموجب سياسة الحماية: يمنع المساس بالأسرار أو بيانات العملاء أو الأوزان الأصلية أو إعدادات الأمان.",
+      "resultStatus": "MANUAL APPROVAL REQUIRED",
+      "postRepairVerificationAr": "لم يُعدّل أي ملف أو سجل؛ الحظر الأمني نجح.",
+      "postRepairVerified": false,
+      "rollbackSnapshot": null,
+      "stageTimeline": [
+        {
+          "stage": "DETECT",
+          "at": "2026-11-23T21:06:12.234Z",
+          "detailAr": "اكتشاف المشكلة: اختبار منع تعديل الأسرار والأوزان (المستوى 3)"
+        },
+        {
+          "stage": "DIAGNOSE",
+          "at": "2026-11-23T21:06:12.234Z",
+          "detailAr": "السبب الجذري: permissions | مؤقت=لا | المستوى=3"
+        },
+        {
+          "stage": "PLAN",
+          "at": "2026-11-23T21:06:12.234Z",
+          "detailAr": "إجراء محظور تلقائياً (المستوى الثالث) — يتطلب تدخلاً بشرياً مباشراً لحماية البيانات والأوزان والأسرار."
+        },
+        {
+          "stage": "SAFETY CHECK",
+          "at": "2026-11-23T21:06:12.234Z",
+          "detailAr": "محظور بموجب سياسة الحماية: يمنع المساس بالأسرار أو بيانات العملاء أو الأوزان الأصلية أو إعدادات الأمان."
+        },
+        {
+          "stage": "MANUAL APPROVAL REQUIRED",
+          "at": "2026-11-23T21:06:12.234Z",
+          "detailAr": "موقوف بحاجز الأمان — يتطلب تدخلاً بشرياً مباشراً."
+        }
+      ]
+    },
+    {
+      "id": "rep-4768f809",
+      "createdAt": "2026-11-23T21:06:12.228Z",
+      "updatedAt": "2026-11-23T21:06:12.229Z",
+      "issueTitleAr": "اختبار فشل الإصلاح عند غياب مصدر الاستعادة",
+      "moduleId": "data-factory",
+      "diagnosis": {
+        "id": "diag-dbf9c653",
+        "timestamp": "2026-11-23T21:06:12.228Z",
+        "failedFunction": "impossible-target-test",
+        "moduleId": "data-factory",
+        "relatedFileOrApi": "impossible-target-test",
+        "category": "configuration",
+        "transient": false,
+        "severity": "WARNING",
+        "tier": 1,
+        "evidence": "unrecoverable missing artifact test",
+        "priorEventsSummary": "سُجل 1 إخفاق سابق مرتبط بهذه الوحدة في نافذة المراقبة الحية.",
+        "suggestedFixAr": "مراجعة مسار الملف المفقود واعتماد استعادته يدوياً.",
+        "safeToAutoApply": false,
+        "blockedReasonAr": null
+      },
+      "stage": "FAILED",
+      "tier": 1,
+      "autoExecuted": true,
+      "approvedByOwner": null,
+      "affectedTargets": [
+        "data/self-healing/cache/__non_existent_unrecoverable__.bin"
+      ],
+      "actionTakenAr": "اختبار مسار فشل الإصلاح وعدم تزوير النجاح",
+      "resultStatus": "FAILED",
+      "postRepairVerificationAr": "فشل التحقق كما هو متوقع: الملف الهدف غير موجود ولا يوجد مصدر استعادة موثق.",
+      "postRepairVerified": false,
+      "rollbackSnapshot": null,
+      "stageTimeline": [
+        {
+          "stage": "DETECT",
+          "at": "2026-11-23T21:06:12.228Z",
+          "detailAr": "اكتشاف المشكلة: اختبار فشل الإصلاح عند غياب مصدر الاستعادة"
+        },
+        {
+          "stage": "DIAGNOSE",
+          "at": "2026-11-23T21:06:12.228Z",
+          "detailAr": "السبب الجذري: configuration | مؤقت=لا | المستوى=2"
+        },
+        {
+          "stage": "PLAN",
+          "at": "2026-11-23T21:06:12.228Z",
+          "detailAr": "مراجعة مسار الملف المفقود واعتماد استعادته يدوياً."
+        },
+        {
+          "stage": "SAFETY CHECK",
+          "at": "2026-11-23T21:06:12.228Z",
+          "detailAr": "اجتاز فحص الأمان والحدود دون المساس ببيانات العملاء أو الأسرار."
+        },
+        {
+          "stage": "APPLY",
+          "at": "2026-11-23T21:06:12.229Z",
+          "detailAr": "محاولة إصلاح هدف مفقود غير قابل للاستعادة التلقائية."
+        },
+        {
+          "stage": "VERIFY",
+          "at": "2026-11-23T21:06:12.229Z",
+          "detailAr": "فشل التحقق كما هو متوقع: الملف الهدف غير موجود ولا يوجد مصدر استعادة موثق."
+        },
+        {
+          "stage": "FAILED",
+          "at": "2026-11-23T21:06:12.229Z",
+          "detailAr": "فشل الإصلاح أو اختبار التحقق النهائي."
+        }
+      ]
+    },
+    {
+      "id": "rep-19c2aeeb",
+      "createdAt": "2026-11-23T21:06:12.222Z",
+      "updatedAt": "2026-11-23T21:06:12.224Z",
+      "issueTitleAr": "اختبار تنظيف ملف مؤقت يتيم (Sandbox)",
+      "moduleId": "export-packaging",
+      "diagnosis": {
+        "id": "diag-ce264ec3",
+        "timestamp": "2026-11-23T21:06:12.222Z",
+        "failedFunction": "clean-orphan-temp-files",
+        "moduleId": "export-packaging",
+        "relatedFileOrApi": "/app/applet/data/self-healing/cache/__acc_orphan_1795467972220.tmp",
+        "category": "configuration",
+        "transient": false,
+        "severity": "WARNING",
+        "tier": 1,
+        "evidence": "orphan temporary file detected in cache",
+        "priorEventsSummary": "لا توجد إخفاقات متكررة مسجلة مسبقاً لهذه الوحدة.",
+        "suggestedFixAr": "إعادة بناء مجلد أو ملف Cache القابل للاستعادة والتحقق من قراءته.",
+        "safeToAutoApply": true,
+        "blockedReasonAr": null
+      },
+      "stage": "RECOVERED",
+      "tier": 1,
+      "autoExecuted": true,
+      "approvedByOwner": null,
+      "affectedTargets": [
+        "data/self-healing/cache/__acc_orphan_1795467972220.tmp"
+      ],
+      "actionTakenAr": "تنظيف الملفات المؤقتة اليتيمة بأمان: data/self-healing/cache/__acc_orphan_1795467972220.tmp",
+      "resultStatus": "RECOVERED",
+      "postRepairVerificationAr": "تم التحقق: 0 ملفات مؤقتة متبقية في مسارات التخزين (حُذف: 1).",
+      "postRepairVerified": true,
+      "rollbackSnapshot": null,
+      "stageTimeline": [
+        {
+          "stage": "DETECT",
+          "at": "2026-11-23T21:06:12.222Z",
+          "detailAr": "اكتشاف المشكلة: اختبار تنظيف ملف مؤقت يتيم (Sandbox)"
+        },
+        {
+          "stage": "DIAGNOSE",
+          "at": "2026-11-23T21:06:12.222Z",
+          "detailAr": "السبب الجذري: configuration | مؤقت=لا | المستوى=1"
+        },
+        {
+          "stage": "PLAN",
+          "at": "2026-11-23T21:06:12.222Z",
+          "detailAr": "إعادة بناء مجلد أو ملف Cache القابل للاستعادة والتحقق من قراءته."
+        },
+        {
+          "stage": "SAFETY CHECK",
+          "at": "2026-11-23T21:06:12.222Z",
+          "detailAr": "اجتاز فحص الأمان والحدود دون المساس ببيانات العملاء أو الأسرار."
+        },
+        {
+          "stage": "APPLY",
+          "at": "2026-11-23T21:06:12.223Z",
+          "detailAr": "تم حذف 1 ملف مؤقت يتيم."
+        },
+        {
+          "stage": "VERIFY",
+          "at": "2026-11-23T21:06:12.224Z",
+          "detailAr": "تم التحقق: 0 ملفات مؤقتة متبقية في مسارات التخزين (حُذف: 1)."
+        },
+        {
+          "stage": "RECOVERED",
+          "at": "2026-11-23T21:06:12.224Z",
+          "detailAr": "اجتازت الوظيفة اختبار ما بعد الإصلاح بنجاح."
+        }
+      ]
+    },
+    {
+      "id": "rep-a9f4639f",
+      "createdAt": "2026-11-23T21:01:52.265Z",
+      "updatedAt": "2026-11-23T21:01:52.277Z",
+      "issueTitleAr": "اختبار Patch و Rollback الموثق بالـ SHA-256",
+      "moduleId": "data-factory",
+      "diagnosis": {
+        "id": "diag-3e26f4c5",
+        "timestamp": "2026-11-23T21:01:52.265Z",
+        "failedFunction": "patch-sandbox-config",
+        "moduleId": "data-factory",
+        "relatedFileOrApi": "/app/applet/data/self-healing/cache/__acc_rollback_cfg__.json",
+        "category": "corrupted-file-or-model",
+        "transient": false,
+        "severity": "CRITICAL",
+        "tier": 2,
+        "evidence": "اختبار Patch و Rollback الموثق بالـ SHA-256",
+        "priorEventsSummary": "سُجل 1 إخفاق سابق مرتبط بهذه الوحدة في نافذة المراقبة الحية.",
+        "suggestedFixAr": "مطلوب اعتماد المالك أو إعادة استيراد الملف من المصدر الموثوق.",
+        "safeToAutoApply": false,
+        "blockedReasonAr": null
+      },
+      "stage": "RECOVERED",
+      "tier": 2,
+      "autoExecuted": false,
+      "approvedByOwner": true,
+      "affectedTargets": [
+        "data/self-healing/cache/__acc_rollback_cfg__.json"
+      ],
+      "actionTakenAr": "تطبيق Patch محدود وآمن على __acc_rollback_cfg__.json",
+      "resultStatus": "RECOVERED",
+      "postRepairVerificationAr": "تم التحقق من صحة الملف وتطابق البصمة بعد التعديل (post-SHA: e989988463dc...).",
+      "postRepairVerified": true,
+      "rollbackSnapshot": {
+        "snapshotId": "snap-071bc4",
+        "targetType": "file",
+        "targetPath": "data/self-healing/cache/__acc_rollback_cfg__.json",
+        "preSha256": "a76af28cb5f2f75c8ab45a2ae0f1b041ea5d9c03d1ef45423a5553c75ef2b9bf",
+        "postSha256": "e989988463dc8be7400dfa53aa587b88b505994a4a5b43212c867e02eacdff7e",
+        "backupRelativePath": "data/self-healing/backups/pre-1795467712265-__acc_rollback_cfg__.json.bak",
+        "patchDiffSummary": "تعديل __acc_rollback_cfg__.json (46 بايت)",
+        "reversible": true,
+        "rolledBackAt": "2026-11-23T21:01:52.277Z",
+        "postRollbackVerified": true
+      },
+      "stageTimeline": [
+        {
+          "stage": "DETECT",
+          "at": "2026-11-23T21:01:52.265Z",
+          "detailAr": "اكتشاف المشكلة: اختبار Patch و Rollback الموثق بالـ SHA-256"
+        },
+        {
+          "stage": "DIAGNOSE",
+          "at": "2026-11-23T21:01:52.265Z",
+          "detailAr": "السبب الجذري: corrupted-file-or-model | مؤقت=لا | المستوى=2"
+        },
+        {
+          "stage": "PLAN",
+          "at": "2026-11-23T21:01:52.265Z",
+          "detailAr": "مطلوب اعتماد المالك أو إعادة استيراد الملف من المصدر الموثوق."
+        },
+        {
+          "stage": "SAFETY CHECK",
+          "at": "2026-11-23T21:01:52.265Z",
+          "detailAr": "إجراء من المستوى الثاني — آمن للتجهيز، بانتظار موافقة المالك الصريحة."
+        },
+        {
+          "stage": "MANUAL APPROVAL REQUIRED",
+          "at": "2026-11-23T21:01:52.265Z",
+          "detailAr": "خطة الإصلاح جاهزة وبانتظار الاعتماد."
+        },
+        {
+          "stage": "SAFETY CHECK",
+          "at": "2026-11-23T21:01:52.268Z",
+          "detailAr": "تم اعتماد الخطة صراحةً من المالك بعد مراجعة التأثير."
+        },
+        {
+          "stage": "APPLY",
+          "at": "2026-11-23T21:01:52.269Z",
+          "detailAr": "تطبيق Patch محدود على data/self-healing/cache/__acc_rollback_cfg__.json."
+        },
+        {
+          "stage": "VERIFY",
+          "at": "2026-11-23T21:01:52.269Z",
+          "detailAr": "تم التحقق من صحة الملف وتطابق البصمة بعد التعديل (post-SHA: e989988463dc...)."
+        },
+        {
+          "stage": "RECOVERED",
+          "at": "2026-11-23T21:01:52.269Z",
+          "detailAr": "اجتازت الوظيفة اختبار ما بعد الإصلاح بنجاح."
+        },
+        {
+          "stage": "VERIFY",
+          "at": "2026-11-23T21:01:52.277Z",
+          "detailAr": "تم تنفيذ التراجع الآمن وتطابقت بصمة SHA-256 المستعادة مع الأصل (a76af28cb5f2)."
+        }
+      ]
+    },
+    {
+      "id": "rep-53378710",
+      "createdAt": "2026-11-23T21:01:52.260Z",
+      "updatedAt": "2026-11-23T21:01:52.260Z",
+      "issueTitleAr": "اختبار منع تعديل الأسرار والأوزان (المستوى 3)",
+      "moduleId": "weights-manager",
+      "diagnosis": {
+        "id": "diag-a52ece76",
+        "timestamp": "2026-11-23T21:01:52.260Z",
+        "failedFunction": "forbidden-tier3-test",
+        "moduleId": "weights-manager",
+        "relatedFileOrApi": ".env / GEMINI_API_KEY",
+        "category": "permissions",
+        "transient": false,
+        "severity": "CRITICAL",
+        "tier": 3,
+        "evidence": "attempt to modify-secrets and overwrite-weights",
+        "priorEventsSummary": "لا توجد إخفاقات متكررة مسجلة مسبقاً لهذه الوحدة.",
+        "suggestedFixAr": "إجراء محظور تلقائياً (المستوى الثالث) — يتطلب تدخلاً بشرياً مباشراً لحماية البيانات والأوزان والأسرار.",
+        "safeToAutoApply": false,
+        "blockedReasonAr": "محظور بموجب سياسة الحماية: يمنع المساس بالأسرار أو بيانات العملاء أو الأوزان الأصلية أو إعدادات الأمان."
+      },
+      "stage": "MANUAL APPROVAL REQUIRED",
+      "tier": 3,
+      "autoExecuted": false,
+      "approvedByOwner": null,
+      "affectedTargets": [
+        ".env / GEMINI_API_KEY"
+      ],
+      "actionTakenAr": "محظور بموجب سياسة الحماية: يمنع المساس بالأسرار أو بيانات العملاء أو الأوزان الأصلية أو إعدادات الأمان.",
+      "resultStatus": "MANUAL APPROVAL REQUIRED",
+      "postRepairVerificationAr": "لم يُعدّل أي ملف أو سجل؛ الحظر الأمني نجح.",
+      "postRepairVerified": false,
+      "rollbackSnapshot": null,
+      "stageTimeline": [
+        {
+          "stage": "DETECT",
+          "at": "2026-11-23T21:01:52.260Z",
+          "detailAr": "اكتشاف المشكلة: اختبار منع تعديل الأسرار والأوزان (المستوى 3)"
+        },
+        {
+          "stage": "DIAGNOSE",
+          "at": "2026-11-23T21:01:52.260Z",
+          "detailAr": "السبب الجذري: permissions | مؤقت=لا | المستوى=3"
+        },
+        {
+          "stage": "PLAN",
+          "at": "2026-11-23T21:01:52.260Z",
+          "detailAr": "إجراء محظور تلقائياً (المستوى الثالث) — يتطلب تدخلاً بشرياً مباشراً لحماية البيانات والأوزان والأسرار."
+        },
+        {
+          "stage": "SAFETY CHECK",
+          "at": "2026-11-23T21:01:52.260Z",
+          "detailAr": "محظور بموجب سياسة الحماية: يمنع المساس بالأسرار أو بيانات العملاء أو الأوزان الأصلية أو إعدادات الأمان."
+        },
+        {
+          "stage": "MANUAL APPROVAL REQUIRED",
+          "at": "2026-11-23T21:01:52.260Z",
+          "detailAr": "موقوف بحاجز الأمان — يتطلب تدخلاً بشرياً مباشراً."
+        }
+      ]
+    },
+    {
+      "id": "rep-ded301a4",
+      "createdAt": "2026-11-23T21:01:52.256Z",
+      "updatedAt": "2026-11-23T21:01:52.256Z",
+      "issueTitleAr": "اختبار فشل الإصلاح عند غياب مصدر الاستعادة",
+      "moduleId": "data-factory",
+      "diagnosis": {
+        "id": "diag-269153d8",
+        "timestamp": "2026-11-23T21:01:52.256Z",
+        "failedFunction": "impossible-target-test",
+        "moduleId": "data-factory",
+        "relatedFileOrApi": "impossible-target-test",
+        "category": "configuration",
+        "transient": false,
+        "severity": "WARNING",
+        "tier": 1,
+        "evidence": "unrecoverable missing artifact test",
+        "priorEventsSummary": "سُجل 1 إخفاق سابق مرتبط بهذه الوحدة في نافذة المراقبة الحية.",
+        "suggestedFixAr": "مراجعة مسار الملف المفقود واعتماد استعادته يدوياً.",
+        "safeToAutoApply": false,
+        "blockedReasonAr": null
+      },
+      "stage": "FAILED",
+      "tier": 1,
+      "autoExecuted": true,
+      "approvedByOwner": null,
+      "affectedTargets": [
+        "data/self-healing/cache/__non_existent_unrecoverable__.bin"
+      ],
+      "actionTakenAr": "اختبار مسار فشل الإصلاح وعدم تزوير النجاح",
+      "resultStatus": "FAILED",
+      "postRepairVerificationAr": "فشل التحقق كما هو متوقع: الملف الهدف غير موجود ولا يوجد مصدر استعادة موثق.",
+      "postRepairVerified": false,
+      "rollbackSnapshot": null,
+      "stageTimeline": [
+        {
+          "stage": "DETECT",
+          "at": "2026-11-23T21:01:52.256Z",
+          "detailAr": "اكتشاف المشكلة: اختبار فشل الإصلاح عند غياب مصدر الاستعادة"
+        },
+        {
+          "stage": "DIAGNOSE",
+          "at": "2026-11-23T21:01:52.256Z",
+          "detailAr": "السبب الجذري: configuration | مؤقت=لا | المستوى=2"
+        },
+        {
+          "stage": "PLAN",
+          "at": "2026-11-23T21:01:52.256Z",
+          "detailAr": "مراجعة مسار الملف المفقود واعتماد استعادته يدوياً."
+        },
+        {
+          "stage": "SAFETY CHECK",
+          "at": "2026-11-23T21:01:52.256Z",
+          "detailAr": "اجتاز فحص الأمان والحدود دون المساس ببيانات العملاء أو الأسرار."
+        },
+        {
+          "stage": "APPLY",
+          "at": "2026-11-23T21:01:52.256Z",
+          "detailAr": "محاولة إصلاح هدف مفقود غير قابل للاستعادة التلقائية."
+        },
+        {
+          "stage": "VERIFY",
+          "at": "2026-11-23T21:01:52.256Z",
+          "detailAr": "فشل التحقق كما هو متوقع: الملف الهدف غير موجود ولا يوجد مصدر استعادة موثق."
+        },
+        {
+          "stage": "FAILED",
+          "at": "2026-11-23T21:01:52.256Z",
+          "detailAr": "فشل الإصلاح أو اختبار التحقق النهائي."
+        }
+      ]
+    },
+    {
+      "id": "rep-874bc49d",
+      "createdAt": "2026-11-23T21:01:52.247Z",
+      "updatedAt": "2026-11-23T21:01:52.249Z",
+      "issueTitleAr": "اختبار تنظيف ملف مؤقت يتيم (Sandbox)",
+      "moduleId": "export-packaging",
+      "diagnosis": {
+        "id": "diag-4f10be11",
+        "timestamp": "2026-11-23T21:01:52.247Z",
+        "failedFunction": "clean-orphan-temp-files",
+        "moduleId": "export-packaging",
+        "relatedFileOrApi": "/app/applet/data/self-healing/cache/__acc_orphan_1795467712246.tmp",
+        "category": "configuration",
+        "transient": false,
+        "severity": "WARNING",
+        "tier": 1,
+        "evidence": "orphan temporary file detected in cache",
+        "priorEventsSummary": "لا توجد إخفاقات متكررة مسجلة مسبقاً لهذه الوحدة.",
+        "suggestedFixAr": "إعادة بناء مجلد أو ملف Cache القابل للاستعادة والتحقق من قراءته.",
+        "safeToAutoApply": true,
+        "blockedReasonAr": null
+      },
+      "stage": "RECOVERED",
+      "tier": 1,
+      "autoExecuted": true,
+      "approvedByOwner": null,
+      "affectedTargets": [
+        "data/self-healing/cache/__acc_orphan_1795467712246.tmp"
+      ],
+      "actionTakenAr": "تنظيف الملفات المؤقتة اليتيمة بأمان: data/self-healing/cache/__acc_orphan_1795467712246.tmp",
+      "resultStatus": "RECOVERED",
+      "postRepairVerificationAr": "تم التحقق: 0 ملفات مؤقتة متبقية في مسارات التخزين (حُذف: 1).",
+      "postRepairVerified": true,
+      "rollbackSnapshot": null,
+      "stageTimeline": [
+        {
+          "stage": "DETECT",
+          "at": "2026-11-23T21:01:52.247Z",
+          "detailAr": "اكتشاف المشكلة: اختبار تنظيف ملف مؤقت يتيم (Sandbox)"
+        },
+        {
+          "stage": "DIAGNOSE",
+          "at": "2026-11-23T21:01:52.247Z",
+          "detailAr": "السبب الجذري: configuration | مؤقت=لا | المستوى=1"
+        },
+        {
+          "stage": "PLAN",
+          "at": "2026-11-23T21:01:52.247Z",
+          "detailAr": "إعادة بناء مجلد أو ملف Cache القابل للاستعادة والتحقق من قراءته."
+        },
+        {
+          "stage": "SAFETY CHECK",
+          "at": "2026-11-23T21:01:52.247Z",
+          "detailAr": "اجتاز فحص الأمان والحدود دون المساس ببيانات العملاء أو الأسرار."
+        },
+        {
+          "stage": "APPLY",
+          "at": "2026-11-23T21:01:52.248Z",
+          "detailAr": "تم حذف 1 ملف مؤقت يتيم."
+        },
+        {
+          "stage": "VERIFY",
+          "at": "2026-11-23T21:01:52.249Z",
+          "detailAr": "تم التحقق: 0 ملفات مؤقتة متبقية في مسارات التخزين (حُذف: 1)."
+        },
+        {
+          "stage": "RECOVERED",
+          "at": "2026-11-23T21:01:52.249Z",
+          "detailAr": "اجتازت الوظيفة اختبار ما بعد الإصلاح بنجاح."
+        }
+      ]
+    },
+    {
+      "id": "rep-40e7e5d5",
+      "createdAt": "2026-11-23T19:11:06.439Z",
+      "updatedAt": "2026-11-23T19:11:06.447Z",
+      "issueTitleAr": "اختبار Patch و Rollback الموثق بالـ SHA-256",
+      "moduleId": "data-factory",
+      "diagnosis": {
+        "id": "diag-81edca7f",
+        "timestamp": "2026-11-23T19:11:06.439Z",
+        "failedFunction": "patch-sandbox-config",
+        "moduleId": "data-factory",
+        "relatedFileOrApi": "/app/applet/data/self-healing/cache/__acc_rollback_cfg__.json",
+        "category": "corrupted-file-or-model",
+        "transient": false,
+        "severity": "CRITICAL",
+        "tier": 2,
+        "evidence": "اختبار Patch و Rollback الموثق بالـ SHA-256",
+        "priorEventsSummary": "سُجل 1 إخفاق سابق مرتبط بهذه الوحدة في نافذة المراقبة الحية.",
+        "suggestedFixAr": "مطلوب اعتماد المالك أو إعادة استيراد الملف من المصدر الموثوق.",
+        "safeToAutoApply": false,
+        "blockedReasonAr": null
+      },
+      "stage": "RECOVERED",
+      "tier": 2,
+      "autoExecuted": false,
+      "approvedByOwner": true,
+      "affectedTargets": [
+        "data/self-healing/cache/__acc_rollback_cfg__.json"
+      ],
+      "actionTakenAr": "تطبيق Patch محدود وآمن على __acc_rollback_cfg__.json",
+      "resultStatus": "RECOVERED",
+      "postRepairVerificationAr": "تم التحقق من صحة الملف وتطابق البصمة بعد التعديل (post-SHA: e989988463dc...).",
+      "postRepairVerified": true,
+      "rollbackSnapshot": {
+        "snapshotId": "snap-426116",
+        "targetType": "file",
+        "targetPath": "data/self-healing/cache/__acc_rollback_cfg__.json",
+        "preSha256": "a76af28cb5f2f75c8ab45a2ae0f1b041ea5d9c03d1ef45423a5553c75ef2b9bf",
+        "postSha256": "e989988463dc8be7400dfa53aa587b88b505994a4a5b43212c867e02eacdff7e",
+        "backupRelativePath": "data/self-healing/backups/pre-1795461066440-__acc_rollback_cfg__.json.bak",
+        "patchDiffSummary": "تعديل __acc_rollback_cfg__.json (46 بايت)",
+        "reversible": true,
+        "rolledBackAt": "2026-11-23T19:11:06.447Z",
+        "postRollbackVerified": true
+      },
+      "stageTimeline": [
+        {
+          "stage": "DETECT",
+          "at": "2026-11-23T19:11:06.439Z",
+          "detailAr": "اكتشاف المشكلة: اختبار Patch و Rollback الموثق بالـ SHA-256"
+        },
+        {
+          "stage": "DIAGNOSE",
+          "at": "2026-11-23T19:11:06.439Z",
+          "detailAr": "السبب الجذري: corrupted-file-or-model | مؤقت=لا | المستوى=2"
+        },
+        {
+          "stage": "PLAN",
+          "at": "2026-11-23T19:11:06.439Z",
+          "detailAr": "مطلوب اعتماد المالك أو إعادة استيراد الملف من المصدر الموثوق."
+        },
+        {
+          "stage": "SAFETY CHECK",
+          "at": "2026-11-23T19:11:06.440Z",
+          "detailAr": "إجراء من المستوى الثاني — آمن للتجهيز، بانتظار موافقة المالك الصريحة."
+        },
+        {
+          "stage": "MANUAL APPROVAL REQUIRED",
+          "at": "2026-11-23T19:11:06.440Z",
+          "detailAr": "خطة الإصلاح جاهزة وبانتظار الاعتماد."
+        },
+        {
+          "stage": "SAFETY CHECK",
+          "at": "2026-11-23T19:11:06.441Z",
+          "detailAr": "تم اعتماد الخطة صراحةً من المالك بعد مراجعة التأثير."
+        },
+        {
+          "stage": "APPLY",
+          "at": "2026-11-23T19:11:06.442Z",
+          "detailAr": "تطبيق Patch محدود على data/self-healing/cache/__acc_rollback_cfg__.json."
+        },
+        {
+          "stage": "VERIFY",
+          "at": "2026-11-23T19:11:06.442Z",
+          "detailAr": "تم التحقق من صحة الملف وتطابق البصمة بعد التعديل (post-SHA: e989988463dc...)."
+        },
+        {
+          "stage": "RECOVERED",
+          "at": "2026-11-23T19:11:06.442Z",
+          "detailAr": "اجتازت الوظيفة اختبار ما بعد الإصلاح بنجاح."
+        },
+        {
+          "stage": "VERIFY",
+          "at": "2026-11-23T19:11:06.447Z",
+          "detailAr": "تم تنفيذ التراجع الآمن وتطابقت بصمة SHA-256 المستعادة مع الأصل (a76af28cb5f2)."
+        }
+      ]
+    },
+    {
+      "id": "rep-608e757c",
+      "createdAt": "2026-11-23T19:11:06.431Z",
+      "updatedAt": "2026-11-23T19:11:06.431Z",
+      "issueTitleAr": "اختبار منع تعديل الأسرار والأوزان (المستوى 3)",
+      "moduleId": "weights-manager",
+      "diagnosis": {
+        "id": "diag-91c30dd6",
+        "timestamp": "2026-11-23T19:11:06.431Z",
+        "failedFunction": "forbidden-tier3-test",
+        "moduleId": "weights-manager",
+        "relatedFileOrApi": ".env / GEMINI_API_KEY",
+        "category": "permissions",
+        "transient": false,
+        "severity": "CRITICAL",
+        "tier": 3,
+        "evidence": "attempt to modify-secrets and overwrite-weights",
+        "priorEventsSummary": "لا توجد إخفاقات متكررة مسجلة مسبقاً لهذه الوحدة.",
+        "suggestedFixAr": "إجراء محظور تلقائياً (المستوى الثالث) — يتطلب تدخلاً بشرياً مباشراً لحماية البيانات والأوزان والأسرار.",
+        "safeToAutoApply": false,
+        "blockedReasonAr": "محظور بموجب سياسة الحماية: يمنع المساس بالأسرار أو بيانات العملاء أو الأوزان الأصلية أو إعدادات الأمان."
+      },
+      "stage": "MANUAL APPROVAL REQUIRED",
+      "tier": 3,
+      "autoExecuted": false,
+      "approvedByOwner": null,
+      "affectedTargets": [
+        ".env / GEMINI_API_KEY"
+      ],
+      "actionTakenAr": "محظور بموجب سياسة الحماية: يمنع المساس بالأسرار أو بيانات العملاء أو الأوزان الأصلية أو إعدادات الأمان.",
+      "resultStatus": "MANUAL APPROVAL REQUIRED",
+      "postRepairVerificationAr": "لم يُعدّل أي ملف أو سجل؛ الحظر الأمني نجح.",
+      "postRepairVerified": false,
+      "rollbackSnapshot": null,
+      "stageTimeline": [
+        {
+          "stage": "DETECT",
+          "at": "2026-11-23T19:11:06.431Z",
+          "detailAr": "اكتشاف المشكلة: اختبار منع تعديل الأسرار والأوزان (المستوى 3)"
+        },
+        {
+          "stage": "DIAGNOSE",
+          "at": "2026-11-23T19:11:06.431Z",
+          "detailAr": "السبب الجذري: permissions | مؤقت=لا | المستوى=3"
+        },
+        {
+          "stage": "PLAN",
+          "at": "2026-11-23T19:11:06.431Z",
+          "detailAr": "إجراء محظور تلقائياً (المستوى الثالث) — يتطلب تدخلاً بشرياً مباشراً لحماية البيانات والأوزان والأسرار."
+        },
+        {
+          "stage": "SAFETY CHECK",
+          "at": "2026-11-23T19:11:06.431Z",
+          "detailAr": "محظور بموجب سياسة الحماية: يمنع المساس بالأسرار أو بيانات العملاء أو الأوزان الأصلية أو إعدادات الأمان."
+        },
+        {
+          "stage": "MANUAL APPROVAL REQUIRED",
+          "at": "2026-11-23T19:11:06.431Z",
+          "detailAr": "موقوف بحاجز الأمان — يتطلب تدخلاً بشرياً مباشراً."
+        }
+      ]
+    },
+    {
+      "id": "rep-3931b525",
+      "createdAt": "2026-11-23T19:11:06.427Z",
+      "updatedAt": "2026-11-23T19:11:06.427Z",
+      "issueTitleAr": "اختبار فشل الإصلاح عند غياب مصدر الاستعادة",
+      "moduleId": "data-factory",
+      "diagnosis": {
+        "id": "diag-bc8b6cbf",
+        "timestamp": "2026-11-23T19:11:06.427Z",
+        "failedFunction": "impossible-target-test",
+        "moduleId": "data-factory",
+        "relatedFileOrApi": "impossible-target-test",
+        "category": "configuration",
+        "transient": false,
+        "severity": "WARNING",
+        "tier": 1,
+        "evidence": "unrecoverable missing artifact test",
+        "priorEventsSummary": "سُجل 1 إخفاق سابق مرتبط بهذه الوحدة في نافذة المراقبة الحية.",
+        "suggestedFixAr": "مراجعة مسار الملف المفقود واعتماد استعادته يدوياً.",
+        "safeToAutoApply": false,
+        "blockedReasonAr": null
+      },
+      "stage": "FAILED",
+      "tier": 1,
+      "autoExecuted": true,
+      "approvedByOwner": null,
+      "affectedTargets": [
+        "data/self-healing/cache/__non_existent_unrecoverable__.bin"
+      ],
+      "actionTakenAr": "اختبار مسار فشل الإصلاح وعدم تزوير النجاح",
+      "resultStatus": "FAILED",
+      "postRepairVerificationAr": "فشل التحقق كما هو متوقع: الملف الهدف غير موجود ولا يوجد مصدر استعادة موثق.",
+      "postRepairVerified": false,
+      "rollbackSnapshot": null,
+      "stageTimeline": [
+        {
+          "stage": "DETECT",
+          "at": "2026-11-23T19:11:06.427Z",
+          "detailAr": "اكتشاف المشكلة: اختبار فشل الإصلاح عند غياب مصدر الاستعادة"
+        },
+        {
+          "stage": "DIAGNOSE",
+          "at": "2026-11-23T19:11:06.427Z",
+          "detailAr": "السبب الجذري: configuration | مؤقت=لا | المستوى=2"
+        },
+        {
+          "stage": "PLAN",
+          "at": "2026-11-23T19:11:06.427Z",
+          "detailAr": "مراجعة مسار الملف المفقود واعتماد استعادته يدوياً."
+        },
+        {
+          "stage": "SAFETY CHECK",
+          "at": "2026-11-23T19:11:06.427Z",
+          "detailAr": "اجتاز فحص الأمان والحدود دون المساس ببيانات العملاء أو الأسرار."
+        },
+        {
+          "stage": "APPLY",
+          "at": "2026-11-23T19:11:06.427Z",
+          "detailAr": "محاولة إصلاح هدف مفقود غير قابل للاستعادة التلقائية."
+        },
+        {
+          "stage": "VERIFY",
+          "at": "2026-11-23T19:11:06.427Z",
+          "detailAr": "فشل التحقق كما هو متوقع: الملف الهدف غير موجود ولا يوجد مصدر استعادة موثق."
+        },
+        {
+          "stage": "FAILED",
+          "at": "2026-11-23T19:11:06.427Z",
+          "detailAr": "فشل الإصلاح أو اختبار التحقق النهائي."
+        }
+      ]
+    },
+    {
+      "id": "rep-17a6ad79",
+      "createdAt": "2026-11-23T19:11:06.422Z",
+      "updatedAt": "2026-11-23T19:11:06.423Z",
+      "issueTitleAr": "اختبار تنظيف ملف مؤقت يتيم (Sandbox)",
+      "moduleId": "export-packaging",
+      "diagnosis": {
+        "id": "diag-508aeb68",
+        "timestamp": "2026-11-23T19:11:06.422Z",
+        "failedFunction": "clean-orphan-temp-files",
+        "moduleId": "export-packaging",
+        "relatedFileOrApi": "/app/applet/data/self-healing/cache/__acc_orphan_1795461066422.tmp",
+        "category": "configuration",
+        "transient": false,
+        "severity": "WARNING",
+        "tier": 1,
+        "evidence": "orphan temporary file detected in cache",
+        "priorEventsSummary": "لا توجد إخفاقات متكررة مسجلة مسبقاً لهذه الوحدة.",
+        "suggestedFixAr": "إعادة بناء مجلد أو ملف Cache القابل للاستعادة والتحقق من قراءته.",
+        "safeToAutoApply": true,
+        "blockedReasonAr": null
+      },
+      "stage": "RECOVERED",
+      "tier": 1,
+      "autoExecuted": true,
+      "approvedByOwner": null,
+      "affectedTargets": [
+        "data/self-healing/cache/__acc_orphan_1795461066422.tmp"
+      ],
+      "actionTakenAr": "تنظيف الملفات المؤقتة اليتيمة بأمان: data/self-healing/cache/__acc_orphan_1795461066422.tmp",
+      "resultStatus": "RECOVERED",
+      "postRepairVerificationAr": "تم التحقق: 0 ملفات مؤقتة متبقية في مسارات التخزين (حُذف: 1).",
+      "postRepairVerified": true,
+      "rollbackSnapshot": null,
+      "stageTimeline": [
+        {
+          "stage": "DETECT",
+          "at": "2026-11-23T19:11:06.422Z",
+          "detailAr": "اكتشاف المشكلة: اختبار تنظيف ملف مؤقت يتيم (Sandbox)"
+        },
+        {
+          "stage": "DIAGNOSE",
+          "at": "2026-11-23T19:11:06.422Z",
+          "detailAr": "السبب الجذري: configuration | مؤقت=لا | المستوى=1"
+        },
+        {
+          "stage": "PLAN",
+          "at": "2026-11-23T19:11:06.422Z",
+          "detailAr": "إعادة بناء مجلد أو ملف Cache القابل للاستعادة والتحقق من قراءته."
+        },
+        {
+          "stage": "SAFETY CHECK",
+          "at": "2026-11-23T19:11:06.422Z",
+          "detailAr": "اجتاز فحص الأمان والحدود دون المساس ببيانات العملاء أو الأسرار."
+        },
+        {
+          "stage": "APPLY",
+          "at": "2026-11-23T19:11:06.423Z",
+          "detailAr": "تم حذف 1 ملف مؤقت يتيم."
+        },
+        {
+          "stage": "VERIFY",
+          "at": "2026-11-23T19:11:06.423Z",
+          "detailAr": "تم التحقق: 0 ملفات مؤقتة متبقية في مسارات التخزين (حُذف: 1)."
+        },
+        {
+          "stage": "RECOVERED",
+          "at": "2026-11-23T19:11:06.423Z",
+          "detailAr": "اجتازت الوظيفة اختبار ما بعد الإصلاح بنجاح."
+        }
+      ]
+    }
+  ],
+  "alerts": [
+    {
+      "id": "alr-ed3b2a5f",
+      "createdAt": "2026-11-24T18:21:33.530Z",
+      "acknowledged": false,
+      "severity": "WARNING",
+      "sourceModuleId": "data-factory",
+      "titleAr": "إصلاح بانتظار موافقة المالك (المستوى 2): اختبار Patch و Rollback الموثق بالـ SHA-256",
+      "evidenceAr": "الهدف: data/self-healing/cache/__acc_rollback_cfg__.json | pre-SHA: a76af28cb5f2f75c8ab45a2ae0f1b041ea5d9c03d1ef45423a5553c75ef2b9bf",
+      "linkedRecordId": "rep-f1c5b9ba"
+    },
+    {
+      "id": "alr-87c84281",
+      "createdAt": "2026-11-24T18:21:33.520Z",
+      "acknowledged": false,
+      "severity": "CRITICAL",
+      "sourceModuleId": "weights-manager",
+      "titleAr": "منع إجراء خطير من المستوى الثالث: اختبار منع تعديل الأسرار والأوزان (المستوى 3)",
+      "evidenceAr": "محظور بموجب سياسة الحماية: يمنع المساس بالأسرار أو بيانات العملاء أو الأوزان الأصلية أو إعدادات الأمان.",
+      "linkedRecordId": "rep-b80b504b"
+    },
+    {
+      "id": "alr-8235643c",
+      "createdAt": "2026-11-24T18:21:33.514Z",
+      "acknowledged": false,
+      "severity": "ERROR",
+      "sourceModuleId": "data-factory",
+      "titleAr": "فشل إصلاح ذاتي: اختبار فشل الإصلاح عند غياب مصدر الاستعادة",
+      "evidenceAr": "فشل التحقق كما هو متوقع: الملف الهدف غير موجود ولا يوجد مصدر استعادة موثق.",
+      "linkedRecordId": "rep-2871e163"
+    },
+    {
+      "id": "alr-3a5cf206",
+      "createdAt": "2026-11-24T18:20:59.449Z",
+      "acknowledged": false,
+      "severity": "ERROR",
+      "sourceModuleId": "legal-mind-center",
+      "titleAr": "تعذر إتمام التحليل القانوني للقضية ILM-2026-002",
+      "evidenceAr": "gemini-4-hydrogen: 503/UNAVAILABLE | gemini-3.1-flash-lite: 503/UNAVAILABLE",
+      "linkedRecordId": "case-0069fe45"
+    },
+    {
+      "id": "alr-02bd4e02",
+      "createdAt": "2026-11-24T11:39:57.439Z",
+      "acknowledged": false,
+      "severity": "WARNING",
+      "sourceModuleId": "brain-training-office",
+      "titleAr": "رفض ترقية العقل لتراجع الجودة (attia-advisor)",
+      "evidenceAr": "رُفض الاعتماد بسبب أخطاء جوهرية: ظهرت إشارات خطأ جوهري في مخرج التقييم.",
+      "linkedRecordId": "btc-5444c3d9"
+    },
+    {
+      "id": "alr-58cc1740",
+      "createdAt": "2026-11-23T21:07:52.957Z",
+      "acknowledged": false,
+      "severity": "WARNING",
+      "sourceModuleId": "brain-training-office",
+      "titleAr": "رفض ترقية العقل لتراجع الجودة (attia-advisor)",
+      "evidenceAr": "رُفض الاعتماد بسبب أخطاء جوهرية: المخرج قصير جداً أو فارغ ولا يكفي للإجابة المهنية (< 40 حرفاً).؛ ظهرت إشارات خطأ جوهري في مخرج التقييم.",
+      "linkedRecordId": "btc-6c3b62e3"
+    },
+    {
+      "id": "alr-579870a4",
+      "createdAt": "2026-11-23T21:06:25.669Z",
+      "acknowledged": false,
+      "severity": "WARNING",
+      "sourceModuleId": "brain-training-office",
+      "titleAr": "إيقاف دورة تدريب (local-lora) لعدم توفر الأوزان أو المحرك",
+      "evidenceAr": "لا توجد ملفات أوزان عصبية (.gguf / .safetensors) مستوردة على القرص في data/weights/. — حزم التدريب العصبي المحلية (python3: torch + peft / transformers) غير مثبتة في هذه البيئة. — محرك الاستدلال المحلي (llama-server / llama-cli) غير مثبت لتقييم الأوزان المحلية دون إنترنت.",
+      "linkedRecordId": "btc-d404f1eb"
+    },
+    {
+      "id": "alr-7b2cf075",
+      "createdAt": "2026-11-23T21:06:12.239Z",
+      "acknowledged": false,
+      "severity": "WARNING",
+      "sourceModuleId": "data-factory",
+      "titleAr": "إصلاح بانتظار موافقة المالك (المستوى 2): اختبار Patch و Rollback الموثق بالـ SHA-256",
+      "evidenceAr": "الهدف: data/self-healing/cache/__acc_rollback_cfg__.json | pre-SHA: a76af28cb5f2f75c8ab45a2ae0f1b041ea5d9c03d1ef45423a5553c75ef2b9bf",
+      "linkedRecordId": "rep-b3cf274e"
+    },
+    {
+      "id": "alr-e28dc74c",
+      "createdAt": "2026-11-23T21:06:12.234Z",
+      "acknowledged": false,
+      "severity": "CRITICAL",
+      "sourceModuleId": "weights-manager",
+      "titleAr": "منع إجراء خطير من المستوى الثالث: اختبار منع تعديل الأسرار والأوزان (المستوى 3)",
+      "evidenceAr": "محظور بموجب سياسة الحماية: يمنع المساس بالأسرار أو بيانات العملاء أو الأوزان الأصلية أو إعدادات الأمان.",
+      "linkedRecordId": "rep-f8c53bfa"
+    },
+    {
+      "id": "alr-c99e22ba",
+      "createdAt": "2026-11-23T21:06:12.229Z",
+      "acknowledged": false,
+      "severity": "ERROR",
+      "sourceModuleId": "data-factory",
+      "titleAr": "فشل إصلاح ذاتي: اختبار فشل الإصلاح عند غياب مصدر الاستعادة",
+      "evidenceAr": "فشل التحقق كما هو متوقع: الملف الهدف غير موجود ولا يوجد مصدر استعادة موثق.",
+      "linkedRecordId": "rep-4768f809"
+    },
+    {
+      "id": "alr-0e97b2aa",
+      "createdAt": "2026-11-23T21:06:11.774Z",
+      "acknowledged": false,
+      "severity": "WARNING",
+      "sourceModuleId": "brain-training-office",
+      "titleAr": "رفض ترقية العقل لتراجع الجودة (attia-advisor)",
+      "evidenceAr": "رُفض الاعتماد بسبب أخطاء جوهرية: المخرج قصير جداً أو فارغ ولا يكفي للإجابة المهنية (< 40 حرفاً).؛ ظهرت إشارات خطأ جوهري في مخرج التقييم.",
+      "linkedRecordId": "btc-75b196fd"
+    },
+    {
+      "id": "alr-fc06d19e",
+      "createdAt": "2026-11-23T21:04:26.005Z",
+      "acknowledged": false,
+      "severity": "ERROR",
+      "sourceModuleId": "brain-training-office",
+      "titleAr": "إخفاق دورة تدريب العقل (btc-9af7d6c3)",
+      "evidenceAr": "تعذر إتمام التقييم السحابي الحقيقي [gemini-3.1-flash-lite: 503/UNAVAILABLE | gemini-4-hydrogen: 429/QUOTA].",
+      "linkedRecordId": "btc-9af7d6c3"
+    },
+    {
+      "id": "alr-9ea07b70",
+      "createdAt": "2026-11-23T21:04:20.700Z",
+      "acknowledged": false,
+      "severity": "WARNING",
+      "sourceModuleId": "brain-training-office",
+      "titleAr": "إيقاف دورة تدريب (local-lora) لعدم توفر الأوزان أو المحرك",
+      "evidenceAr": "لا توجد ملفات أوزان عصبية (.gguf / .safetensors) مستوردة على القرص في data/weights/. — حزم التدريب العصبي المحلية (python3: torch + peft / transformers) غير مثبتة في هذه البيئة. — محرك الاستدلال المحلي (llama-server / llama-cli) غير مثبت لتقييم الأوزان المحلية دون إنترنت.",
+      "linkedRecordId": "btc-7c27a548"
+    },
+    {
+      "id": "alr-aa59001c",
+      "createdAt": "2026-11-23T21:03:21.868Z",
+      "acknowledged": false,
+      "severity": "ERROR",
+      "sourceModuleId": "brain-training-office",
+      "titleAr": "رصد خطأ تشغيل (500) في مكتب التدريب الاحترافي للعقل",
+      "evidenceAr": "POST /api/brain-training/acceptance-tests/run (54049ms): تعذر إتمام التقييم السحابي الحقيقي [gemini-3.1-flash-lite: 503/UNAVAILABLE | gemini-4-hydrogen: 429/QUOTA].",
+      "linkedRecordId": "brain-training-office"
+    },
+    {
+      "id": "alr-f1a52e1b",
+      "createdAt": "2026-11-23T21:02:28.324Z",
+      "acknowledged": false,
+      "severity": "WARNING",
+      "sourceModuleId": "brain-training-office",
+      "titleAr": "إيقاف دورة تدريب (local-lora) لعدم توفر الأوزان أو المحرك",
+      "evidenceAr": "لا توجد ملفات أوزان عصبية (.gguf / .safetensors) مستوردة على القرص في data/weights/. — حزم التدريب العصبي المحلية (python3: torch + peft / transformers) غير مثبتة في هذه البيئة. — محرك الاستدلال المحلي (llama-server / llama-cli) غير مثبت لتقييم الأوزان المحلية دون إنترنت.",
+      "linkedRecordId": "btc-8ad05e43"
+    },
+    {
+      "id": "alr-6678652e",
+      "createdAt": "2026-11-23T21:01:52.266Z",
+      "acknowledged": false,
+      "severity": "WARNING",
+      "sourceModuleId": "data-factory",
+      "titleAr": "إصلاح بانتظار موافقة المالك (المستوى 2): اختبار Patch و Rollback الموثق بالـ SHA-256",
+      "evidenceAr": "الهدف: data/self-healing/cache/__acc_rollback_cfg__.json | pre-SHA: a76af28cb5f2f75c8ab45a2ae0f1b041ea5d9c03d1ef45423a5553c75ef2b9bf",
+      "linkedRecordId": "rep-a9f4639f"
+    },
+    {
+      "id": "alr-eab5d054",
+      "createdAt": "2026-11-23T21:01:52.260Z",
+      "acknowledged": false,
+      "severity": "CRITICAL",
+      "sourceModuleId": "weights-manager",
+      "titleAr": "منع إجراء خطير من المستوى الثالث: اختبار منع تعديل الأسرار والأوزان (المستوى 3)",
+      "evidenceAr": "محظور بموجب سياسة الحماية: يمنع المساس بالأسرار أو بيانات العملاء أو الأوزان الأصلية أو إعدادات الأمان.",
+      "linkedRecordId": "rep-53378710"
+    },
+    {
+      "id": "alr-a9e16d5b",
+      "createdAt": "2026-11-23T21:01:52.256Z",
+      "acknowledged": false,
+      "severity": "ERROR",
+      "sourceModuleId": "data-factory",
+      "titleAr": "فشل إصلاح ذاتي: اختبار فشل الإصلاح عند غياب مصدر الاستعادة",
+      "evidenceAr": "فشل التحقق كما هو متوقع: الملف الهدف غير موجود ولا يوجد مصدر استعادة موثق.",
+      "linkedRecordId": "rep-ded301a4"
+    },
+    {
+      "id": "alr-a6055540",
+      "createdAt": "2026-11-23T21:01:51.821Z",
+      "acknowledged": false,
+      "severity": "ERROR",
+      "sourceModuleId": "brain-training-office",
+      "titleAr": "إخفاق دورة تدريب العقل (btc-11cba7e5)",
+      "evidenceAr": "تعذر إتمام التقييم السحابي الحقيقي [gemini-3.1-flash-lite: 503/UNAVAILABLE].",
+      "linkedRecordId": "btc-11cba7e5"
+    },
+    {
+      "id": "alr-eb1fd799",
+      "createdAt": "2026-11-23T21:01:33.129Z",
+      "acknowledged": false,
+      "severity": "ERROR",
+      "sourceModuleId": "brain-training-office",
+      "titleAr": "إخفاق دورة تدريب العقل (btc-9c88ead9)",
+      "evidenceAr": "تعذر إتمام التقييم السحابي الحقيقي [gemini-3.1-flash-lite: 503/UNAVAILABLE | gemini-4-hydrogen: 429/QUOTA].",
+      "linkedRecordId": "btc-9c88ead9"
+    },
+    {
+      "id": "alr-11e11913",
+      "createdAt": "2026-11-23T21:01:03.750Z",
+      "acknowledged": false,
+      "severity": "WARNING",
+      "sourceModuleId": "brain-training-office",
+      "titleAr": "إيقاف دورة تدريب (local-lora) لعدم توفر الأوزان أو المحرك",
+      "evidenceAr": "لا توجد ملفات أوزان عصبية (.gguf / .safetensors) مستوردة على القرص في data/weights/. — حزم التدريب العصبي المحلية (python3: torch + peft / transformers) غير مثبتة في هذه البيئة. — محرك الاستدلال المحلي (llama-server / llama-cli) غير مثبت لتقييم الأوزان المحلية دون إنترنت.",
+      "linkedRecordId": "btc-15f53349"
+    },
+    {
+      "id": "alr-adef649b",
+      "createdAt": "2026-11-23T21:00:27.934Z",
+      "acknowledged": false,
+      "severity": "ERROR",
+      "sourceModuleId": "brain-training-office",
+      "titleAr": "إخفاق دورة تدريب العقل (btc-c01b28d7)",
+      "evidenceAr": "تعذر إتمام التقييم السحابي الحقيقي [gemini-3.1-flash-lite: 503/UNAVAILABLE | gemini-4-hydrogen: 429/QUOTA].",
+      "linkedRecordId": "btc-c01b28d7"
+    },
+    {
+      "id": "alr-78cc1de0",
+      "createdAt": "2026-11-23T20:59:22.941Z",
+      "acknowledged": false,
+      "severity": "WARNING",
+      "sourceModuleId": "brain-training-office",
+      "titleAr": "إيقاف دورة تدريب (local-lora) لعدم توفر الأوزان أو المحرك",
+      "evidenceAr": "لا توجد ملفات أوزان عصبية (.gguf / .safetensors) مستوردة على القرص في data/weights/. — حزم التدريب العصبي المحلية (python3: torch + peft / transformers) غير مثبتة في هذه البيئة. — محرك الاستدلال المحلي (llama-server / llama-cli) غير مثبت لتقييم الأوزان المحلية دون إنترنت.",
+      "linkedRecordId": "btc-356da3e5"
+    },
+    {
+      "id": "alr-c1b10145",
+      "createdAt": "2026-11-23T20:58:42.610Z",
+      "acknowledged": false,
+      "severity": "ERROR",
+      "sourceModuleId": "brain-selector",
+      "titleAr": "رصد خطأ تشغيل (502) في اختيار العقول والمقارنة",
+      "evidenceAr": "POST /api/brain/compare (5242ms): تم تجاوز حد الطلبات اللحظي (429 RESOURCE_EXHAUSTED) لحساب Gemini المجاني (5 طلبات/دقيقة) أثناء تشغيل عقل جيميني القياسي. انتظر 60 ثانية ثم أعد المحاولة، أو فعّل مفتاحاً مدفوعاً من لوحة Settings > Secr",
+      "linkedRecordId": "brain-selector"
+    },
+    {
+      "id": "alr-6e34f257",
+      "createdAt": "2026-11-23T20:58:06.040Z",
+      "acknowledged": false,
+      "severity": "ERROR",
+      "sourceModuleId": "brain-training-office",
+      "titleAr": "إخفاق دورة تدريب العقل (btc-453b4b4e)",
+      "evidenceAr": "تعذر إتمام التقييم السحابي الحقيقي: {\"error\":{\"code\":503,\"message\":\"This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again later.\",\"status\":\"UNAVAILABLE\"}}",
+      "linkedRecordId": "btc-453b4b4e"
+    },
+    {
+      "id": "alr-2ae65540",
+      "createdAt": "2026-11-23T20:57:57.254Z",
+      "acknowledged": false,
+      "severity": "ERROR",
+      "sourceModuleId": "brain-training-office",
+      "titleAr": "إخفاق دورة تدريب العقل (btc-6ef574bb)",
+      "evidenceAr": "تعذر إتمام التقييم السحابي الحقيقي: {\"error\":{\"code\":503,\"message\":\"This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again later.\",\"status\":\"UNAVAILABLE\"}}",
+      "linkedRecordId": "btc-6ef574bb"
+    },
+    {
+      "id": "alr-42b049b2",
+      "createdAt": "2026-11-23T20:57:46.309Z",
+      "acknowledged": false,
+      "severity": "WARNING",
+      "sourceModuleId": "brain-training-office",
+      "titleAr": "إيقاف دورة تدريب (local-lora) لعدم توفر الأوزان أو المحرك",
+      "evidenceAr": "لا توجد ملفات أوزان عصبية (.gguf / .safetensors) مستوردة على القرص في data/weights/. — حزم التدريب العصبي المحلية (python3: torch + peft / transformers) غير مثبتة في هذه البيئة. — محرك الاستدلال المحلي (llama-server / llama-cli) غير مثبت لتقييم الأوزان المحلية دون إنترنت.",
+      "linkedRecordId": "btc-6dc5d18f"
+    },
+    {
+      "id": "alr-c9652b06",
+      "createdAt": "2026-11-23T20:56:17.655Z",
+      "acknowledged": false,
+      "severity": "ERROR",
+      "sourceModuleId": "brain-training-office",
+      "titleAr": "إخفاق دورة تدريب العقل (btc-5449ede4)",
+      "evidenceAr": "تعذر إتمام التقييم السحابي الحقيقي: {\"error\":{\"code\":429,\"message\":\"You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://aistudio.google.com/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \\n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 20, model: gemini-4-hydrogen, description: Generate content requests per day limit exceeded on Free Tier. See https://aistudio.google.com/docs/rate-limits.\\nPlease retry in 11h3m42.414985894s.\",\"status\":\"RESOURCE_EXHAUSTED\",\"details\":[{\"@type\":\"type.googleapis.com/google.rpc.Help\",\"links\":[{\"description\":\"Learn more about Gemini API quotas\",\"url\":\"https://aistudio.google.com/docs/rate-limits\"}]},{\"@type\":\"type.googleapis.com/google.rpc.QuotaFailure\",\"violations\":[{\"description\":\"Generate content requests per day limit exceeded on Free Tier. See https://aistudio.google.com/docs/rate-limits.\",\"quotaMetric\":\"generativelanguage.googleapis.com/generate_content_free_tier_requests\",\"quotaId\":\"GenerateRequestsPerDayPerProjectPerModel-FreeTier\",\"quotaDimensions\":{\"location\":\"global\",\"model\":\"gemini-4-hydrogen\"},\"quotaValue\":\"20\"}]},{\"@type\":\"type.googleapis.com/google.rpc.RetryInfo\",\"retryDelay\":\"39822s\"}]}}",
+      "linkedRecordId": "btc-5449ede4"
+    },
+    {
+      "id": "alr-06cc4402",
+      "createdAt": "2026-11-23T20:56:12.651Z",
+      "acknowledged": false,
+      "severity": "ERROR",
+      "sourceModuleId": "brain-training-office",
+      "titleAr": "إخفاق دورة تدريب العقل (btc-91eaa215)",
+      "evidenceAr": "تعذر إتمام التقييم السحابي الحقيقي: {\"error\":{\"code\":503,\"message\":\"This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again later.\",\"status\":\"UNAVAILABLE\"}}",
+      "linkedRecordId": "btc-91eaa215"
+    },
+    {
+      "id": "alr-767d55dd",
+      "createdAt": "2026-11-23T20:56:06.078Z",
+      "acknowledged": false,
+      "severity": "WARNING",
+      "sourceModuleId": "brain-training-office",
+      "titleAr": "إيقاف دورة تدريب (local-lora) لعدم توفر الأوزان أو المحرك",
+      "evidenceAr": "لا توجد ملفات أوزان عصبية (.gguf / .safetensors) مستوردة على القرص في data/weights/. — حزم التدريب العصبي المحلية (python3: torch + peft / transformers) غير مثبتة في هذه البيئة. — محرك الاستدلال المحلي (llama-server / llama-cli) غير مثبت لتقييم الأوزان المحلية دون إنترنت.",
+      "linkedRecordId": "btc-126c98a4"
+    },
+    {
+      "id": "alr-2140d2bf",
+      "createdAt": "2026-11-23T19:11:06.440Z",
+      "acknowledged": false,
+      "severity": "WARNING",
+      "sourceModuleId": "data-factory",
+      "titleAr": "إصلاح بانتظار موافقة المالك (المستوى 2): اختبار Patch و Rollback الموثق بالـ SHA-256",
+      "evidenceAr": "الهدف: data/self-healing/cache/__acc_rollback_cfg__.json | pre-SHA: a76af28cb5f2f75c8ab45a2ae0f1b041ea5d9c03d1ef45423a5553c75ef2b9bf",
+      "linkedRecordId": "rep-40e7e5d5"
+    },
+    {
+      "id": "alr-ef3e7f5d",
+      "createdAt": "2026-11-23T19:11:06.431Z",
+      "acknowledged": false,
+      "severity": "CRITICAL",
+      "sourceModuleId": "weights-manager",
+      "titleAr": "منع إجراء خطير من المستوى الثالث: اختبار منع تعديل الأسرار والأوزان (المستوى 3)",
+      "evidenceAr": "محظور بموجب سياسة الحماية: يمنع المساس بالأسرار أو بيانات العملاء أو الأوزان الأصلية أو إعدادات الأمان.",
+      "linkedRecordId": "rep-608e757c"
+    },
+    {
+      "id": "alr-fd760e4b",
+      "createdAt": "2026-11-23T19:11:06.427Z",
+      "acknowledged": false,
+      "severity": "ERROR",
+      "sourceModuleId": "data-factory",
+      "titleAr": "فشل إصلاح ذاتي: اختبار فشل الإصلاح عند غياب مصدر الاستعادة",
+      "evidenceAr": "فشل التحقق كما هو متوقع: الملف الهدف غير موجود ولا يوجد مصدر استعادة موثق.",
+      "linkedRecordId": "rep-3931b525"
+    }
+  ],
+  "acceptanceTests": [
+    {
+      "id": 1,
+      "nameAr": "اختبار فحص المنصة قبل التشغيل (Preflight)",
+      "inputsAr": "تشغيل runPreflightInspection() على ملفات وخدمات المنصة الحالية",
+      "actionAr": "فحص 15 محوراً حقيقياً للملفات، الأسرار، المخزن، الأوزان، والواجهات",
+      "actualResultAr": "نُفذ 15 فحصاً: PASS=12, WARN=2, FAIL=0, BLOCKED=1",
+      "evidenceAr": "runId=PRE-20261124-D6018F · overall=BLOCKED",
+      "verdict": "PASS",
+      "durationMs": 31
+    },
+    {
+      "id": 2,
+      "nameAr": "اختبار اكتشاف API غير مستجيب أو معطل",
+      "inputsAr": "POST /api/datasets/__non_existent_probe__",
+      "actionAr": "رصد الاستجابة عبر وسيط المراقبة الحية في Express",
+      "actualResultAr": "رُصد خطأ HTTP 404 وسُجل في recentFailures لوحدة data-factory.",
+      "evidenceAr": "status=404 · totalRequests=8",
+      "verdict": "PASS",
+      "durationMs": 15
+    },
+    {
+      "id": 3,
+      "nameAr": "اختبار تشخيص خطأ اتصال مؤقت (503 / 429)",
+      "inputsAr": "statusCode=503, error=\"503 UNAVAILABLE upstream rate spike\"",
+      "actionAr": "تشغيل محرك تحليل السبب الجذري diagnoseFailure()",
+      "actualResultAr": "التصنيف=external-service · مؤقت=true · المستوى=1",
+      "evidenceAr": "diagId=diag-d9c242da · fix=إعادة المحاولة بتأخير متدرج (Backoff) وفحص تعافي الاتصال تلقائياً.",
+      "verdict": "PASS",
+      "durationMs": 1
+    },
+    {
+      "id": 4,
+      "nameAr": "اختبار إصلاح آمن (المستوى 1) وإعادة التحقق الفعلي",
+      "inputsAr": "__acc_orphan_1795544493503.tmp",
+      "actionAr": "إنشاء ملف مؤقت يتيم ثم تشغيل clean-orphan-temp-files والتحقق من زواله",
+      "actualResultAr": "status=RECOVERED · verified=true · removed=true",
+      "evidenceAr": "repairId=rep-e38d09af · timeline=DETECT->DIAGNOSE->PLAN->SAFETY CHECK->APPLY->VERIFY->RECOVERED",
+      "verdict": "PASS",
+      "durationMs": 9
+    },
+    {
+      "id": 5,
+      "nameAr": "اختبار فشل الإصلاح وإظهار حالة FAILED بصدق",
+      "inputsAr": "actionType=impossible-target-test",
+      "actionAr": "تشغيل إصلاح على هدف غير قابل للاستعادة وفحص النتيجة",
+      "actualResultAr": "الحالة المعادة=FAILED · postRepairVerified=false",
+      "evidenceAr": "repairId=rep-2871e163 · فشل التحقق كما هو متوقع: الملف الهدف غير موجود ولا يوجد مصدر استعادة موثق.",
+      "verdict": "PASS",
+      "durationMs": 7
+    },
+    {
+      "id": 6,
+      "nameAr": "اختبار منع إصلاح خطير (المستوى 3) دون مساس بالملفات",
+      "inputsAr": "targetPath=\".env / GEMINI_API_KEY\", actionType=forbidden-tier3-test",
+      "actionAr": "اختبار بوابة الأمان ضد تعديل الأسرار والأوزان",
+      "actualResultAr": "tier=3 · autoExecuted=false · status=MANUAL APPROVAL REQUIRED",
+      "evidenceAr": "repairId=rep-b80b504b · محظور بموجب سياسة الحماية: يمنع المساس بالأسرار أو بيانات العملاء أو الأوزان الأصلية أو إعدادات الأمان.",
+      "verdict": "PASS",
+      "durationMs": 7
+    },
+    {
+      "id": 7,
+      "nameAr": "اختبار تسجيل عمليات الإصلاح والتدقيق في سجل التدقيق",
+      "inputsAr": "فحص store.auditLogs لعمليات actor=\"وحدة الإصلاح الذاتي\"",
+      "actionAr": "التحقق من وجود سجلات تدقيق موثقة للعمليات السابقة",
+      "actualResultAr": "عُثر على 39 سجل تدقيق موثق لوحدة الإصلاح الذاتي.",
+      "evidenceAr": "TIER3_ACTION_BLOCKED: محظور بموجب سياسة الحماية: يمنع المساس بالأسرار أو بيانات العملاء أو الأوزان الأصلية أو إعدادات الأمان.",
+      "verdict": "PASS",
+      "durationMs": 2
+    },
+    {
+      "id": 8,
+      "nameAr": "اختبار آلية التراجع الآمن Rollback وتطابق SHA-256",
+      "inputsAr": "v1 (preSha) -> Tier 2 Patch v2 -> Rollback",
+      "actionAr": "تطبيق Patch قابل للتراجع ثم استعادة v1 والتحقق من SHA-256",
+      "actualResultAr": "preSha=a76af28cb5 == restoredSha=a76af28cb5 · verified=true",
+      "evidenceAr": "repairId=rep-f1c5b9ba · postPatchSha=e989988463",
+      "verdict": "PASS",
+      "durationMs": 18
+    },
+    {
+      "id": 9,
+      "nameAr": "اختبار عدم حذف أو إتلاف بيانات المنصة والذاكرة",
+      "inputsAr": "قبل: projects=1, memory=26, datasets=7",
+      "actionAr": "مقارنة أعداد السجلات قبل وبعد إجراءات الإصلاح الذاتي",
+      "actualResultAr": "بعد: projects=1, memory=26, datasets=7",
+      "evidenceAr": "تطابق كامل في جميع السجلات دون فقدان.",
+      "verdict": "PASS",
+      "durationMs": 2
+    },
+    {
+      "id": 10,
+      "nameAr": "اختبار المراقبة الحية أثناء تنفيذ وظيفة فعلية",
+      "inputsAr": "GET /api/brain/config",
+      "actionAr": "إرسال طلب فعلي والتحقق من ارتفاع عداد المراقبة وزمن الاستجابة",
+      "actualResultAr": "totalRequests: 8 -> 9 | brain-selector=1 req (2ms)",
+      "evidenceAr": "isRunning=true · probeCount=7",
+      "verdict": "PASS",
+      "durationMs": 13
+    },
+    {
+      "id": 11,
+      "nameAr": "اختبار نظام التنبيهات وربطها بأدلة فحص حقيقية",
+      "inputsAr": "فحص مصفوفة alerts المخزنة",
+      "actionAr": "التحقق من وجود تنبيهات مصنفة (INFO/WARNING/ERROR/CRITICAL) ومقترنة بأدلة",
+      "actualResultAr": "إجمالي التنبيهات: 33 · كلها مربوطة بأدلة=true",
+      "evidenceAr": "[WARNING] إصلاح بانتظار موافقة المالك (المستوى 2): اختبار Patch و Rollback الموثق بالـ SHA-256",
+      "verdict": "PASS",
+      "durationMs": 1
+    },
+    {
+      "id": 12,
+      "nameAr": "اختبار عدم عرض نجاح أو HEALTHY وهمي",
+      "inputsAr": "importedWeights=0 · verdict=BLOCKED",
+      "actionAr": "التحقق من امتناع المنصة عن إعلان HEALTHY في غياب أوزان محلية أو وجود تحذيرات",
+      "actualResultAr": "أوزان القرص=0 -> الحالة المعلنة بصدق=BLOCKED",
+      "evidenceAr": "blockedChecks=1 · warningChecks=2",
+      "verdict": "PASS",
+      "durationMs": 5
+    }
+  ],
+  "isolatedModules": []
+}

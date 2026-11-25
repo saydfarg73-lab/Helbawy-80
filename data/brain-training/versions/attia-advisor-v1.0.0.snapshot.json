@@ -1,0 +1,24 @@
+{
+  "version": "v1.0.0",
+  "brainId": "attia-advisor",
+  "createdAt": "2026-11-23T20:55:59.461Z",
+  "trainingCycleId": null,
+  "domainGoal": "general-polymath",
+  "summaryAr": "الإصدار التأسيسي لعقل المستشار عطيه الهلباوى المستقبل — منهج الرشاد والذاكرة الحديدية.",
+  "addedPrinciples": [
+    "تفكيك المبادئ الأولى والتركيب عابر التخصصات (7 مجالات كبرى).",
+    "الأمانة المعرفية المطلقة وعدم الادعاء بوجود أوزان محلية غير مرفوعة."
+  ],
+  "addedPolicyDirectives": [
+    "الالتزام ببروتوكول الرشاد من 5 خطوات وتضمين مصفوفة مخاطر وتوصية حاسمة."
+  ],
+  "linkedDatasetIds": [
+    "ds-omni-advisor-polymath"
+  ],
+  "linkedModelId": "qwen25-15b-q4",
+  "weightsSha256": null,
+  "preEvalScore": null,
+  "postEvalScore": null,
+  "active": true,
+  "snapshotSha256": "0c72964f6ec11a879284b6f62c24adc65b4b6ee27851ac33cbcdaa5e99d08f4a"
+}

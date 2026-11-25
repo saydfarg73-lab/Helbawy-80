@@ -1,0 +1,8 @@
+{
+  "name": "ALHELBAWEY — منصة الهلباوي",
+  "description": "منصة مستقلة لبناء التطبيقات والأنظمة الذكية باللغة العربية وتصديرها مصحوبة بأوزان نماذج الذكاء الاصطناعي ومحركات تشغيلها المحلية.",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}

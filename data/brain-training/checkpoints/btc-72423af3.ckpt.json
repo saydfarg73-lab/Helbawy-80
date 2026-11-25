@@ -1,0 +1,31 @@
+{
+  "cycleId": "btc-72423af3",
+  "brainId": "attia-advisor",
+  "brainVersionBefore": "v1.4.0",
+  "domainGoal": "programming-software",
+  "datasetId": "ds-fullstack-ts-sql",
+  "completedSteps": 2,
+  "totalSteps": 2,
+  "stagedPrinciples": [
+    "مبدأ الدفاع العميق (Defense in Depth): يجب التعامل مع المدخلات كمصادر غير موثوقة برمجياً حتى بعد التحقق الأولي.",
+    "مبدأ سلامة البنية (Structural Integrity): التصميم الاستباقي لنموذج البيانات يقلل من مخاطر الثغرات المنطقية وأخطاء اتساق البيانات في بيئات الإنتاج."
+  ],
+  "stagedDirectives": [
+    "فرض التعقيم الصارم للمدخلات (Sanitization) على كافة متغيرات المسار (Path Parameters) باستخدام تعبيرات نمطية تمنع محارف التلاعب.",
+    "تطبيق قيود السلامة المرجعية (Constraints) في قاعدة البيانات وضمان وجود الفهارس (Indexes) لتحسين كفاءة الاستعلام والتحقق من صحة البيانات عند مستوى التخزين."
+  ],
+  "preEval": {
+    "evaluatedAt": "2026-11-24T11:41:21.989Z",
+    "mode": "live-llm",
+    "modelUsed": "gemini-3.1-flash-lite",
+    "prompt": "صمّم باختصار مسار API آمن في Express لقراءة ملفات من مجلد محدد مع منع Path Traversal ومعالجة الأخطاء وكتابة اختبار تحقق.",
+    "responsePreview": "بصفتي المستشار القانوني والتقني لمنصة الهلباوي، أقدم لك التصميم الهندسي والبرمجي لمسار (API) يراعي معايير **الأمن السيبراني** (Zero-Trust) و**حماية البيانات**، مع تطبيق مبادئ العزل والتحقق المنهجي.\n\n### أولاً: التصميم الهندسي (Security-First Architecture)\nلمنع ثغرة **Path Traversal** (مثل استخدام `../../etc/passwd`)، نستخدم `path.resolve` ونتحقق من أن المسار الناتج يبدأ فعلياً بالمجلد المصرح به (Sandboxing).\n\n```javascript\nconst express = require('express');\nconst path = require('path');\nconst fs = require('fs').promises;\nconst router = express.Router();\n\nconst SAFE_DIR = path.resolve('./uploa",
+    "responseCharCount": 3090,
+    "latencyMs": 11843,
+    "criteriaMatched": 6,
+    "criteriaTotal": 7,
+    "score": 91,
+    "errorsDetected": []
+  },
+  "savedAt": "2026-11-24T11:41:27.079Z"
+}

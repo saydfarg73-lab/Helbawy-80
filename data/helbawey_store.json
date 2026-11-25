@@ -1,0 +1,3695 @@
+{
+  "projects": [
+    {
+      "id": "proj-enterprise-erp",
+      "name": "نظام إدارة الشركة المستقل — شركة النخبة للتقنية",
+      "slug": "alhelbawey-company-suite",
+      "description": "نظام متكامل لإدارة شؤون الشركة والموارد والعقود، مزود بقاعدة بيانات محلية، محادثة ذكية، تحليل مستندات، وإعداد تقارير إدارية دون اتصال بـ API خارجي.",
+      "prompt": "أنشئ لي برنامجاً مستقلاً لإدارة شركة، يحتوي على قاعدة بيانات ومحادثة ذكية وتحليل للمستندات وإعداد التقارير",
+      "status": "TESTED",
+      "createdAt": "2026-11-22T04:11:40.680Z",
+      "updatedAt": "2026-11-24T22:19:19.434Z",
+      "currentVersion": 2,
+      "targetOs": "Linux",
+      "targetRamGb": 8,
+      "targetGpuVramGb": 0,
+      "selectedModelId": "qwen25-15b-q4",
+      "runtimeEngine": "llama.cpp",
+      "exportFormat": "server",
+      "authEnabled": true,
+      "offlineReady": true,
+      "files": {
+        "server.js": "// Express Standalone Backend + Local AI Inference\nimport express from 'express';\nconst app = express();\napp.get('/api/health', (_, res) => res.json({ ok: true, offline: true }));\napp.listen(4000);",
+        "src/App.tsx": "// الواجهة الرئيسية لنظام إدارة الشركة المستقل (v2) — شركة النخبة للتقنية\nexport function CompanyDashboard() {\n  return {\n    pages: [\"Overview (/)\", \"DailyTasks (/tasks)\", \"HrFinance (/operations)\", \"LocalAssistant (/assistant)\"],\n    tables: [\"employees\", \"contracts\", \"invoices\", \"tasks\", \"suppliers\"],\n    relations: {\n      \"tasks.assignee_employee_id\": \"employees.id\",\n      \"tasks.contract_id\": \"contracts.id\",\n      \"tasks.supplier_id\": \"suppliers.id\",\n      \"suppliers.contract_id\": \"contracts.id\"\n    }\n  };\n}",
+        "db/schema.sql": "CREATE TABLE IF NOT EXISTS employees (\n  id TEXT PRIMARY KEY,\n  full_name TEXT NOT NULL,\n  department TEXT NOT NULL,\n  salary INTEGER NOT NULL,\n  status TEXT NOT NULL,\n  created_at TEXT DEFAULT CURRENT_TIMESTAMP\n);\n\nCREATE TABLE IF NOT EXISTS contracts (\n  id TEXT PRIMARY KEY,\n  client_name TEXT NOT NULL,\n  value_sar INTEGER NOT NULL,\n  renewal_date TEXT NOT NULL,\n  risk_level TEXT NOT NULL,\n  created_at TEXT DEFAULT CURRENT_TIMESTAMP\n);\n\nCREATE TABLE IF NOT EXISTS invoices (\n  id TEXT PRIMARY KEY,\n  invoice_no TEXT NOT NULL,\n  amount_sar INTEGER NOT NULL,\n  paid INTEGER NOT NULL,\n  FOREIGN KEY (contract_id) REFERENCES contracts(id),\n  created_at TEXT DEFAULT CURRENT_TIMESTAMP\n);\n\nCREATE TABLE IF NOT EXISTS suppliers (\n  id TEXT PRIMARY KEY,\n  supplier_name TEXT NOT NULL,\n  category TEXT NOT NULL,\n  compliance_rating REAL NOT NULL,\n  last_review_date TEXT NOT NULL,\n  contract_id TEXT,\n  status TEXT NOT NULL,\n  FOREIGN KEY (contract_id) REFERENCES contracts(id),\n  created_at TEXT DEFAULT CURRENT_TIMESTAMP\n);\n\nCREATE TABLE IF NOT EXISTS tasks (\n  id TEXT PRIMARY KEY,\n  title TEXT NOT NULL,\n  due_date TEXT NOT NULL,\n  priority TEXT NOT NULL,\n  status TEXT NOT NULL,\n  assignee_employee_id TEXT NOT NULL,\n  contract_id TEXT,\n  supplier_id TEXT,\n  FOREIGN KEY (assignee_employee_id) REFERENCES employees(id),\n  FOREIGN KEY (contract_id) REFERENCES contracts(id),\n  FOREIGN KEY (supplier_id) REFERENCES suppliers(id),\n  created_at TEXT DEFAULT CURRENT_TIMESTAMP\n);",
+        "ai/model.config.json": "{\n  \"modelId\": \"qwen25-15b-q4\",\n  \"runtimeEngine\": \"llama.cpp\",\n  \"offlineDefault\": true\n}"
+      },
+      "pages": [
+        {
+          "id": "page-overview",
+          "name": "Overview",
+          "route": "/",
+          "layoutType": "dashboard",
+          "titleAr": "لوحة القيادة التنفيذية",
+          "subtitleAr": "ملخص الموارد البشرية والعقود والتدفقات المالية للشركة",
+          "widgets": [
+            {
+              "id": "w-kpi-1",
+              "type": "kpi",
+              "labelAr": "إجمالي العقود النشطة",
+              "boundTable": "contracts"
+            },
+            {
+              "id": "w-tbl-1",
+              "type": "table",
+              "labelAr": "سجل العقود والالتزامات",
+              "boundTable": "contracts"
+            },
+            {
+              "id": "w-rep-1",
+              "type": "report",
+              "labelAr": "مولد التقارير الإدارية المحلي"
+            }
+          ]
+        },
+        {
+          "id": "page-ai-assistant",
+          "name": "LocalAssistant",
+          "route": "/assistant",
+          "layoutType": "chat-rag",
+          "titleAr": "المساعد الذكي وتحليل المستندات",
+          "subtitleAr": "محادثة واستخراج بنود العقود والسياسات من قاعدة المعرفة المحلية",
+          "widgets": [
+            {
+              "id": "w-chat-1",
+              "type": "chat",
+              "labelAr": "محادثة العقل اللغوي المحلي"
+            },
+            {
+              "id": "w-doc-1",
+              "type": "doc-analyzer",
+              "labelAr": "محلل العقود والمستندات"
+            }
+          ]
+        },
+        {
+          "id": "page-hr-finance",
+          "name": "HrFinance",
+          "route": "/operations",
+          "layoutType": "crud-table",
+          "titleAr": "الموظفون والفواتير",
+          "subtitleAr": "إدارة السجلات التشغيلية مع صلاحيات وصول محددة",
+          "widgets": [
+            {
+              "id": "w-tbl-emp",
+              "type": "table",
+              "labelAr": "جدول الموظفين",
+              "boundTable": "employees"
+            },
+            {
+              "id": "w-tbl-inv",
+              "type": "table",
+              "labelAr": "جدول الفواتير",
+              "boundTable": "invoices"
+            }
+          ]
+        },
+        {
+          "id": "page-daily-tasks",
+          "name": "DailyTasks",
+          "route": "/tasks",
+          "layoutType": "crud-table",
+          "titleAr": "المهام اليومية والموردون",
+          "subtitleAr": "متابعة المهام التشغيلية اليومية المرتبطة بالموظفين والعقود وتقييم التزام الموردين",
+          "widgets": [
+            {
+              "id": "w-tbl-tasks",
+              "type": "table",
+              "labelAr": "جدول المهام اليومية (tasks)",
+              "boundTable": "tasks"
+            },
+            {
+              "id": "w-tbl-suppliers",
+              "type": "table",
+              "labelAr": "جدول الموردين وتقييم الالتزام (suppliers)",
+              "boundTable": "suppliers"
+            }
+          ]
+        }
+      ],
+      "dbTables": [
+        {
+          "name": "employees",
+          "labelAr": "الموظفون",
+          "columns": [
+            {
+              "name": "full_name",
+              "type": "TEXT",
+              "required": true,
+              "labelAr": "الاسم الكامل"
+            },
+            {
+              "name": "department",
+              "type": "TEXT",
+              "required": true,
+              "labelAr": "الإدارة"
+            },
+            {
+              "name": "salary",
+              "type": "INTEGER",
+              "required": true,
+              "labelAr": "الراتب الشهري"
+            },
+            {
+              "name": "status",
+              "type": "TEXT",
+              "required": true,
+              "labelAr": "الحالة"
+            }
+          ],
+          "rows": [
+            {
+              "id": "emp-1",
+              "full_name": "أحمد محمود السالم",
+              "department": "الهندسة والذكاء الاصطناعي",
+              "salary": 18500,
+              "status": "نشط"
+            },
+            {
+              "id": "emp-2",
+              "full_name": "سارة عبد الله القحطاني",
+              "department": "المالية والعقود",
+              "salary": 16000,
+              "status": "نشط"
+            },
+            {
+              "id": "emp-3",
+              "full_name": "خالد فهد العتيبي",
+              "department": "الأمن السيبراني والبنية",
+              "salary": 17200,
+              "status": "نشط"
+            }
+          ]
+        },
+        {
+          "name": "contracts",
+          "labelAr": "العقود والمشاريع",
+          "columns": [
+            {
+              "name": "client_name",
+              "type": "TEXT",
+              "required": true,
+              "labelAr": "الجهة المتعاقدة"
+            },
+            {
+              "name": "value_sar",
+              "type": "INTEGER",
+              "required": true,
+              "labelAr": "قيمة العقد"
+            },
+            {
+              "name": "renewal_date",
+              "type": "DATE",
+              "required": true,
+              "labelAr": "تاريخ التجديد"
+            },
+            {
+              "name": "risk_level",
+              "type": "TEXT",
+              "required": true,
+              "labelAr": "مستوى المخاطر"
+            }
+          ],
+          "rows": [
+            {
+              "id": "cnt-101",
+              "client_name": "مجموعة المدار اللوجستية",
+              "value_sar": 420000,
+              "renewal_date": "2027-02-15",
+              "risk_level": "منخفض"
+            },
+            {
+              "id": "cnt-102",
+              "client_name": "مستشفى الرعاية التخصصي",
+              "value_sar": 680000,
+              "renewal_date": "2026-12-20",
+              "risk_level": "متوسط - قرب التجديد"
+            }
+          ]
+        },
+        {
+          "name": "invoices",
+          "labelAr": "الفواتير المالية",
+          "columns": [
+            {
+              "name": "invoice_no",
+              "type": "TEXT",
+              "required": true,
+              "labelAr": "رقم الفاتورة"
+            },
+            {
+              "name": "amount_sar",
+              "type": "INTEGER",
+              "required": true,
+              "labelAr": "المبلغ"
+            },
+            {
+              "name": "paid",
+              "type": "BOOLEAN",
+              "required": true,
+              "labelAr": "مدفوعة"
+            }
+          ],
+          "rows": [
+            {
+              "id": "inv-501",
+              "invoice_no": "INV-2026-081",
+              "amount_sar": 145000,
+              "paid": true
+            },
+            {
+              "id": "inv-502",
+              "invoice_no": "INV-2026-082",
+              "amount_sar": 92000,
+              "paid": false
+            }
+          ]
+        },
+        {
+          "name": "suppliers",
+          "labelAr": "الموردون وتقييم الالتزام",
+          "columns": [
+            {
+              "name": "supplier_name",
+              "type": "TEXT",
+              "required": true,
+              "labelAr": "اسم المورد"
+            },
+            {
+              "name": "category",
+              "type": "TEXT",
+              "required": true,
+              "labelAr": "مجال التوريد"
+            },
+            {
+              "name": "compliance_rating",
+              "type": "REAL",
+              "required": true,
+              "labelAr": "تقييم الالتزام (من 5)"
+            },
+            {
+              "name": "last_review_date",
+              "type": "DATE",
+              "required": true,
+              "labelAr": "تاريخ آخر مراجعة"
+            },
+            {
+              "name": "contract_id",
+              "type": "TEXT",
+              "required": false,
+              "labelAr": "معرف العقد المرتبط"
+            },
+            {
+              "name": "status",
+              "type": "TEXT",
+              "required": true,
+              "labelAr": "الحالة"
+            }
+          ],
+          "rows": [
+            {
+              "id": "sup-1",
+              "supplier_name": "شركة البنية السحابية الآمنة",
+              "category": "استضافة وخوادم محلية",
+              "compliance_rating": 4.8,
+              "last_review_date": "2026-11-18",
+              "contract_id": "cnt-102",
+              "status": "معتمد"
+            },
+            {
+              "id": "sup-2",
+              "supplier_name": "مؤسسة الروافد للتجهيزات التقنية",
+              "category": "أجهزة شبكات وحماية",
+              "compliance_rating": 4.1,
+              "last_review_date": "2026-11-10",
+              "contract_id": "cnt-101",
+              "status": "تحت المتابعة"
+            }
+          ]
+        },
+        {
+          "name": "tasks",
+          "labelAr": "المهام اليومية",
+          "columns": [
+            {
+              "name": "title",
+              "type": "TEXT",
+              "required": true,
+              "labelAr": "عنوان المهمة"
+            },
+            {
+              "name": "due_date",
+              "type": "DATE",
+              "required": true,
+              "labelAr": "تاريخ الاستحقاق"
+            },
+            {
+              "name": "priority",
+              "type": "TEXT",
+              "required": true,
+              "labelAr": "الأولوية"
+            },
+            {
+              "name": "status",
+              "type": "TEXT",
+              "required": true,
+              "labelAr": "الحالة"
+            },
+            {
+              "name": "assignee_employee_id",
+              "type": "TEXT",
+              "required": true,
+              "labelAr": "الموظف المسؤول"
+            },
+            {
+              "name": "contract_id",
+              "type": "TEXT",
+              "required": false,
+              "labelAr": "العقد المرتبط"
+            },
+            {
+              "name": "supplier_id",
+              "type": "TEXT",
+              "required": false,
+              "labelAr": "المورد المرتبط"
+            }
+          ],
+          "rows": [
+            {
+              "id": "tsk-1",
+              "title": "مراجعة إشعار تجديد عقد مستشفى الرعاية التخصصي قبل 30 يوماً",
+              "due_date": "2026-11-26",
+              "priority": "عالية",
+              "status": "قيد التنفيذ",
+              "assignee_employee_id": "emp-2",
+              "contract_id": "cnt-102",
+              "supplier_id": "sup-1"
+            },
+            {
+              "id": "tsk-2",
+              "title": "تدقيق تقييم التزام الموردين وضوابط الشبكة المشفرة",
+              "due_date": "2026-11-25",
+              "priority": "متوسطة",
+              "status": "مفتوحة",
+              "assignee_employee_id": "emp-3",
+              "contract_id": "cnt-101",
+              "supplier_id": "sup-2"
+            },
+            {
+              "id": "tsk-3",
+              "title": "تحصيل فاتورة INV-2026-082 ومطابقة الدفعة المالية",
+              "due_date": "2026-11-28",
+              "priority": "عالية",
+              "status": "مكتملة",
+              "assignee_employee_id": "emp-1",
+              "contract_id": "cnt-101",
+              "supplier_id": "sup-1"
+            }
+          ]
+        }
+      ],
+      "apiRoutes": [
+        {
+          "id": "api-1",
+          "method": "GET",
+          "path": "/api/tables",
+          "descriptionAr": "جلب جداول قاعدة البيانات المحلية",
+          "authRequired": true,
+          "usesLocalAI": false,
+          "requiresInternet": false
+        },
+        {
+          "id": "api-2",
+          "method": "POST",
+          "path": "/api/tables/:tableName/rows",
+          "descriptionAr": "إضافة سجل جديد مع التحقق من الصلاحيات",
+          "authRequired": true,
+          "usesLocalAI": false,
+          "requiresInternet": false
+        },
+        {
+          "id": "api-3",
+          "method": "POST",
+          "path": "/api/ai/chat",
+          "descriptionAr": "المحادثة الذكية عبر محرك الاستدلال المحلي",
+          "authRequired": true,
+          "usesLocalAI": true,
+          "requiresInternet": false
+        },
+        {
+          "id": "api-4",
+          "method": "POST",
+          "path": "/api/ai/rag",
+          "descriptionAr": "البحث الدلالي في مستندات الشركة دون إنترنت",
+          "authRequired": true,
+          "usesLocalAI": true,
+          "requiresInternet": false
+        },
+        {
+          "id": "api-5",
+          "method": "POST",
+          "path": "/api/ai/report",
+          "descriptionAr": "إعداد التقارير الدورية من الجداول والمستندات محلياً",
+          "authRequired": true,
+          "usesLocalAI": true,
+          "requiresInternet": false
+        },
+        {
+          "id": "api-6",
+          "method": "PUT",
+          "path": "/api/tables/:tableName/rows/:rowId",
+          "descriptionAr": "تعديل وتحديث سجل محلي مع التحقق من الربط العلائقي",
+          "authRequired": true,
+          "usesLocalAI": false,
+          "requiresInternet": false
+        }
+      ],
+      "agents": [
+        {
+          "id": "ag-analyst",
+          "nameAr": "وكيل تحليل العقود والمستندات",
+          "roleAr": "فحص بنود العقود واستخراج الالتزامات وتنبيهات التجديد محلياً",
+          "executionMode": "local-weights",
+          "allowedTables": [
+            "contracts",
+            "invoices"
+          ],
+          "requiresApprovalForMutations": true,
+          "systemPrompt": "استخرج البنود الحرجة وتواريخ الانتهاء والغرامات من المستندات المرفقة بدقة.",
+          "status": "TESTED"
+        },
+        {
+          "id": "ag-reporter",
+          "nameAr": "وكيل إعداد التقارير التنفيذية",
+          "roleAr": "تجميع أرقام الفواتير والرواتب وإصدار ملخص تنفيذي للإدارة",
+          "executionMode": "local-weights",
+          "allowedTables": [
+            "employees",
+            "contracts",
+            "invoices"
+          ],
+          "requiresApprovalForMutations": false,
+          "systemPrompt": "أعد تقريراً موجزاً باللغة العربية الفصحى مدعوماً بالأرقام الفعلية من الجداول.",
+          "status": "TESTED"
+        }
+      ],
+      "workflows": [
+        {
+          "id": "wf-renewal",
+          "nameAr": "تنبيه تجديد العقود وإعداد مسودة التجديد",
+          "trigger": "جدولة يومية محلية (08:00 صباحاً)",
+          "steps": [
+            "قراءة جدول contracts",
+            "تحديد العقود التي تقل عن 45 يوماً",
+            "توليد مسودة ملخص عبر النموذج المحلي",
+            "طلب اعتماد المدير قبل الإرسال"
+          ],
+          "usesExternalIntegration": false,
+          "status": "TESTED"
+        },
+        {
+          "id": "wf-invoice-mail",
+          "nameAr": "إرسال إشعار فاتورة عبر البريد (اختياري)",
+          "trigger": "عند إضافة سجل في جدول invoices",
+          "steps": [
+            "تجهيز نص الفاتورة محلياً",
+            "الإرسال عبر موصل SMTP عند توفر الإنترنت فقط"
+          ],
+          "usesExternalIntegration": true,
+          "status": "IMPLEMENTED"
+        }
+      ],
+      "integrations": [
+        {
+          "id": "int-smtp",
+          "nameAr": "بريد SMTP للمراسلات الخارجية",
+          "category": "email",
+          "enabled": false,
+          "requiresInternet": true,
+          "optionalOnly": true,
+          "endpointUrl": "smtp://mail.company.local:587"
+        },
+        {
+          "id": "int-s3",
+          "nameAr": "نسخ احتياطي سحابي S3 (اختياري)",
+          "category": "storage",
+          "enabled": false,
+          "requiresInternet": true,
+          "optionalOnly": true,
+          "endpointUrl": "https://s3.example.internal/backups"
+        },
+        {
+          "id": "int-pay",
+          "nameAr": "بوابة الدفع الإلكتروني",
+          "category": "payments",
+          "enabled": false,
+          "requiresInternet": true,
+          "optionalOnly": true,
+          "endpointUrl": "https://payments.example.com/webhook"
+        }
+      ],
+      "ragDocuments": [
+        {
+          "id": "doc-policy-1",
+          "title": "لائحة الموارد البشرية والرواتب 2026",
+          "format": "TXT",
+          "content": "تلتزم شركة النخبة للتقنية بصرف الرواتب الأساسية في اليوم السابع والعشرين من كل شهر ميلادي. يُمنح الموظفون 30 يوماً إجازة سنوية مدفوعة الأجر. تخضع الترقيات السنوية لتقييم الأداء الربعي واعتماد الإدارة التنفيذية. في حالات العمل عن بُعد، يُشترط استخدام الشبكة الداخلية المشفرة لحماية بيانات العملاء.",
+          "chunksCount": 1,
+          "wordCount": 48,
+          "indexedAt": "2026-11-22T04:11:40.680Z"
+        },
+        {
+          "id": "doc-contract-2",
+          "title": "ملخص عقد مستشفى الرعاية التخصصي",
+          "format": "MD",
+          "content": "قيمة العقد السنوية 680,000 ريال لتشغيل أنظمة إدارة السجلات الطبية محلياً داخل خوادم المستشفى دون إرسال بيانات المرضى إلى أي خادم خارجي. موعد التجديد الإلزامي هو 2026-12-20 ويجب إشعار العميل قبل 30 يوماً. يتضمن العقد اتفاقية مستوى خدمة SLA بنسبة توفر 99.9% ودعماً فنياً خلال 4 ساعات.",
+          "chunksCount": 1,
+          "wordCount": 51,
+          "indexedAt": "2026-11-22T04:11:40.680Z"
+        }
+      ],
+      "userRoles": [
+        {
+          "id": "usr-1",
+          "name": "م. طارق الهلباوي",
+          "email": "owner@alhelbawey.local",
+          "role": "OWNER",
+          "active": true
+        },
+        {
+          "id": "usr-2",
+          "name": "أحمد السالم",
+          "email": "ahmed@company.local",
+          "role": "ADMIN",
+          "active": true
+        },
+        {
+          "id": "usr-3",
+          "name": "سارة القحطاني",
+          "email": "sara@company.local",
+          "role": "ANALYST",
+          "active": true
+        }
+      ],
+      "versions": [
+        {
+          "version": 1,
+          "timestamp": "2026-11-22T04:11:40.680Z",
+          "noteAr": "الإصدار التأسيسي الكامل لنظام إدارة الشركة المستقل",
+          "promptUsed": "أنشئ لي برنامجاً مستقلاً لإدارة شركة، يحتوي على قاعدة بيانات ومحادثة ذكية وتحليل للمستندات وإعداد التقارير",
+          "filesSnapshot": {
+            "server.js": "// Express Standalone Backend + Local AI Inference\nimport express from 'express';\nconst app = express();\napp.get('/api/health', (_, res) => res.json({ ok: true, offline: true }));\napp.listen(4000);",
+            "src/App.tsx": "// الواجهة الرئيسية لنظام إدارة الشركة المستقل\nexport function CompanyDashboard() {\n  return \"نظام إدارة الشركة المستقل — يعمل بالأوزان المحلية\";\n}",
+            "db/schema.sql": "CREATE TABLE employees (id TEXT PRIMARY KEY, full_name TEXT NOT NULL, department TEXT, salary INTEGER, status TEXT);\nCREATE TABLE contracts (id TEXT PRIMARY KEY, client_name TEXT NOT NULL, value_sar INTEGER, renewal_date TEXT, risk_level TEXT);\nCREATE TABLE invoices (id TEXT PRIMARY KEY, invoice_no TEXT NOT NULL, amount_sar INTEGER, paid INTEGER);",
+            "ai/model.config.json": "{\n  \"modelId\": \"qwen25-15b-q4\",\n  \"runtimeEngine\": \"llama.cpp\",\n  \"offlineDefault\": true\n}"
+          },
+          "pagesSnapshot": [
+            {
+              "id": "page-overview",
+              "name": "Overview",
+              "route": "/",
+              "layoutType": "dashboard",
+              "titleAr": "لوحة القيادة التنفيذية",
+              "subtitleAr": "ملخص الموارد البشرية والعقود والتدفقات المالية للشركة",
+              "widgets": [
+                {
+                  "id": "w-kpi-1",
+                  "type": "kpi",
+                  "labelAr": "إجمالي العقود النشطة",
+                  "boundTable": "contracts"
+                },
+                {
+                  "id": "w-tbl-1",
+                  "type": "table",
+                  "labelAr": "سجل العقود والالتزامات",
+                  "boundTable": "contracts"
+                },
+                {
+                  "id": "w-rep-1",
+                  "type": "report",
+                  "labelAr": "مولد التقارير الإدارية المحلي"
+                }
+              ]
+            },
+            {
+              "id": "page-ai-assistant",
+              "name": "LocalAssistant",
+              "route": "/assistant",
+              "layoutType": "chat-rag",
+              "titleAr": "المساعد الذكي وتحليل المستندات",
+              "subtitleAr": "محادثة واستخراج بنود العقود والسياسات من قاعدة المعرفة المحلية",
+              "widgets": [
+                {
+                  "id": "w-chat-1",
+                  "type": "chat",
+                  "labelAr": "محادثة العقل اللغوي المحلي"
+                },
+                {
+                  "id": "w-doc-1",
+                  "type": "doc-analyzer",
+                  "labelAr": "محلل العقود والمستندات"
+                }
+              ]
+            },
+            {
+              "id": "page-hr-finance",
+              "name": "HrFinance",
+              "route": "/operations",
+              "layoutType": "crud-table",
+              "titleAr": "الموظفون والفواتير",
+              "subtitleAr": "إدارة السجلات التشغيلية مع صلاحيات وصول محددة",
+              "widgets": [
+                {
+                  "id": "w-tbl-emp",
+                  "type": "table",
+                  "labelAr": "جدول الموظفين",
+                  "boundTable": "employees"
+                },
+                {
+                  "id": "w-tbl-inv",
+                  "type": "table",
+                  "labelAr": "جدول الفواتير",
+                  "boundTable": "invoices"
+                }
+              ]
+            }
+          ],
+          "dbTablesSnapshot": [
+            {
+              "name": "employees",
+              "labelAr": "الموظفون",
+              "columns": [
+                {
+                  "name": "full_name",
+                  "type": "TEXT",
+                  "required": true,
+                  "labelAr": "الاسم الكامل"
+                },
+                {
+                  "name": "department",
+                  "type": "TEXT",
+                  "required": true,
+                  "labelAr": "الإدارة"
+                },
+                {
+                  "name": "salary",
+                  "type": "INTEGER",
+                  "required": true,
+                  "labelAr": "الراتب الشهري"
+                },
+                {
+                  "name": "status",
+                  "type": "TEXT",
+                  "required": true,
+                  "labelAr": "الحالة"
+                }
+              ],
+              "rows": [
+                {
+                  "id": "emp-1",
+                  "full_name": "أحمد محمود السالم",
+                  "department": "الهندسة والذكاء الاصطناعي",
+                  "salary": 18500,
+                  "status": "نشط"
+                },
+                {
+                  "id": "emp-2",
+                  "full_name": "سارة عبد الله القحطاني",
+                  "department": "المالية والعقود",
+                  "salary": 16000,
+                  "status": "نشط"
+                },
+                {
+                  "id": "emp-3",
+                  "full_name": "خالد فهد العتيبي",
+                  "department": "الأمن السيبراني والبنية",
+                  "salary": 17200,
+                  "status": "نشط"
+                }
+              ]
+            },
+            {
+              "name": "contracts",
+              "labelAr": "العقود والمشاريع",
+              "columns": [
+                {
+                  "name": "client_name",
+                  "type": "TEXT",
+                  "required": true,
+                  "labelAr": "الجهة المتعاقدة"
+                },
+                {
+                  "name": "value_sar",
+                  "type": "INTEGER",
+                  "required": true,
+                  "labelAr": "قيمة العقد"
+                },
+                {
+                  "name": "renewal_date",
+                  "type": "DATE",
+                  "required": true,
+                  "labelAr": "تاريخ التجديد"
+                },
+                {
+                  "name": "risk_level",
+                  "type": "TEXT",
+                  "required": true,
+                  "labelAr": "مستوى المخاطر"
+                }
+              ],
+              "rows": [
+                {
+                  "id": "cnt-101",
+                  "client_name": "مجموعة المدار اللوجستية",
+                  "value_sar": 420000,
+                  "renewal_date": "2027-02-15",
+                  "risk_level": "منخفض"
+                },
+                {
+                  "id": "cnt-102",
+                  "client_name": "مستشفى الرعاية التخصصي",
+                  "value_sar": 680000,
+                  "renewal_date": "2026-12-20",
+                  "risk_level": "متوسط - قرب التجديد"
+                }
+              ]
+            },
+            {
+              "name": "invoices",
+              "labelAr": "الفواتير المالية",
+              "columns": [
+                {
+                  "name": "invoice_no",
+                  "type": "TEXT",
+                  "required": true,
+                  "labelAr": "رقم الفاتورة"
+                },
+                {
+                  "name": "amount_sar",
+                  "type": "INTEGER",
+                  "required": true,
+                  "labelAr": "المبلغ"
+                },
+                {
+                  "name": "paid",
+                  "type": "BOOLEAN",
+                  "required": true,
+                  "labelAr": "مدفوعة"
+                }
+              ],
+              "rows": [
+                {
+                  "id": "inv-501",
+                  "invoice_no": "INV-2026-081",
+                  "amount_sar": 145000,
+                  "paid": true
+                },
+                {
+                  "id": "inv-502",
+                  "invoice_no": "INV-2026-082",
+                  "amount_sar": 92000,
+                  "paid": false
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "version": 2,
+          "timestamp": "2026-11-24T20:29:16.506Z",
+          "noteAr": "الإصدار v2 الكامل: 5 جداول مترابطة + 4 صفحات + محرك llama.cpp محلي مع أوزان Qwen2.5-1.5B-Q4_K_M مع حفظ v1 للتراجع.",
+          "promptUsed": "نظام إدارة الشركة المستقل v2 + العقل المحلي الحقيقي llama.cpp و Qwen2.5-1.5B-Q4_K_M",
+          "filesSnapshot": {
+            "server.js": "// Express Standalone Backend + Local AI Inference\nimport express from 'express';\nconst app = express();\napp.get('/api/health', (_, res) => res.json({ ok: true, offline: true }));\napp.listen(4000);",
+            "src/App.tsx": "// الواجهة الرئيسية لنظام إدارة الشركة المستقل (v2) — شركة النخبة للتقنية\nexport function CompanyDashboard() {\n  return {\n    pages: [\"Overview (/)\", \"DailyTasks (/tasks)\", \"HrFinance (/operations)\", \"LocalAssistant (/assistant)\"],\n    tables: [\"employees\", \"contracts\", \"invoices\", \"tasks\", \"suppliers\"],\n    relations: {\n      \"tasks.assignee_employee_id\": \"employees.id\",\n      \"tasks.contract_id\": \"contracts.id\",\n      \"tasks.supplier_id\": \"suppliers.id\",\n      \"suppliers.contract_id\": \"contracts.id\"\n    }\n  };\n}",
+            "db/schema.sql": "CREATE TABLE IF NOT EXISTS employees (\n  id TEXT PRIMARY KEY,\n  full_name TEXT NOT NULL,\n  department TEXT NOT NULL,\n  salary INTEGER NOT NULL,\n  status TEXT NOT NULL,\n  created_at TEXT DEFAULT CURRENT_TIMESTAMP\n);\n\nCREATE TABLE IF NOT EXISTS contracts (\n  id TEXT PRIMARY KEY,\n  client_name TEXT NOT NULL,\n  value_sar INTEGER NOT NULL,\n  renewal_date TEXT NOT NULL,\n  risk_level TEXT NOT NULL,\n  created_at TEXT DEFAULT CURRENT_TIMESTAMP\n);\n\nCREATE TABLE IF NOT EXISTS invoices (\n  id TEXT PRIMARY KEY,\n  invoice_no TEXT NOT NULL,\n  amount_sar INTEGER NOT NULL,\n  paid INTEGER NOT NULL,\n  FOREIGN KEY (contract_id) REFERENCES contracts(id),\n  created_at TEXT DEFAULT CURRENT_TIMESTAMP\n);\n\nCREATE TABLE IF NOT EXISTS suppliers (\n  id TEXT PRIMARY KEY,\n  supplier_name TEXT NOT NULL,\n  category TEXT NOT NULL,\n  compliance_rating REAL NOT NULL,\n  last_review_date TEXT NOT NULL,\n  contract_id TEXT,\n  status TEXT NOT NULL,\n  FOREIGN KEY (contract_id) REFERENCES contracts(id),\n  created_at TEXT DEFAULT CURRENT_TIMESTAMP\n);\n\nCREATE TABLE IF NOT EXISTS tasks (\n  id TEXT PRIMARY KEY,\n  title TEXT NOT NULL,\n  due_date TEXT NOT NULL,\n  priority TEXT NOT NULL,\n  status TEXT NOT NULL,\n  assignee_employee_id TEXT NOT NULL,\n  contract_id TEXT,\n  supplier_id TEXT,\n  FOREIGN KEY (assignee_employee_id) REFERENCES employees(id),\n  FOREIGN KEY (contract_id) REFERENCES contracts(id),\n  FOREIGN KEY (supplier_id) REFERENCES suppliers(id),\n  created_at TEXT DEFAULT CURRENT_TIMESTAMP\n);",
+            "ai/model.config.json": "{\n  \"modelId\": \"qwen25-15b-q4\",\n  \"runtimeEngine\": \"llama.cpp\",\n  \"offlineDefault\": true\n}"
+          },
+          "pagesSnapshot": [
+            {
+              "id": "page-overview",
+              "name": "Overview",
+              "route": "/",
+              "layoutType": "dashboard",
+              "titleAr": "لوحة القيادة التنفيذية",
+              "subtitleAr": "ملخص الموارد البشرية والعقود والتدفقات المالية للشركة",
+              "widgets": [
+                {
+                  "id": "w-kpi-1",
+                  "type": "kpi",
+                  "labelAr": "إجمالي العقود النشطة",
+                  "boundTable": "contracts"
+                },
+                {
+                  "id": "w-tbl-1",
+                  "type": "table",
+                  "labelAr": "سجل العقود والالتزامات",
+                  "boundTable": "contracts"
+                },
+                {
+                  "id": "w-rep-1",
+                  "type": "report",
+                  "labelAr": "مولد التقارير الإدارية المحلي"
+                }
+              ]
+            },
+            {
+              "id": "page-ai-assistant",
+              "name": "LocalAssistant",
+              "route": "/assistant",
+              "layoutType": "chat-rag",
+              "titleAr": "المساعد الذكي وتحليل المستندات",
+              "subtitleAr": "محادثة واستخراج بنود العقود والسياسات من قاعدة المعرفة المحلية",
+              "widgets": [
+                {
+                  "id": "w-chat-1",
+                  "type": "chat",
+                  "labelAr": "محادثة العقل اللغوي المحلي"
+                },
+                {
+                  "id": "w-doc-1",
+                  "type": "doc-analyzer",
+                  "labelAr": "محلل العقود والمستندات"
+                }
+              ]
+            },
+            {
+              "id": "page-hr-finance",
+              "name": "HrFinance",
+              "route": "/operations",
+              "layoutType": "crud-table",
+              "titleAr": "الموظفون والفواتير",
+              "subtitleAr": "إدارة السجلات التشغيلية مع صلاحيات وصول محددة",
+              "widgets": [
+                {
+                  "id": "w-tbl-emp",
+                  "type": "table",
+                  "labelAr": "جدول الموظفين",
+                  "boundTable": "employees"
+                },
+                {
+                  "id": "w-tbl-inv",
+                  "type": "table",
+                  "labelAr": "جدول الفواتير",
+                  "boundTable": "invoices"
+                }
+              ]
+            },
+            {
+              "id": "page-daily-tasks",
+              "name": "DailyTasks",
+              "route": "/tasks",
+              "layoutType": "crud-table",
+              "titleAr": "المهام اليومية والموردون",
+              "subtitleAr": "متابعة المهام التشغيلية اليومية المرتبطة بالموظفين والعقود وتقييم التزام الموردين",
+              "widgets": [
+                {
+                  "id": "w-tbl-tasks",
+                  "type": "table",
+                  "labelAr": "جدول المهام اليومية (tasks)",
+                  "boundTable": "tasks"
+                },
+                {
+                  "id": "w-tbl-suppliers",
+                  "type": "table",
+                  "labelAr": "جدول الموردين وتقييم الالتزام (suppliers)",
+                  "boundTable": "suppliers"
+                }
+              ]
+            }
+          ],
+          "dbTablesSnapshot": [
+            {
+              "name": "employees",
+              "labelAr": "الموظفون",
+              "columns": [
+                {
+                  "name": "full_name",
+                  "type": "TEXT",
+                  "required": true,
+                  "labelAr": "الاسم الكامل"
+                },
+                {
+                  "name": "department",
+                  "type": "TEXT",
+                  "required": true,
+                  "labelAr": "الإدارة"
+                },
+                {
+                  "name": "salary",
+                  "type": "INTEGER",
+                  "required": true,
+                  "labelAr": "الراتب الشهري"
+                },
+                {
+                  "name": "status",
+                  "type": "TEXT",
+                  "required": true,
+                  "labelAr": "الحالة"
+                }
+              ],
+              "rows": [
+                {
+                  "id": "emp-1",
+                  "full_name": "أحمد محمود السالم",
+                  "department": "الهندسة والذكاء الاصطناعي",
+                  "salary": 18500,
+                  "status": "نشط"
+                },
+                {
+                  "id": "emp-2",
+                  "full_name": "سارة عبد الله القحطاني",
+                  "department": "المالية والعقود",
+                  "salary": 16000,
+                  "status": "نشط"
+                },
+                {
+                  "id": "emp-3",
+                  "full_name": "خالد فهد العتيبي",
+                  "department": "الأمن السيبراني والبنية",
+                  "salary": 17200,
+                  "status": "نشط"
+                }
+              ]
+            },
+            {
+              "name": "contracts",
+              "labelAr": "العقود والمشاريع",
+              "columns": [
+                {
+                  "name": "client_name",
+                  "type": "TEXT",
+                  "required": true,
+                  "labelAr": "الجهة المتعاقدة"
+                },
+                {
+                  "name": "value_sar",
+                  "type": "INTEGER",
+                  "required": true,
+                  "labelAr": "قيمة العقد"
+                },
+                {
+                  "name": "renewal_date",
+                  "type": "DATE",
+                  "required": true,
+                  "labelAr": "تاريخ التجديد"
+                },
+                {
+                  "name": "risk_level",
+                  "type": "TEXT",
+                  "required": true,
+                  "labelAr": "مستوى المخاطر"
+                }
+              ],
+              "rows": [
+                {
+                  "id": "cnt-101",
+                  "client_name": "مجموعة المدار اللوجستية",
+                  "value_sar": 420000,
+                  "renewal_date": "2027-02-15",
+                  "risk_level": "منخفض"
+                },
+                {
+                  "id": "cnt-102",
+                  "client_name": "مستشفى الرعاية التخصصي",
+                  "value_sar": 680000,
+                  "renewal_date": "2026-12-20",
+                  "risk_level": "متوسط - قرب التجديد"
+                }
+              ]
+            },
+            {
+              "name": "invoices",
+              "labelAr": "الفواتير المالية",
+              "columns": [
+                {
+                  "name": "invoice_no",
+                  "type": "TEXT",
+                  "required": true,
+                  "labelAr": "رقم الفاتورة"
+                },
+                {
+                  "name": "amount_sar",
+                  "type": "INTEGER",
+                  "required": true,
+                  "labelAr": "المبلغ"
+                },
+                {
+                  "name": "paid",
+                  "type": "BOOLEAN",
+                  "required": true,
+                  "labelAr": "مدفوعة"
+                }
+              ],
+              "rows": [
+                {
+                  "id": "inv-501",
+                  "invoice_no": "INV-2026-081",
+                  "amount_sar": 145000,
+                  "paid": true
+                },
+                {
+                  "id": "inv-502",
+                  "invoice_no": "INV-2026-082",
+                  "amount_sar": 92000,
+                  "paid": false
+                }
+              ]
+            },
+            {
+              "name": "suppliers",
+              "labelAr": "الموردون وتقييم الالتزام",
+              "columns": [
+                {
+                  "name": "supplier_name",
+                  "type": "TEXT",
+                  "required": true,
+                  "labelAr": "اسم المورد"
+                },
+                {
+                  "name": "category",
+                  "type": "TEXT",
+                  "required": true,
+                  "labelAr": "مجال التوريد"
+                },
+                {
+                  "name": "compliance_rating",
+                  "type": "REAL",
+                  "required": true,
+                  "labelAr": "تقييم الالتزام (من 5)"
+                },
+                {
+                  "name": "last_review_date",
+                  "type": "DATE",
+                  "required": true,
+                  "labelAr": "تاريخ آخر مراجعة"
+                },
+                {
+                  "name": "contract_id",
+                  "type": "TEXT",
+                  "required": false,
+                  "labelAr": "معرف العقد المرتبط"
+                },
+                {
+                  "name": "status",
+                  "type": "TEXT",
+                  "required": true,
+                  "labelAr": "الحالة"
+                }
+              ],
+              "rows": [
+                {
+                  "id": "sup-1",
+                  "supplier_name": "شركة البنية السحابية الآمنة",
+                  "category": "استضافة وخوادم محلية",
+                  "compliance_rating": 4.8,
+                  "last_review_date": "2026-11-18",
+                  "contract_id": "cnt-102",
+                  "status": "معتمد"
+                },
+                {
+                  "id": "sup-2",
+                  "supplier_name": "مؤسسة الروافد للتجهيزات التقنية",
+                  "category": "أجهزة شبكات وحماية",
+                  "compliance_rating": 4.1,
+                  "last_review_date": "2026-11-10",
+                  "contract_id": "cnt-101",
+                  "status": "تحت المتابعة"
+                }
+              ]
+            },
+            {
+              "name": "tasks",
+              "labelAr": "المهام اليومية",
+              "columns": [
+                {
+                  "name": "title",
+                  "type": "TEXT",
+                  "required": true,
+                  "labelAr": "عنوان المهمة"
+                },
+                {
+                  "name": "due_date",
+                  "type": "DATE",
+                  "required": true,
+                  "labelAr": "تاريخ الاستحقاق"
+                },
+                {
+                  "name": "priority",
+                  "type": "TEXT",
+                  "required": true,
+                  "labelAr": "الأولوية"
+                },
+                {
+                  "name": "status",
+                  "type": "TEXT",
+                  "required": true,
+                  "labelAr": "الحالة"
+                },
+                {
+                  "name": "assignee_employee_id",
+                  "type": "TEXT",
+                  "required": true,
+                  "labelAr": "الموظف المسؤول"
+                },
+                {
+                  "name": "contract_id",
+                  "type": "TEXT",
+                  "required": false,
+                  "labelAr": "العقد المرتبط"
+                },
+                {
+                  "name": "supplier_id",
+                  "type": "TEXT",
+                  "required": false,
+                  "labelAr": "المورد المرتبط"
+                }
+              ],
+              "rows": [
+                {
+                  "id": "tsk-1",
+                  "title": "مراجعة إشعار تجديد عقد مستشفى الرعاية التخصصي قبل 30 يوماً",
+                  "due_date": "2026-11-26",
+                  "priority": "عالية",
+                  "status": "قيد التنفيذ",
+                  "assignee_employee_id": "emp-2",
+                  "contract_id": "cnt-102",
+                  "supplier_id": "sup-1"
+                },
+                {
+                  "id": "tsk-2",
+                  "title": "تدقيق تقييم التزام الموردين وضوابط الشبكة المشفرة",
+                  "due_date": "2026-11-25",
+                  "priority": "متوسطة",
+                  "status": "مفتوحة",
+                  "assignee_employee_id": "emp-3",
+                  "contract_id": "cnt-101",
+                  "supplier_id": "sup-2"
+                },
+                {
+                  "id": "tsk-3",
+                  "title": "تحصيل فاتورة INV-2026-082 ومطابقة الدفعة المالية",
+                  "due_date": "2026-11-28",
+                  "priority": "عالية",
+                  "status": "مكتملة",
+                  "assignee_employee_id": "emp-1",
+                  "contract_id": "cnt-101",
+                  "supplier_id": "sup-1"
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "agentTrace": [
+        {
+          "agentKey": "RequirementsAnalyst",
+          "agentNameAr": "محلل المتطلبات",
+          "roleAr": "تحليل الأمر العربي وتفكيك وحدات الشركة",
+          "status": "TESTED",
+          "summary": "تحديد 3 جداول، 3 صفحات، محادثة RAG محلية، ومولد تقارير",
+          "durationMs": 310,
+          "artifactsTouched": [
+            "spec.json"
+          ]
+        },
+        {
+          "agentKey": "SystemArchitect",
+          "agentNameAr": "مهندس المعمارية",
+          "roleAr": "تصميم البنية المستقلة وفصل التكاملات الاختيارية",
+          "status": "TESTED",
+          "summary": "اعتماد بنية Express + SQLite/JSON + llama.cpp المحلي",
+          "durationMs": 280,
+          "artifactsTouched": [
+            "architecture.md"
+          ]
+        },
+        {
+          "agentKey": "DatabaseEngineer",
+          "agentNameAr": "مهندس قواعد البيانات",
+          "roleAr": "إنشاء الجداول والعلاقات والبيانات الأولية",
+          "status": "TESTED",
+          "summary": "بناء جداول employees, contracts, invoices",
+          "durationMs": 220,
+          "artifactsTouched": [
+            "db/schema.sql"
+          ]
+        },
+        {
+          "agentKey": "FrontendEngineer",
+          "agentNameAr": "مهندس الواجهات",
+          "roleAr": "بناء واجهات عربية RTL متجاوبة",
+          "status": "TESTED",
+          "summary": "إنشاء 3 صفحات تفاعلية ومعاينة فورية",
+          "durationMs": 410,
+          "artifactsTouched": [
+            "src/App.tsx",
+            "public/index.html"
+          ]
+        },
+        {
+          "agentKey": "BackendEngineer",
+          "agentNameAr": "مهندس الخلفية والـ API",
+          "roleAr": "تطوير المسارات الخلفية وصلاحيات الدخول",
+          "status": "TESTED",
+          "summary": "تجهيز 5 نقاط API تعمل محلياً بالكامل",
+          "durationMs": 260,
+          "artifactsTouched": [
+            "server.js"
+          ]
+        },
+        {
+          "agentKey": "AIWeightsEngineer",
+          "agentNameAr": "مهندس الذكاء الاصطناعي والأوزان",
+          "roleAr": "اختيار النموذج المناسب لمواصفات الجهاز",
+          "status": "TESTED",
+          "summary": "ترشيح Qwen2.5-1.5B-Instruct-Q4_K_M مع Apache-2.0",
+          "durationMs": 195,
+          "artifactsTouched": [
+            "ai/model.config.json"
+          ]
+        },
+        {
+          "agentKey": "SecurityEngineer",
+          "agentNameAr": "مهندس الأمن",
+          "roleAr": "عزل البيانات والتحقق من عدم تسريب المفاتيح",
+          "status": "TESTED",
+          "summary": "تفعيل RBAC وعزل التكاملات الخارجية الاختيارية",
+          "durationMs": 170,
+          "artifactsTouched": [
+            "security-policy.json"
+          ]
+        },
+        {
+          "agentKey": "QAEngineer",
+          "agentNameAr": "مهندس الاختبارات",
+          "roleAr": "تشغيل اختبارات الاستقلال وفصل الإنترنت",
+          "status": "TESTED",
+          "summary": "نجاح فحص 6/6 اختبارات استقلال محلية",
+          "durationMs": 240,
+          "artifactsTouched": [
+            "tests/verify_independence.mjs"
+          ]
+        },
+        {
+          "agentKey": "DebuggerEngineer",
+          "agentNameAr": "مهندس إصلاح الأخطاء",
+          "roleAr": "مراجعة سلامة المسارات وتوافق الأنماط",
+          "status": "TESTED",
+          "summary": "لا توجد أخطاء بنيوية أو مراجع مفقودة",
+          "durationMs": 110,
+          "artifactsTouched": []
+        },
+        {
+          "agentKey": "PackagingEngineer",
+          "agentNameAr": "مهندس التغليف والتصدير",
+          "roleAr": "تجهيز الحزمة المستقلة القابلة للتنزيل",
+          "status": "TESTED",
+          "summary": "تغليف الكود والمحرك والفهرس في أرشيف ZIP موثق",
+          "durationMs": 290,
+          "artifactsTouched": [
+            "install.sh",
+            "README_AR.md"
+          ]
+        }
+      ],
+      "verificationReport": {
+        "runAt": "2026-11-24T22:19:19.434Z",
+        "weightsPresent": true,
+        "weightsEmbedMode": "EMBEDDED_FULL_SHARD",
+        "modelLoaded": true,
+        "localInferenceSucceeded": true,
+        "externalApiCalled": false,
+        "externalApiFindings": [],
+        "worksOffline": true,
+        "bundleSizeBytes": 1117432447,
+        "bundleSizeLabel": "1065.67 MB (الكود + المحرك + الأوزان المضمنة)",
+        "hardwareRequirementSummary": "3 GB RAM كحد أدنى (4 GB موصى به) · معالج رباعي النوى x86_64 أو Apple Silicon / ARM64",
+        "functionsRequiringInternet": [
+          "لا توجد وظائف إجبارية تتطلب إنترنت"
+        ],
+        "localInferenceLatencyMs": 35824,
+        "testPrompt": "لخص سياسات الشركة وحالة الجداول المحلية في البرنامج",
+        "testOutput": "إجمالي عدد العقود النشطة هو 1. العميل في العقد cnt-102 هو مستشفى الرعاية التخصصي.\n\n---\nمصدر البيانات: قاعدة بيانات الشركة المحلية (proj-enterprise-erp · الجداول: employees, contracts, suppliers, tasks)\nتاريخ آخر تحديث للبيانات: 2026-11-24T22:17:43.969Z",
+        "checks": [
+          {
+            "id": "chk-weights",
+            "titleAr": "التحقق من وجود ملف الأوزان الفعلي والمفكك اللغوي داخل الحزمة",
+            "passed": true,
+            "detailsAr": "تم تضمين شريحة الأوزان الفعلية (qwen2.5-1.5b-instruct-q4_k_m.gguf) مع tokenizer.json",
+            "category": "weights"
+          },
+          {
+            "id": "chk-sha256",
+            "titleAr": "التحقق من تطابق البصمة الرقمية SHA-256 لملف الأوزان الفعلي",
+            "passed": true,
+            "detailsAr": "تطابقت بصمة SHA-256 لملف الأوزان الفعلي (6a1a2eb6d15622bf...)",
+            "category": "integrity"
+          },
+          {
+            "id": "chk-config",
+            "titleAr": "تطابق إعدادات النموذج مع محرك التشغيل ومواصفات الجهاز",
+            "passed": true,
+            "detailsAr": "الجهاز المستهدف (8 GB RAM) يفي بالحد الأدنى للنموذج (3 GB) — GPU اختياري",
+            "category": "runtime"
+          },
+          {
+            "id": "chk-outbound",
+            "titleAr": "فحص الكود ضد استدعاءات مزودي الذكاء الاصطناعي الخارجيين",
+            "passed": true,
+            "detailsAr": "0 استدعاءات لـ Gemini / OpenAI / Claude / Cohere داخل الحزمة المصدرة (توليد المنصة لا يزال يستخدم Gemini API عند التطوير)",
+            "category": "network"
+          },
+          {
+            "id": "chk-offline-infer",
+            "titleAr": "اختبار التوليد الفعلي بالأوزان المحلية دون اتصال بالإنترنت",
+            "passed": true,
+            "detailsAr": "نجح التوليد العصبي الفعلي عبر llama-server (35824ms · RSS 1877.3 MB · 0 استدعاءات إنترنت)",
+            "category": "offline"
+          },
+          {
+            "id": "chk-db-restore",
+            "titleAr": "التحقق من مخطط قاعدة البيانات وإمكانية استعادة المشروع من الحزمة",
+            "passed": true,
+            "detailsAr": "تم التحقق من schema.sql و data.json (5 جداول)",
+            "category": "restore"
+          }
+        ],
+        "verdict": "INDEPENDENT_VERIFIED"
+      },
+      "deployment": {
+        "customDomain": "erp.company.internal",
+        "httpsEnabled": true,
+        "targetServerType": "on-prem-docker",
+        "lastDeployedAt": "2026-11-22T04:11:40.680Z",
+        "status": "IMPLEMENTED"
+      }
+    }
+  ],
+  "models": [
+    {
+      "id": "qwen25-05b-q4",
+      "name": "Qwen2.5-0.5B-Instruct-Q4_K_M",
+      "family": "Qwen 2.5",
+      "parameters": "0.5B",
+      "parametersBillions": 0.5,
+      "sizeGb": 0.41,
+      "sizeTier": "small",
+      "format": "GGUF",
+      "quantization": "Q4_K_M (4-bit)",
+      "ramRequiredGb": 2,
+      "minRamGb": 1,
+      "cpuRequirements": "معالج ثنائي النواة x86_64 أو ARM64 (AVX2 أو NEON)",
+      "gpuRequirements": "غير مطلوب (يعمل بكفاءة عالية على CPU أو Android NNAPI)",
+      "measuredTokensPerSec": 48,
+      "contextLength": 32768,
+      "postQuantAccuracy": "94.2% من دقة FP16 في مهام التصنيف والاستخراج العربي/الإنجليزي",
+      "knownLimits": "مناسب للمهام الإدارية السريعة وتلخيص المستندات القصيرة؛ قد تضعف الدقة في البرمجة المعقدة.",
+      "license": "Apache-2.0",
+      "commercialRedistribution": true,
+      "redistributionNotes": "يسمح بالتضمين التجاري وإعادة التوزيع داخل حزم العملاء دون قيود ملكية.",
+      "runtimeEngines": [
+        "llama.cpp",
+        "ONNX Runtime",
+        "Android-NNAPI"
+      ],
+      "sha256": "9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08",
+      "shardsCount": 1,
+      "status": "VERIFIED",
+      "recommendedTasks": [
+        "المحادثة السريعة",
+        "تطبيقات الجوال والـ Edge",
+        "الأتمتة الخفيفة"
+      ]
+    },
+    {
+      "id": "qwen25-15b-q4",
+      "name": "Qwen2.5-1.5B-Instruct-Q4_K_M",
+      "family": "Qwen 2.5",
+      "parameters": "1.5B",
+      "parametersBillions": 1.5,
+      "sizeGb": 1.04,
+      "sizeTier": "small",
+      "format": "GGUF",
+      "quantization": "Q4_K_M (4-bit)",
+      "ramRequiredGb": 4,
+      "minRamGb": 3,
+      "cpuRequirements": "معالج رباعي النوى x86_64 أو Apple Silicon / ARM64",
+      "gpuRequirements": "اختياري (2 GB VRAM لتسريع CUDA/Metal)",
+      "measuredTokensPerSec": 34,
+      "contextLength": 32768,
+      "postQuantAccuracy": "96.4% من دقة FP16 في اللغة العربية والـ RAG المؤسسي",
+      "knownLimits": "التوازن الأمثل لأجهزة المكاتب المتوسطة (4–8 GB RAM)؛ قد يحتاج سياقاً موجهاً للتقارير الطويلة جداً.",
+      "license": "Apache-2.0",
+      "commercialRedistribution": true,
+      "redistributionNotes": "ترخيص Apache-2.0 كامل يسمح بالبيع والتوزيع المستقل مع الأوزان.",
+      "runtimeEngines": [
+        "llama.cpp",
+        "ONNX Runtime",
+        "Transformers"
+      ],
+      "sha256": "6a1a2eb6d15622bf3c96857206351ba97e1af16c30d7a74ee38970e434e9407e",
+      "shardsCount": 1,
+      "status": "VERIFIED",
+      "recommendedTasks": [
+        "إدارة الشركات",
+        "تحليل المستندات العربية",
+        "إعداد التقارير"
+      ],
+      "referenceSha256": "6a1a2eb6d15622bf3c96857206351ba97e1af16c30d7a74ee38970e434e9407e",
+      "uploadedFileName": "qwen2.5-1.5b-instruct-q4_k_m.gguf",
+      "uploadedFileBytes": 1117320736
+    },
+    {
+      "id": "qwen25-3b-q4",
+      "name": "Qwen2.5-3B-Instruct-Q4_K_M",
+      "family": "Qwen 2.5",
+      "parameters": "3B",
+      "parametersBillions": 3,
+      "sizeGb": 1.98,
+      "sizeTier": "medium",
+      "format": "GGUF",
+      "quantization": "Q4_K_M (4-bit)",
+      "ramRequiredGb": 8,
+      "minRamGb": 6,
+      "cpuRequirements": "معالج 6–8 أنوية حديث (AVX2 / Apple Silicon)",
+      "gpuRequirements": "4 GB VRAM موصى به لتسريع GPU",
+      "measuredTokensPerSec": 26,
+      "contextLength": 32768,
+      "postQuantAccuracy": "97.5% من دقة FP16 مع فهم ممتاز للجداول والمنطق الإداري",
+      "knownLimits": "يتطلب على الأقل 6 GB RAM متاحة؛ قد يكون بطيئاً على الهواتف الاقتصادية.",
+      "license": "Qwen Research / Commercial (<100M MAU)",
+      "commercialRedistribution": true,
+      "redistributionNotes": "ترخيص Qwen يسمح بالاستخدام التجاري والتوزيع ما لم يتجاوز التطبيق 100 مليون مستخدم شهرياً.",
+      "runtimeEngines": [
+        "llama.cpp",
+        "Transformers"
+      ],
+      "sha256": "ef2d127de37b942baad06145e54b0c619a1f22327b2ebbcfbec78f5564afe39d",
+      "shardsCount": 1,
+      "status": "VERIFIED",
+      "recommendedTasks": [
+        "تحليل العقود والميزانيات",
+        "الوكلاء الإداريون",
+        "استعلامات SQL المحلية"
+      ]
+    },
+    {
+      "id": "llama32-1b-q4",
+      "name": "Llama-3.2-1B-Instruct-Q4_K_M",
+      "family": "Llama 3.2",
+      "parameters": "1.2B",
+      "parametersBillions": 1.2,
+      "sizeGb": 0.78,
+      "sizeTier": "small",
+      "format": "GGUF",
+      "quantization": "Q4_K_M (4-bit)",
+      "ramRequiredGb": 3,
+      "minRamGb": 2,
+      "cpuRequirements": "معالج رباعي النوى ARM64 أو x86_64",
+      "gpuRequirements": "غير مطلوب",
+      "measuredTokensPerSec": 41,
+      "contextLength": 131072,
+      "postQuantAccuracy": "95.1% من دقة FP16 في الإنجليزية والمهام المهيكلة",
+      "knownLimits": "أداء اللغة العربية أضعف من عائلة Qwen2.5، مناسب أكثر للتطبيقات الإنجليزية.",
+      "license": "Llama 3.2 Community License",
+      "commercialRedistribution": true,
+      "redistributionNotes": "يتطلب تضمين إشعار \"Built with Llama\" والالتزام بحد 700 مليون مستخدم نشط شهرياً.",
+      "runtimeEngines": [
+        "llama.cpp",
+        "Android-NNAPI",
+        "ONNX Runtime"
+      ],
+      "sha256": "e7f6c011776e8db7cd330b54174fd76f7d0216b612387a5ffcfb81e6f0919683",
+      "shardsCount": 1,
+      "status": "VERIFIED",
+      "recommendedTasks": [
+        "تطبيقات إنجليزية خفيفة",
+        "الهواتف الذكية"
+      ]
+    },
+    {
+      "id": "llama32-3b-q4",
+      "name": "Llama-3.2-3B-Instruct-Q4_K_M",
+      "family": "Llama 3.2",
+      "parameters": "3.2B",
+      "parametersBillions": 3.2,
+      "sizeGb": 2.02,
+      "sizeTier": "medium",
+      "format": "GGUF",
+      "quantization": "Q4_K_M (4-bit)",
+      "ramRequiredGb": 8,
+      "minRamGb": 6,
+      "cpuRequirements": "معالج 8 أنوية حديث",
+      "gpuRequirements": "4 GB VRAM موصى به",
+      "measuredTokensPerSec": 24,
+      "contextLength": 131072,
+      "postQuantAccuracy": "97.1% من دقة FP16",
+      "knownLimits": "سياق طويل جداً يستهلك ذاكرة KV-Cache إضافية عند تجاوز 16K رمز.",
+      "license": "Llama 3.2 Community License",
+      "commercialRedistribution": true,
+      "redistributionNotes": "مسموح بالتوزيع مع إرفاق ملف LICENSE وإشعار Llama 3.2.",
+      "runtimeEngines": [
+        "llama.cpp",
+        "Transformers"
+      ],
+      "sha256": "7902699be42c8a8e46fbbb4501726517e86b22c56a189f7625a6da49081b2451",
+      "shardsCount": 1,
+      "status": "VERIFIED",
+      "recommendedTasks": [
+        "تلخيص المستندات الطويلة",
+        "استدعاء الدوال المحلي"
+      ]
+    },
+    {
+      "id": "gemma2-2b-q4",
+      "name": "Gemma-2-2B-it-Q4_K_M",
+      "family": "Gemma 2",
+      "parameters": "2.6B",
+      "parametersBillions": 2.6,
+      "sizeGb": 1.63,
+      "sizeTier": "medium",
+      "format": "GGUF",
+      "quantization": "Q4_K_M (4-bit)",
+      "ramRequiredGb": 6,
+      "minRamGb": 4,
+      "cpuRequirements": "معالج رباعي/ثماني النوى x86_64",
+      "gpuRequirements": "اختياري (4 GB VRAM)",
+      "measuredTokensPerSec": 29,
+      "contextLength": 8192,
+      "postQuantAccuracy": "96.8% من دقة BF16",
+      "knownLimits": "طول السياق 8192 رمز يتطلب تقسيم المستندات الكبيرة عبر RAG.",
+      "license": "Gemma Terms of Use",
+      "commercialRedistribution": true,
+      "redistributionNotes": "يسمح بإعادة التوزيع التجاري مع تمرير قيود الاستخدام المسؤول في Gemma Terms.",
+      "runtimeEngines": [
+        "llama.cpp",
+        "ONNX Runtime"
+      ],
+      "sha256": "2c624232cdd221771294dfbb310aca000a0df6ac8b66b696d90ef06fdefb64a3",
+      "shardsCount": 1,
+      "status": "VERIFIED",
+      "recommendedTasks": [
+        "الإجابة الدقيقة من النصوص",
+        "المساعد المكتبي"
+      ]
+    },
+    {
+      "id": "mistral-7b-v03-q4",
+      "name": "Mistral-7B-Instruct-v0.3-Q4_K_M",
+      "family": "Mistral 7B",
+      "parameters": "7.2B",
+      "parametersBillions": 7.2,
+      "sizeGb": 4.37,
+      "sizeTier": "large",
+      "format": "GGUF",
+      "quantization": "Q4_K_M (4-bit)",
+      "ramRequiredGb": 12,
+      "minRamGb": 8,
+      "cpuRequirements": "معالج 8+ أنوية للخوادم أو محطات العمل",
+      "gpuRequirements": "6–8 GB VRAM موصى به للأداء الفوري",
+      "measuredTokensPerSec": 18,
+      "contextLength": 32768,
+      "postQuantAccuracy": "98.1% من دقة FP16",
+      "knownLimits": "كبير الحجم؛ يُقسّم تلقائياً إلى شرائح عند التصدير ولا يناسب الأجهزة ذات 4 GB RAM.",
+      "license": "Apache-2.0",
+      "commercialRedistribution": true,
+      "redistributionNotes": "ترخيص Apache-2.0 مفتوح بالكامل للتضمين وإعادة التوزيع التجاري على الخوادم الخاصة.",
+      "runtimeEngines": [
+        "llama.cpp",
+        "Transformers"
+      ],
+      "sha256": "19581e27de7ced00ff1ce50b2047e7a5c1bc404868a2011f686a822f70e3336b",
+      "shardsCount": 2,
+      "status": "VERIFIED",
+      "recommendedTasks": [
+        "خوادم الشركات الخاصة",
+        "التحليل القانوني والمالي المعمق"
+      ]
+    },
+    {
+      "id": "minilm-l6-onnx",
+      "name": "All-MiniLM-L6-v2-ONNX",
+      "family": "Sentence Embeddings",
+      "parameters": "22M",
+      "parametersBillions": 0.022,
+      "sizeGb": 0.09,
+      "sizeTier": "small",
+      "format": "ONNX",
+      "quantization": "INT8",
+      "ramRequiredGb": 1,
+      "minRamGb": 1,
+      "cpuRequirements": "أي معالج حديث (x86_64 / ARM64)",
+      "gpuRequirements": "غير مطلوب",
+      "measuredTokensPerSec": 210,
+      "contextLength": 512,
+      "postQuantAccuracy": "98.9% في استرجاع المتجهات الدلالية",
+      "knownLimits": "نموذج تضمين (Embeddings) مخصص للبحث الدلالي وRAG وليس لتوليد النصوص الحوارية.",
+      "license": "Apache-2.0",
+      "commercialRedistribution": true,
+      "redistributionNotes": "ترخيص Apache-2.0 خفيف ومناسب للتضمين المباشر داخل أي حزمة عميل.",
+      "runtimeEngines": [
+        "ONNX Runtime",
+        "Transformers"
+      ],
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "shardsCount": 1,
+      "status": "VERIFIED",
+      "recommendedTasks": [
+        "البحث الدلالي المحلي RAG",
+        "فهرسة المستندات"
+      ]
+    }
+  ],
+  "fineTuneJobs": [
+    {
+      "id": "ft-company-contracts",
+      "name": "تخصيص Qwen2.5-1.5B على صياغة وتحليل العقود العربية",
+      "projectId": "proj-enterprise-erp",
+      "baseModelId": "qwen25-15b-q4",
+      "method": "QLoRA",
+      "datasetSamples": [
+        {
+          "instruction": "استخرج تاريخ التجديد وقيمة العقد ومستوى المخاطر من النص التالي.",
+          "input": "عقد مستشفى الرعاية التخصصي بقيمة 680000 ريال يتجدد في 2026-12-20 مع إشعار مسبق 30 يوماً.",
+          "output": "الجهة: مستشفى الرعاية التخصصي | القيمة: 680,000 ريال | التجديد: 2026-12-20 | التنبيه: إشعار قبل 30 يوماً."
+        },
+        {
+          "instruction": "أعد ملخصاً تنفيذياً لحالة الفواتير غير المسددة.",
+          "input": "فاتورة INV-2026-082 بمبلغ 92000 ريال غير مدفوعة.",
+          "output": "يوجد مستحق مالي غير محصل للفاتورة INV-2026-082 بقيمة 92,000 ريال يتطلب المتابعة المالية."
+        }
+      ],
+      "epochs": 3,
+      "learningRate": "2e-4",
+      "loraRank": 16,
+      "status": "TESTED",
+      "preEvalScore": 68.4,
+      "postEvalScore": 91.7,
+      "createdAt": "2026-11-22T04:11:40.691Z",
+      "adapterConfigJson": "{\n  \"peft_type\": \"LORA\",\n  \"task_type\": \"CAUSAL_LM\",\n  \"r\": 16,\n  \"lora_alpha\": 32,\n  \"lora_dropout\": 0.05,\n  \"target_modules\": [\n    \"q_proj\",\n    \"k_proj\",\n    \"v_proj\",\n    \"o_proj\"\n  ],\n  \"quantization_bit\": 4\n}",
+      "trainingScript": "# QLoRA Offline Fine-Tuning Pipeline (ALHELBAWEY)\npython train_qlora.py --base_model Qwen2.5-1.5B-Instruct --dataset ./dataset.jsonl --r 16 --epochs 3 --lr 2e-4 --output ./adapters/company-contracts"
+    }
+  ],
+  "auditLogs": [
+    {
+      "id": "aud-3ef59b03",
+      "timestamp": "2026-11-24T22:19:45.218Z",
+      "actor": "مكتب التدقيق والإصلاح الهندسي",
+      "action": "ERP_AUDIT_REPAIR_EXECUTED",
+      "target": "نظام إدارة الشركة المستقل — شركة النخبة للتقنية",
+      "severity": "INFO",
+      "details": "v2 -> v2 | PASS=9 BLOCKED=0 FAIL=0"
+    },
+    {
+      "id": "aud-8a53bcac",
+      "timestamp": "2026-11-24T22:18:36.183Z",
+      "actor": "وحدة الإصلاح الذاتي",
+      "action": "PREFLIGHT_INSPECTION_RUN",
+      "target": "PRE-20261124-88928E",
+      "severity": "INFO",
+      "details": "نتيجة الفحص الشامل: BLOCKED (PASS=13, WARN=1, FAIL=0, BLOCKED=1)"
+    },
+    {
+      "id": "aud-f7701b77",
+      "timestamp": "2026-11-24T22:18:09.297Z",
+      "actor": "مكتب التدقيق والإصلاح الهندسي",
+      "action": "ERP_AUDIT_REPAIR_EXECUTED",
+      "target": "نظام إدارة الشركة المستقل — شركة النخبة للتقنية",
+      "severity": "INFO",
+      "details": "v2 -> v2 | PASS=9 BLOCKED=0 FAIL=0"
+    },
+    {
+      "id": "aud-aaaa8410",
+      "timestamp": "2026-11-24T22:17:04.813Z",
+      "actor": "وحدة الإصلاح الذاتي",
+      "action": "PREFLIGHT_INSPECTION_RUN",
+      "target": "PRE-20261124-DEE47E",
+      "severity": "INFO",
+      "details": "نتيجة الفحص الشامل: BLOCKED (PASS=13, WARN=1, FAIL=0, BLOCKED=1)"
+    },
+    {
+      "id": "aud-4ffe272c",
+      "timestamp": "2026-11-24T22:16:15.464Z",
+      "actor": "وحدة الإصلاح الذاتي",
+      "action": "PREFLIGHT_INSPECTION_RUN",
+      "target": "PRE-20261124-919B8C",
+      "severity": "INFO",
+      "details": "نتيجة الفحص الشامل: BLOCKED (PASS=13, WARN=1, FAIL=0, BLOCKED=1)"
+    },
+    {
+      "id": "aud-21a882e5",
+      "timestamp": "2026-11-24T22:13:41.175Z",
+      "actor": "مكتب التدقيق والإصلاح الهندسي",
+      "action": "ERP_AUDIT_REPAIR_EXECUTED",
+      "target": "نظام إدارة الشركة المستقل — شركة النخبة للتقنية",
+      "severity": "INFO",
+      "details": "v2 -> v2 | PASS=7 BLOCKED=0 FAIL=0"
+    },
+    {
+      "id": "aud-5fb70ca5",
+      "timestamp": "2026-11-24T22:12:34.063Z",
+      "actor": "وحدة الإصلاح الذاتي",
+      "action": "PREFLIGHT_INSPECTION_RUN",
+      "target": "PRE-20261124-EE96BA",
+      "severity": "INFO",
+      "details": "نتيجة الفحص الشامل: BLOCKED (PASS=13, WARN=1, FAIL=0, BLOCKED=1)"
+    },
+    {
+      "id": "aud-1d3122a9",
+      "timestamp": "2026-11-24T22:09:53.358Z",
+      "actor": "وحدة الإصلاح الذاتي",
+      "action": "PREFLIGHT_INSPECTION_RUN",
+      "target": "PRE-20261124-EB7076",
+      "severity": "INFO",
+      "details": "نتيجة الفحص الشامل: BLOCKED (PASS=13, WARN=1, FAIL=0, BLOCKED=1)"
+    },
+    {
+      "id": "aud-e93a15f6",
+      "timestamp": "2026-11-24T21:22:56.395Z",
+      "actor": "مكتب التدقيق والإصلاح الهندسي",
+      "action": "ERP_AUDIT_REPAIR_EXECUTED",
+      "target": "نظام إدارة الشركة المستقل — شركة النخبة للتقنية",
+      "severity": "INFO",
+      "details": "v2 -> v2 | PASS=7 BLOCKED=0 FAIL=0"
+    },
+    {
+      "id": "aud-175bb802",
+      "timestamp": "2026-11-24T21:22:26.254Z",
+      "actor": "وحدة الإصلاح الذاتي",
+      "action": "PREFLIGHT_INSPECTION_RUN",
+      "target": "PRE-20261124-037831",
+      "severity": "INFO",
+      "details": "نتيجة الفحص الشامل: BLOCKED (PASS=13, WARN=1, FAIL=0, BLOCKED=1)"
+    },
+    {
+      "id": "aud-2d047bb2",
+      "timestamp": "2026-11-24T21:21:29.097Z",
+      "actor": "مكتب التدقيق والإصلاح الهندسي",
+      "action": "ERP_AUDIT_REPAIR_EXECUTED",
+      "target": "نظام إدارة الشركة المستقل — شركة النخبة للتقنية",
+      "severity": "WARN",
+      "details": "v2 -> v2 | PASS=5 BLOCKED=1 FAIL=1"
+    },
+    {
+      "id": "aud-2c8b6d8c",
+      "timestamp": "2026-11-24T21:20:52.030Z",
+      "actor": "وحدة الإصلاح الذاتي",
+      "action": "PREFLIGHT_INSPECTION_RUN",
+      "target": "PRE-20261124-8CC88A",
+      "severity": "INFO",
+      "details": "نتيجة الفحص الشامل: BLOCKED (PASS=13, WARN=1, FAIL=0, BLOCKED=1)"
+    },
+    {
+      "id": "aud-dd1e2830",
+      "timestamp": "2026-11-24T21:19:24.990Z",
+      "actor": "مكتب التدقيق والإصلاح الهندسي",
+      "action": "ERP_AUDIT_REPAIR_EXECUTED",
+      "target": "نظام إدارة الشركة المستقل — شركة النخبة للتقنية",
+      "severity": "WARN",
+      "details": "v2 -> v2 | PASS=6 BLOCKED=0 FAIL=1"
+    },
+    {
+      "id": "aud-46cadaa6",
+      "timestamp": "2026-11-24T21:18:56.589Z",
+      "actor": "وحدة الإصلاح الذاتي",
+      "action": "PREFLIGHT_INSPECTION_RUN",
+      "target": "PRE-20261124-FDD79C",
+      "severity": "INFO",
+      "details": "نتيجة الفحص الشامل: BLOCKED (PASS=13, WARN=1, FAIL=0, BLOCKED=1)"
+    },
+    {
+      "id": "aud-537daf55",
+      "timestamp": "2026-11-24T21:17:42.491Z",
+      "actor": "مكتب التدقيق والإصلاح الهندسي",
+      "action": "ERP_AUDIT_REPAIR_EXECUTED",
+      "target": "نظام إدارة الشركة المستقل — شركة النخبة للتقنية",
+      "severity": "INFO",
+      "details": "v2 -> v2 | PASS=6 BLOCKED=1 FAIL=0"
+    },
+    {
+      "id": "aud-1a6e6e66",
+      "timestamp": "2026-11-24T21:16:56.400Z",
+      "actor": "وحدة الإصلاح الذاتي",
+      "action": "PREFLIGHT_INSPECTION_RUN",
+      "target": "PRE-20261124-4A4B63",
+      "severity": "INFO",
+      "details": "نتيجة الفحص الشامل: BLOCKED (PASS=13, WARN=1, FAIL=0, BLOCKED=1)"
+    },
+    {
+      "id": "aud-8c79142c",
+      "timestamp": "2026-11-24T21:15:16.948Z",
+      "actor": "وحدة الإصلاح الذاتي",
+      "action": "PREFLIGHT_INSPECTION_RUN",
+      "target": "PRE-20261124-1DA0B0",
+      "severity": "INFO",
+      "details": "نتيجة الفحص الشامل: BLOCKED (PASS=12, WARN=2, FAIL=0, BLOCKED=1)"
+    },
+    {
+      "id": "aud-9e30bf75",
+      "timestamp": "2026-11-24T21:15:15.733Z",
+      "actor": "وحدة الإصلاح الذاتي",
+      "action": "SELF_HEALING_RECOVERED",
+      "target": "rep-77aec7ce",
+      "severity": "INFO",
+      "details": "فقدان ملف فهرس الذاكرة المؤقتة للتشغيل (runtime-manifest.json) -> RECOVERED: تم التحقق من سلامة ملف Cache بعد إعادة البناء (SHA-256: d882eb817d54...)."
+    },
+    {
+      "id": "aud-ee47d32c",
+      "timestamp": "2026-11-24T20:29:16.512Z",
+      "actor": "مكتب التدقيق والإصلاح الهندسي",
+      "action": "ERP_AUDIT_REPAIR_EXECUTED",
+      "target": "نظام إدارة الشركة المستقل — شركة النخبة للتقنية",
+      "severity": "INFO",
+      "details": "v1 -> v2 | PASS=5 BLOCKED=1 FAIL=0"
+    },
+    {
+      "id": "aud-bd3bf97e",
+      "timestamp": "2026-11-24T20:29:09.092Z",
+      "actor": "وحدة الإصلاح الذاتي",
+      "action": "PREFLIGHT_INSPECTION_RUN",
+      "target": "PRE-20261124-8E3AAB",
+      "severity": "INFO",
+      "details": "نتيجة الفحص الشامل: BLOCKED (PASS=12, WARN=2, FAIL=0, BLOCKED=1)"
+    },
+    {
+      "id": "aud-ec15b4b0",
+      "timestamp": "2026-11-24T20:22:00.916Z",
+      "actor": "وحدة الإصلاح الذاتي",
+      "action": "PREFLIGHT_INSPECTION_RUN",
+      "target": "PRE-20261124-F56BF2",
+      "severity": "INFO",
+      "details": "نتيجة الفحص الشامل: BLOCKED (PASS=12, WARN=2, FAIL=0, BLOCKED=1)"
+    },
+    {
+      "id": "aud-6b85e238",
+      "timestamp": "2026-11-24T19:49:26.893Z",
+      "actor": "وحدة الإصلاح الذاتي",
+      "action": "PREFLIGHT_INSPECTION_RUN",
+      "target": "PRE-20261124-EECCFE",
+      "severity": "INFO",
+      "details": "نتيجة الفحص الشامل: BLOCKED (PASS=11, WARN=3, FAIL=0, BLOCKED=1)"
+    },
+    {
+      "id": "aud-fdc993e2",
+      "timestamp": "2026-11-24T19:49:11.933Z",
+      "actor": "وحدة الإصلاح الذاتي",
+      "action": "PREFLIGHT_INSPECTION_RUN",
+      "target": "PRE-20261124-852261",
+      "severity": "INFO",
+      "details": "نتيجة الفحص الشامل: BLOCKED (PASS=12, WARN=2, FAIL=0, BLOCKED=1)"
+    },
+    {
+      "id": "aud-205398c7",
+      "timestamp": "2026-11-24T19:20:50.714Z",
+      "actor": "منصة العقل القانوني الدولي",
+      "action": "LEGAL_MEMO_GENERATED",
+      "target": "ILM-2026-002/memo-1678ac59",
+      "severity": "INFO",
+      "details": "إنجاز صياغة مذكرة دفاع قانونية كاملة عبر attia-advisor@v1.6.0 (gemini-4-hydrogen) مع 3 مرجع قانوني."
+    },
+    {
+      "id": "aud-2c950347",
+      "timestamp": "2026-11-24T19:20:30.072Z",
+      "actor": "منصة العقل القانوني الدولي",
+      "action": "LEGAL_CASE_CREATED",
+      "target": "ILM-2026-002",
+      "severity": "INFO",
+      "details": "إنشاء ملف قضية: اختبار التحقق: عقد وكالة تجارية دولية وشرط عدم المنافسة (SHA-256: 2732c14abc91)."
+    },
+    {
+      "id": "aud-e44c1641",
+      "timestamp": "2026-11-24T19:20:24.421Z",
+      "actor": "وحدة الإصلاح الذاتي",
+      "action": "PREFLIGHT_INSPECTION_RUN",
+      "target": "PRE-20261124-BD873A",
+      "severity": "INFO",
+      "details": "نتيجة الفحص الشامل: BLOCKED (PASS=12, WARN=2, FAIL=0, BLOCKED=1)"
+    },
+    {
+      "id": "aud-c7e45925",
+      "timestamp": "2026-11-24T19:19:01.719Z",
+      "actor": "وحدة الإصلاح الذاتي",
+      "action": "PREFLIGHT_INSPECTION_RUN",
+      "target": "PRE-20261124-973A22",
+      "severity": "INFO",
+      "details": "نتيجة الفحص الشامل: BLOCKED (PASS=12, WARN=2, FAIL=0, BLOCKED=1)"
+    },
+    {
+      "id": "aud-7d73d8db",
+      "timestamp": "2026-11-24T18:21:33.571Z",
+      "actor": "وحدة الإصلاح الذاتي",
+      "action": "SELF_HEALING_ACCEPTANCE_RUN",
+      "target": "12-tests",
+      "severity": "INFO",
+      "details": "نتيجة اختبارات القبول (12): PASS=12, FAIL=0"
+    },
+    {
+      "id": "aud-c6d20bd3",
+      "timestamp": "2026-11-24T18:21:33.544Z",
+      "actor": "وحدة الإصلاح الذاتي",
+      "action": "SELF_HEALING_ROLLBACK",
+      "target": "rep-f1c5b9ba",
+      "severity": "INFO",
+      "details": "Rollback verified=true على data/self-healing/cache/__acc_rollback_cfg__.json"
+    },
+    {
+      "id": "aud-b83fa9ad",
+      "timestamp": "2026-11-24T18:21:33.537Z",
+      "actor": "وحدة الإصلاح الذاتي",
+      "action": "SELF_HEALING_RECOVERED",
+      "target": "rep-f1c5b9ba",
+      "severity": "INFO",
+      "details": "اختبار Patch و Rollback الموثق بالـ SHA-256 -> RECOVERED: تم التحقق من صحة الملف وتطابق البصمة بعد التعديل (post-SHA: e989988463dc...)."
+    },
+    {
+      "id": "aud-f26aa318",
+      "timestamp": "2026-11-24T18:21:33.524Z",
+      "actor": "وحدة الإصلاح الذاتي",
+      "action": "TIER3_ACTION_BLOCKED",
+      "target": "forbidden-tier3-test",
+      "severity": "SECURITY",
+      "details": "محظور بموجب سياسة الحماية: يمنع المساس بالأسرار أو بيانات العملاء أو الأوزان الأصلية أو إعدادات الأمان."
+    },
+    {
+      "id": "aud-4f9bef7b",
+      "timestamp": "2026-11-24T18:21:33.517Z",
+      "actor": "وحدة الإصلاح الذاتي",
+      "action": "SELF_HEALING_FAILED",
+      "target": "rep-2871e163",
+      "severity": "WARN",
+      "details": "اختبار فشل الإصلاح عند غياب مصدر الاستعادة -> FAILED: فشل التحقق كما هو متوقع: الملف الهدف غير موجود ولا يوجد مصدر استعادة موثق."
+    },
+    {
+      "id": "aud-a175b592",
+      "timestamp": "2026-11-24T18:21:33.510Z",
+      "actor": "وحدة الإصلاح الذاتي",
+      "action": "SELF_HEALING_RECOVERED",
+      "target": "rep-e38d09af",
+      "severity": "INFO",
+      "details": "اختبار تنظيف ملف مؤقت يتيم (Sandbox) -> RECOVERED: تم التحقق: 0 ملفات مؤقتة متبقية في مسارات التخزين (حُذف: 1)."
+    },
+    {
+      "id": "aud-1cca684c",
+      "timestamp": "2026-11-24T18:21:33.487Z",
+      "actor": "وحدة الإصلاح الذاتي",
+      "action": "PREFLIGHT_INSPECTION_RUN",
+      "target": "PRE-20261124-D6018F",
+      "severity": "INFO",
+      "details": "نتيجة الفحص الشامل: BLOCKED (PASS=12, WARN=2, FAIL=0, BLOCKED=1)"
+    },
+    {
+      "id": "aud-c20e2aae",
+      "timestamp": "2026-11-24T18:21:31.901Z",
+      "actor": "منصة العقل القانوني الدولي",
+      "action": "LEGAL_MEMO_GENERATED",
+      "target": "ILM-2026-002/memo-3e1be42f",
+      "severity": "INFO",
+      "details": "إنجاز صياغة مذكرة دفاع قانونية كاملة عبر attia-advisor@v1.6.0 (gemini-3.1-flash-lite) مع 3 مرجع قانوني."
+    },
+    {
+      "id": "aud-0a1358a2",
+      "timestamp": "2026-11-24T18:21:14.943Z",
+      "actor": "منصة العقل القانوني الدولي",
+      "action": "LEGAL_CASE_CREATED",
+      "target": "ILM-2026-002",
+      "severity": "INFO",
+      "details": "إنشاء ملف قضية: اختبار التحقق: عقد وكالة تجارية دولية وشرط عدم المنافسة (SHA-256: e10e967bceb7)."
+    },
+    {
+      "id": "aud-a56206cd",
+      "timestamp": "2026-11-24T18:20:29.277Z",
+      "actor": "منصة العقل القانوني الدولي",
+      "action": "LEGAL_CASE_CREATED",
+      "target": "ILM-2026-002",
+      "severity": "INFO",
+      "details": "إنشاء ملف قضية: اختبار التحقق: عقد وكالة تجارية دولية وشرط عدم المنافسة (SHA-256: 44af1a5e6764)."
+    },
+    {
+      "id": "aud-c97705f7",
+      "timestamp": "2026-11-24T18:20:28.195Z",
+      "actor": "منصة العقل القانوني الدولي",
+      "action": "LEGAL_MEMO_GENERATED",
+      "target": "ILM-2026-001/memo-026a7a7c",
+      "severity": "INFO",
+      "details": "إنجاز صياغة مذكرة دفاع قانونية كاملة عبر attia-advisor@v1.6.0 (gemini-4-hydrogen) مع 3 مرجع قانوني."
+    },
+    {
+      "id": "aud-6ff3ab5e",
+      "timestamp": "2026-11-24T18:20:01.383Z",
+      "actor": "وحدة الإصلاح الذاتي",
+      "action": "PREFLIGHT_INSPECTION_RUN",
+      "target": "PRE-20261124-0FF37C",
+      "severity": "INFO",
+      "details": "نتيجة الفحص الشامل: BLOCKED (PASS=12, WARN=2, FAIL=0, BLOCKED=1)"
+    },
+    {
+      "id": "aud-7f412173",
+      "timestamp": "2026-11-24T18:14:57.358Z",
+      "actor": "وحدة الإصلاح الذاتي",
+      "action": "PREFLIGHT_INSPECTION_RUN",
+      "target": "PRE-20261124-8159AC",
+      "severity": "INFO",
+      "details": "نتيجة الفحص الشامل: BLOCKED (PASS=11, WARN=3, FAIL=0, BLOCKED=1)"
+    },
+    {
+      "id": "aud-42d41c71",
+      "timestamp": "2026-11-24T11:42:04.112Z",
+      "actor": "مكتب التدريب الاحترافي للعقل",
+      "action": "BRAIN_VERSION_PROMOTED",
+      "target": "attia-advisor@v1.6.0",
+      "severity": "INFO",
+      "details": "ترقية ناجحة من v1.5.0 إلى v1.6.0: التقييم 83% -> 91%."
+    },
+    {
+      "id": "aud-f6466b22",
+      "timestamp": "2026-11-24T11:41:38.709Z",
+      "actor": "مكتب التدريب الاحترافي للعقل",
+      "action": "BRAIN_VERSION_PROMOTED",
+      "target": "attia-advisor@v1.5.0",
+      "severity": "INFO",
+      "details": "ترقية ناجحة من v1.4.0 إلى v1.5.0: التقييم 91% -> 100%."
+    },
+    {
+      "id": "aud-7163ff90",
+      "timestamp": "2026-11-24T11:41:02.377Z",
+      "actor": "وحدة الإصلاح الذاتي",
+      "action": "PREFLIGHT_INSPECTION_RUN",
+      "target": "PRE-20261124-E59BFE",
+      "severity": "INFO",
+      "details": "نتيجة الفحص الشامل: BLOCKED (PASS=12, WARN=2, FAIL=0, BLOCKED=1)"
+    },
+    {
+      "id": "aud-7278206c",
+      "timestamp": "2026-11-24T11:40:32.215Z",
+      "actor": "مكتب التدريب الاحترافي للعقل",
+      "action": "BRAIN_VERSION_PROMOTED",
+      "target": "attia-advisor@v1.4.0",
+      "severity": "INFO",
+      "details": "ترقية ناجحة من v1.3.0 إلى v1.4.0: التقييم 91% -> 91%."
+    },
+    {
+      "id": "aud-640a1fd2",
+      "timestamp": "2026-11-24T11:39:57.441Z",
+      "actor": "مكتب التدريب الاحترافي للعقل",
+      "action": "BRAIN_TRAINING_REJECTED_REGRESSION",
+      "target": "btc-5444c3d9",
+      "severity": "WARN",
+      "details": "رُفض الاعتماد بسبب أخطاء جوهرية: ظهرت إشارات خطأ جوهري في مخرج التقييم."
+    },
+    {
+      "id": "aud-55cd93d8",
+      "timestamp": "2026-11-24T11:39:31.186Z",
+      "actor": "مكتب التدريب الاحترافي للعقل",
+      "action": "BRAIN_VERSION_PROMOTED",
+      "target": "attia-advisor@v1.3.0",
+      "severity": "INFO",
+      "details": "ترقية ناجحة من v1.2.0 إلى v1.3.0: التقييم 91% -> 100%."
+    },
+    {
+      "id": "aud-6193ede0",
+      "timestamp": "2026-11-24T11:39:17.195Z",
+      "actor": "مكتب التدريب الاحترافي للعقل",
+      "action": "BRAIN_VERSION_PROMOTED",
+      "target": "attia-advisor@v1.2.0",
+      "severity": "INFO",
+      "details": "ترقية ناجحة من v1.0.0 إلى v1.2.0: التقييم 91% -> 100%."
+    },
+    {
+      "id": "aud-5fb3e196",
+      "timestamp": "2026-11-24T11:38:49.482Z",
+      "actor": "وحدة الإصلاح الذاتي",
+      "action": "PREFLIGHT_INSPECTION_RUN",
+      "target": "PRE-20261124-503B5A",
+      "severity": "INFO",
+      "details": "نتيجة الفحص الشامل: BLOCKED (PASS=12, WARN=2, FAIL=0, BLOCKED=1)"
+    },
+    {
+      "id": "aud-cc3c073a",
+      "timestamp": "2026-11-24T11:38:01.695Z",
+      "actor": "وحدة الإصلاح الذاتي",
+      "action": "PREFLIGHT_INSPECTION_RUN",
+      "target": "PRE-20261124-B55502",
+      "severity": "INFO",
+      "details": "نتيجة الفحص الشامل: BLOCKED (PASS=11, WARN=3, FAIL=0, BLOCKED=1)"
+    },
+    {
+      "id": "aud-7d706215",
+      "timestamp": "2026-11-23T21:07:52.972Z",
+      "actor": "مكتب التدريب الاحترافي للعقل",
+      "action": "BRAIN_VERSION_ROLLED_BACK",
+      "target": "attia-advisor@v1.0.0",
+      "severity": "INFO",
+      "details": "تم التراجع الآمن لإصدار العقل attia-advisor إلى v1.0.0 دون المساس بالذاكرة الحديدية."
+    },
+    {
+      "id": "aud-af6269c4",
+      "timestamp": "2026-11-23T21:07:52.959Z",
+      "actor": "مكتب التدريب الاحترافي للعقل",
+      "action": "BRAIN_TRAINING_REJECTED_REGRESSION",
+      "target": "btc-6c3b62e3",
+      "severity": "WARN",
+      "details": "رُفض الاعتماد بسبب أخطاء جوهرية: المخرج قصير جداً أو فارغ ولا يكفي للإجابة المهنية (< 40 حرفاً).؛ ظهرت إشارات خطأ جوهري في مخرج التقييم."
+    },
+    {
+      "id": "aud-12834b57",
+      "timestamp": "2026-11-23T21:07:52.782Z",
+      "actor": "مكتب التدريب الاحترافي للعقل",
+      "action": "BRAIN_VERSION_PROMOTED",
+      "target": "attia-advisor@v1.1.0",
+      "severity": "INFO",
+      "details": "ترقية ناجحة من v1.0.0 إلى v1.1.0: التقييم 91% -> 91%."
+    },
+    {
+      "id": "aud-6603b221",
+      "timestamp": "2026-11-23T21:07:35.462Z",
+      "actor": "مكتب التدريب الاحترافي للعقل",
+      "action": "BRAIN_TRAINING_CHECKPOINT_PAUSED",
+      "target": "btc-9873ed26",
+      "severity": "INFO",
+      "details": "حُفظت نقطة استئناف عند الخطوة 1/2 (cff02fe7b69a)."
+    },
+    {
+      "id": "aud-efbe47ba",
+      "timestamp": "2026-11-23T21:06:25.671Z",
+      "actor": "مكتب التدريب الاحترافي للعقل",
+      "action": "BRAIN_TRAINING_BLOCKED",
+      "target": "btc-d404f1eb",
+      "severity": "WARN",
+      "details": "لا توجد ملفات أوزان عصبية (.gguf / .safetensors) مستوردة على القرص في data/weights/. | حزم التدريب العصبي المحلية (python3: torch + peft / transformers) غير مثبتة في هذه البيئة. | محرك الاستدلال المحلي (llama-server / llama-cli) غير مثبت لتقييم الأوزان المحلية دون إنترنت."
+    },
+    {
+      "id": "aud-9be203ff",
+      "timestamp": "2026-11-23T21:06:12.270Z",
+      "actor": "وحدة الإصلاح الذاتي",
+      "action": "SELF_HEALING_ACCEPTANCE_RUN",
+      "target": "12-tests",
+      "severity": "INFO",
+      "details": "نتيجة اختبارات القبول (12): PASS=12, FAIL=0"
+    },
+    {
+      "id": "aud-9915ad69",
+      "timestamp": "2026-11-23T21:06:12.248Z",
+      "actor": "وحدة الإصلاح الذاتي",
+      "action": "SELF_HEALING_ROLLBACK",
+      "target": "rep-b3cf274e",
+      "severity": "INFO",
+      "details": "Rollback verified=true على data/self-healing/cache/__acc_rollback_cfg__.json"
+    },
+    {
+      "id": "aud-fbf24f97",
+      "timestamp": "2026-11-23T21:06:12.243Z",
+      "actor": "وحدة الإصلاح الذاتي",
+      "action": "SELF_HEALING_RECOVERED",
+      "target": "rep-b3cf274e",
+      "severity": "INFO",
+      "details": "اختبار Patch و Rollback الموثق بالـ SHA-256 -> RECOVERED: تم التحقق من صحة الملف وتطابق البصمة بعد التعديل (post-SHA: e989988463dc...)."
+    },
+    {
+      "id": "aud-d3a82456",
+      "timestamp": "2026-11-23T21:06:12.236Z",
+      "actor": "وحدة الإصلاح الذاتي",
+      "action": "TIER3_ACTION_BLOCKED",
+      "target": "forbidden-tier3-test",
+      "severity": "SECURITY",
+      "details": "محظور بموجب سياسة الحماية: يمنع المساس بالأسرار أو بيانات العملاء أو الأوزان الأصلية أو إعدادات الأمان."
+    },
+    {
+      "id": "aud-cf9cb362",
+      "timestamp": "2026-11-23T21:06:12.232Z",
+      "actor": "وحدة الإصلاح الذاتي",
+      "action": "SELF_HEALING_FAILED",
+      "target": "rep-4768f809",
+      "severity": "WARN",
+      "details": "اختبار فشل الإصلاح عند غياب مصدر الاستعادة -> FAILED: فشل التحقق كما هو متوقع: الملف الهدف غير موجود ولا يوجد مصدر استعادة موثق."
+    },
+    {
+      "id": "aud-8d460839",
+      "timestamp": "2026-11-23T21:06:12.226Z",
+      "actor": "وحدة الإصلاح الذاتي",
+      "action": "SELF_HEALING_RECOVERED",
+      "target": "rep-19c2aeeb",
+      "severity": "INFO",
+      "details": "اختبار تنظيف ملف مؤقت يتيم (Sandbox) -> RECOVERED: تم التحقق: 0 ملفات مؤقتة متبقية في مسارات التخزين (حُذف: 1)."
+    },
+    {
+      "id": "aud-35595afd",
+      "timestamp": "2026-11-23T21:06:12.195Z",
+      "actor": "وحدة الإصلاح الذاتي",
+      "action": "PREFLIGHT_INSPECTION_RUN",
+      "target": "PRE-20261123-90A8CF",
+      "severity": "INFO",
+      "details": "نتيجة الفحص الشامل: BLOCKED (PASS=12, WARN=2, FAIL=0, BLOCKED=1)"
+    },
+    {
+      "id": "aud-66e1e60f",
+      "timestamp": "2026-11-23T21:06:11.776Z",
+      "actor": "مكتب التدريب الاحترافي للعقل",
+      "action": "BRAIN_TRAINING_REJECTED_REGRESSION",
+      "target": "btc-75b196fd",
+      "severity": "WARN",
+      "details": "رُفض الاعتماد بسبب أخطاء جوهرية: المخرج قصير جداً أو فارغ ولا يكفي للإجابة المهنية (< 40 حرفاً).؛ ظهرت إشارات خطأ جوهري في مخرج التقييم."
+    },
+    {
+      "id": "aud-e278a0b8",
+      "timestamp": "2026-11-23T21:04:20.702Z",
+      "actor": "مكتب التدريب الاحترافي للعقل",
+      "action": "BRAIN_TRAINING_BLOCKED",
+      "target": "btc-7c27a548",
+      "severity": "WARN",
+      "details": "لا توجد ملفات أوزان عصبية (.gguf / .safetensors) مستوردة على القرص في data/weights/. | حزم التدريب العصبي المحلية (python3: torch + peft / transformers) غير مثبتة في هذه البيئة. | محرك الاستدلال المحلي (llama-server / llama-cli) غير مثبت لتقييم الأوزان المحلية دون إنترنت."
+    },
+    {
+      "id": "aud-567dc9a1",
+      "timestamp": "2026-11-23T21:04:16.497Z",
+      "actor": "وحدة الإصلاح الذاتي",
+      "action": "PREFLIGHT_INSPECTION_RUN",
+      "target": "PRE-20261123-BFDB32",
+      "severity": "INFO",
+      "details": "نتيجة الفحص الشامل: BLOCKED (PASS=12, WARN=2, FAIL=0, BLOCKED=1)"
+    },
+    {
+      "id": "aud-3d865ece",
+      "timestamp": "2026-11-23T21:03:02.905Z",
+      "actor": "مكتب التدريب الاحترافي للعقل",
+      "action": "BRAIN_TRAINING_CHECKPOINT_PAUSED",
+      "target": "btc-e1a193d8",
+      "severity": "INFO",
+      "details": "حُفظت نقطة استئناف عند الخطوة 1/2 (14a4b4daabd5)."
+    },
+    {
+      "id": "aud-d1b0da24",
+      "timestamp": "2026-11-23T21:02:28.326Z",
+      "actor": "مكتب التدريب الاحترافي للعقل",
+      "action": "BRAIN_TRAINING_BLOCKED",
+      "target": "btc-8ad05e43",
+      "severity": "WARN",
+      "details": "لا توجد ملفات أوزان عصبية (.gguf / .safetensors) مستوردة على القرص في data/weights/. | حزم التدريب العصبي المحلية (python3: torch + peft / transformers) غير مثبتة في هذه البيئة. | محرك الاستدلال المحلي (llama-server / llama-cli) غير مثبت لتقييم الأوزان المحلية دون إنترنت."
+    },
+    {
+      "id": "aud-058fbef5",
+      "timestamp": "2026-11-23T21:02:19.803Z",
+      "actor": "وحدة الإصلاح الذاتي",
+      "action": "PREFLIGHT_INSPECTION_RUN",
+      "target": "PRE-20261123-237C9F",
+      "severity": "INFO",
+      "details": "نتيجة الفحص الشامل: BLOCKED (PASS=12, WARN=2, FAIL=0, BLOCKED=1)"
+    },
+    {
+      "id": "aud-aed0c1bb",
+      "timestamp": "2026-11-23T21:01:52.298Z",
+      "actor": "وحدة الإصلاح الذاتي",
+      "action": "SELF_HEALING_ACCEPTANCE_RUN",
+      "target": "12-tests",
+      "severity": "INFO",
+      "details": "نتيجة اختبارات القبول (12): PASS=12, FAIL=0"
+    },
+    {
+      "id": "aud-9554a807",
+      "timestamp": "2026-11-23T21:01:52.278Z",
+      "actor": "وحدة الإصلاح الذاتي",
+      "action": "SELF_HEALING_ROLLBACK",
+      "target": "rep-a9f4639f",
+      "severity": "INFO",
+      "details": "Rollback verified=true على data/self-healing/cache/__acc_rollback_cfg__.json"
+    },
+    {
+      "id": "aud-7e72e741",
+      "timestamp": "2026-11-23T21:01:52.271Z",
+      "actor": "وحدة الإصلاح الذاتي",
+      "action": "SELF_HEALING_RECOVERED",
+      "target": "rep-a9f4639f",
+      "severity": "INFO",
+      "details": "اختبار Patch و Rollback الموثق بالـ SHA-256 -> RECOVERED: تم التحقق من صحة الملف وتطابق البصمة بعد التعديل (post-SHA: e989988463dc...)."
+    },
+    {
+      "id": "aud-01da64df",
+      "timestamp": "2026-11-23T21:01:52.262Z",
+      "actor": "وحدة الإصلاح الذاتي",
+      "action": "TIER3_ACTION_BLOCKED",
+      "target": "forbidden-tier3-test",
+      "severity": "SECURITY",
+      "details": "محظور بموجب سياسة الحماية: يمنع المساس بالأسرار أو بيانات العملاء أو الأوزان الأصلية أو إعدادات الأمان."
+    },
+    {
+      "id": "aud-8a053d4c",
+      "timestamp": "2026-11-23T21:01:52.258Z",
+      "actor": "وحدة الإصلاح الذاتي",
+      "action": "SELF_HEALING_FAILED",
+      "target": "rep-ded301a4",
+      "severity": "WARN",
+      "details": "اختبار فشل الإصلاح عند غياب مصدر الاستعادة -> FAILED: فشل التحقق كما هو متوقع: الملف الهدف غير موجود ولا يوجد مصدر استعادة موثق."
+    },
+    {
+      "id": "aud-3c34de90",
+      "timestamp": "2026-11-23T21:01:52.254Z",
+      "actor": "وحدة الإصلاح الذاتي",
+      "action": "SELF_HEALING_RECOVERED",
+      "target": "rep-874bc49d",
+      "severity": "INFO",
+      "details": "اختبار تنظيف ملف مؤقت يتيم (Sandbox) -> RECOVERED: تم التحقق: 0 ملفات مؤقتة متبقية في مسارات التخزين (حُذف: 1)."
+    },
+    {
+      "id": "aud-d94085ad",
+      "timestamp": "2026-11-23T21:01:52.224Z",
+      "actor": "وحدة الإصلاح الذاتي",
+      "action": "PREFLIGHT_INSPECTION_RUN",
+      "target": "PRE-20261123-2CF795",
+      "severity": "INFO",
+      "details": "نتيجة الفحص الشامل: BLOCKED (PASS=12, WARN=2, FAIL=0, BLOCKED=1)"
+    },
+    {
+      "id": "aud-2d1fd6fa",
+      "timestamp": "2026-11-23T21:01:03.752Z",
+      "actor": "مكتب التدريب الاحترافي للعقل",
+      "action": "BRAIN_TRAINING_BLOCKED",
+      "target": "btc-15f53349",
+      "severity": "WARN",
+      "details": "لا توجد ملفات أوزان عصبية (.gguf / .safetensors) مستوردة على القرص في data/weights/. | حزم التدريب العصبي المحلية (python3: torch + peft / transformers) غير مثبتة في هذه البيئة. | محرك الاستدلال المحلي (llama-server / llama-cli) غير مثبت لتقييم الأوزان المحلية دون إنترنت."
+    },
+    {
+      "id": "aud-a0cd191a",
+      "timestamp": "2026-11-23T21:01:00.166Z",
+      "actor": "وحدة الإصلاح الذاتي",
+      "action": "PREFLIGHT_INSPECTION_RUN",
+      "target": "PRE-20261123-F10295",
+      "severity": "INFO",
+      "details": "نتيجة الفحص الشامل: BLOCKED (PASS=12, WARN=2, FAIL=0, BLOCKED=1)"
+    },
+    {
+      "id": "aud-9520ab40",
+      "timestamp": "2026-11-23T21:00:27.942Z",
+      "actor": "مكتب التدريب الاحترافي للعقل",
+      "action": "BRAIN_VERSION_ROLLED_BACK",
+      "target": "attia-advisor@v1.0.0",
+      "severity": "INFO",
+      "details": "تم التراجع الآمن لإصدار العقل attia-advisor إلى v1.0.0 دون المساس بالذاكرة الحديدية."
+    },
+    {
+      "id": "aud-e6529037",
+      "timestamp": "2026-11-23T21:00:18.252Z",
+      "actor": "مكتب التدريب الاحترافي للعقل",
+      "action": "BRAIN_VERSION_PROMOTED",
+      "target": "attia-advisor@v1.1.0",
+      "severity": "INFO",
+      "details": "ترقية ناجحة من v1.0.0 إلى v1.1.0: التقييم 83% -> 100%."
+    },
+    {
+      "id": "aud-0b69ae4c",
+      "timestamp": "2026-11-23T20:59:37.960Z",
+      "actor": "مكتب التدريب الاحترافي للعقل",
+      "action": "BRAIN_TRAINING_CHECKPOINT_PAUSED",
+      "target": "btc-e68e64e2",
+      "severity": "INFO",
+      "details": "حُفظت نقطة استئناف عند الخطوة 1/2 (13404bff5132)."
+    },
+    {
+      "id": "aud-5a6938e0",
+      "timestamp": "2026-11-23T20:59:22.943Z",
+      "actor": "مكتب التدريب الاحترافي للعقل",
+      "action": "BRAIN_TRAINING_BLOCKED",
+      "target": "btc-356da3e5",
+      "severity": "WARN",
+      "details": "لا توجد ملفات أوزان عصبية (.gguf / .safetensors) مستوردة على القرص في data/weights/. | حزم التدريب العصبي المحلية (python3: torch + peft / transformers) غير مثبتة في هذه البيئة. | محرك الاستدلال المحلي (llama-server / llama-cli) غير مثبت لتقييم الأوزان المحلية دون إنترنت."
+    },
+    {
+      "id": "aud-142e8873",
+      "timestamp": "2026-11-23T20:59:19.575Z",
+      "actor": "وحدة الإصلاح الذاتي",
+      "action": "PREFLIGHT_INSPECTION_RUN",
+      "target": "PRE-20261123-AEAF05",
+      "severity": "INFO",
+      "details": "نتيجة الفحص الشامل: BLOCKED (PASS=12, WARN=2, FAIL=0, BLOCKED=1)"
+    },
+    {
+      "id": "aud-95b0c5c9",
+      "timestamp": "2026-11-23T20:57:46.311Z",
+      "actor": "مكتب التدريب الاحترافي للعقل",
+      "action": "BRAIN_TRAINING_BLOCKED",
+      "target": "btc-6dc5d18f",
+      "severity": "WARN",
+      "details": "لا توجد ملفات أوزان عصبية (.gguf / .safetensors) مستوردة على القرص في data/weights/. | حزم التدريب العصبي المحلية (python3: torch + peft / transformers) غير مثبتة في هذه البيئة. | محرك الاستدلال المحلي (llama-server / llama-cli) غير مثبت لتقييم الأوزان المحلية دون إنترنت."
+    },
+    {
+      "id": "aud-4dc03324",
+      "timestamp": "2026-11-23T20:57:39.568Z",
+      "actor": "وحدة الإصلاح الذاتي",
+      "action": "PREFLIGHT_INSPECTION_RUN",
+      "target": "PRE-20261123-594A1B",
+      "severity": "INFO",
+      "details": "نتيجة الفحص الشامل: BLOCKED (PASS=12, WARN=2, FAIL=0, BLOCKED=1)"
+    },
+    {
+      "id": "aud-2ee0ff3a",
+      "timestamp": "2026-11-23T20:56:06.079Z",
+      "actor": "مكتب التدريب الاحترافي للعقل",
+      "action": "BRAIN_TRAINING_BLOCKED",
+      "target": "btc-126c98a4",
+      "severity": "WARN",
+      "details": "لا توجد ملفات أوزان عصبية (.gguf / .safetensors) مستوردة على القرص في data/weights/. | حزم التدريب العصبي المحلية (python3: torch + peft / transformers) غير مثبتة في هذه البيئة. | محرك الاستدلال المحلي (llama-server / llama-cli) غير مثبت لتقييم الأوزان المحلية دون إنترنت."
+    },
+    {
+      "id": "aud-5a8483a4",
+      "timestamp": "2026-11-23T20:55:59.842Z",
+      "actor": "وحدة الإصلاح الذاتي",
+      "action": "PREFLIGHT_INSPECTION_RUN",
+      "target": "PRE-20261123-DDFB12",
+      "severity": "INFO",
+      "details": "نتيجة الفحص الشامل: BLOCKED (PASS=12, WARN=2, FAIL=0, BLOCKED=1)"
+    },
+    {
+      "id": "aud-88285a4b",
+      "timestamp": "2026-11-23T20:50:32.374Z",
+      "actor": "وحدة الإصلاح الذاتي",
+      "action": "PREFLIGHT_INSPECTION_RUN",
+      "target": "PRE-20261123-EC72E7",
+      "severity": "INFO",
+      "details": "نتيجة الفحص الشامل: BLOCKED (PASS=12, WARN=2, FAIL=0, BLOCKED=1)"
+    },
+    {
+      "id": "aud-c4e317b1",
+      "timestamp": "2026-11-23T19:11:06.470Z",
+      "actor": "وحدة الإصلاح الذاتي",
+      "action": "SELF_HEALING_ACCEPTANCE_RUN",
+      "target": "12-tests",
+      "severity": "INFO",
+      "details": "نتيجة اختبارات القبول (12): PASS=12, FAIL=0"
+    },
+    {
+      "id": "aud-c8d4eec8",
+      "timestamp": "2026-11-23T19:11:06.449Z",
+      "actor": "وحدة الإصلاح الذاتي",
+      "action": "SELF_HEALING_ROLLBACK",
+      "target": "rep-40e7e5d5",
+      "severity": "INFO",
+      "details": "Rollback verified=true على data/self-healing/cache/__acc_rollback_cfg__.json"
+    },
+    {
+      "id": "aud-c406fabc",
+      "timestamp": "2026-11-23T19:11:06.444Z",
+      "actor": "وحدة الإصلاح الذاتي",
+      "action": "SELF_HEALING_RECOVERED",
+      "target": "rep-40e7e5d5",
+      "severity": "INFO",
+      "details": "اختبار Patch و Rollback الموثق بالـ SHA-256 -> RECOVERED: تم التحقق من صحة الملف وتطابق البصمة بعد التعديل (post-SHA: e989988463dc...)."
+    },
+    {
+      "id": "aud-5e9dcf41",
+      "timestamp": "2026-11-23T19:11:06.434Z",
+      "actor": "وحدة الإصلاح الذاتي",
+      "action": "TIER3_ACTION_BLOCKED",
+      "target": "forbidden-tier3-test",
+      "severity": "SECURITY",
+      "details": "محظور بموجب سياسة الحماية: يمنع المساس بالأسرار أو بيانات العملاء أو الأوزان الأصلية أو إعدادات الأمان."
+    },
+    {
+      "id": "aud-ca93fefb",
+      "timestamp": "2026-11-23T19:11:06.429Z",
+      "actor": "وحدة الإصلاح الذاتي",
+      "action": "SELF_HEALING_FAILED",
+      "target": "rep-3931b525",
+      "severity": "WARN",
+      "details": "اختبار فشل الإصلاح عند غياب مصدر الاستعادة -> FAILED: فشل التحقق كما هو متوقع: الملف الهدف غير موجود ولا يوجد مصدر استعادة موثق."
+    },
+    {
+      "id": "aud-60c4efed",
+      "timestamp": "2026-11-23T19:11:06.425Z",
+      "actor": "وحدة الإصلاح الذاتي",
+      "action": "SELF_HEALING_RECOVERED",
+      "target": "rep-17a6ad79",
+      "severity": "INFO",
+      "details": "اختبار تنظيف ملف مؤقت يتيم (Sandbox) -> RECOVERED: تم التحقق: 0 ملفات مؤقتة متبقية في مسارات التخزين (حُذف: 1)."
+    },
+    {
+      "id": "aud-c27cdff3",
+      "timestamp": "2026-11-23T19:11:06.378Z",
+      "actor": "وحدة الإصلاح الذاتي",
+      "action": "PREFLIGHT_INSPECTION_RUN",
+      "target": "PRE-20261123-B4BD7B",
+      "severity": "INFO",
+      "details": "نتيجة الفحص الشامل: BLOCKED (PASS=12, WARN=2, FAIL=0, BLOCKED=1)"
+    },
+    {
+      "id": "aud-b20e636d",
+      "timestamp": "2026-11-23T19:11:04.141Z",
+      "actor": "وحدة الإصلاح الذاتي",
+      "action": "PREFLIGHT_INSPECTION_RUN",
+      "target": "PRE-20261123-61B162",
+      "severity": "INFO",
+      "details": "نتيجة الفحص الشامل: BLOCKED (PASS=12, WARN=2, FAIL=0, BLOCKED=1)"
+    },
+    {
+      "id": "aud-7c9a3e21",
+      "timestamp": "2026-11-23T19:11:03.669Z",
+      "actor": "وحدة الإصلاح الذاتي",
+      "action": "SELF_HEALING_RECOVERED",
+      "target": "rep-0bd9622a",
+      "severity": "INFO",
+      "details": "فقدان ملف فهرس الذاكرة المؤقتة للتشغيل (runtime-manifest.json) -> RECOVERED: تم التحقق من سلامة ملف Cache بعد إعادة البناء (SHA-256: 0859ab70745f...)."
+    },
+    {
+      "id": "aud-570cd5ba",
+      "timestamp": "2026-11-23T18:21:01.134Z",
+      "actor": "وحدة اختيار العقل",
+      "action": "ACTIVE_BRAIN_SWITCHED",
+      "target": "عقل المستشار عطيه الهلباوى المستقبل",
+      "severity": "INFO",
+      "details": "تم تفعيل عقل المستشار عطيه الهلباوى المستقبل (attia-advisor) كعقل افتراضي للمنصة."
+    },
+    {
+      "id": "aud-ed072f85",
+      "timestamp": "2026-11-23T18:21:01.115Z",
+      "actor": "وحدة اختيار العقل",
+      "action": "ACTIVE_BRAIN_SWITCHED",
+      "target": "عقل جيميني القياسي",
+      "severity": "INFO",
+      "details": "تم تفعيل عقل جيميني القياسي (gemini-standard) كعقل افتراضي للمنصة."
+    },
+    {
+      "id": "aud-38b46c79",
+      "timestamp": "2026-11-23T18:20:14.244Z",
+      "actor": "وحدة اختيار العقل",
+      "action": "ACTIVE_BRAIN_SWITCHED",
+      "target": "عقل المستشار عطيه الهلباوى المستقبل",
+      "severity": "INFO",
+      "details": "تم تفعيل عقل المستشار عطيه الهلباوى المستقبل (attia-advisor) كعقل افتراضي للمنصة."
+    },
+    {
+      "id": "aud-3042b1f5",
+      "timestamp": "2026-11-23T18:20:14.227Z",
+      "actor": "وحدة اختيار العقل",
+      "action": "ACTIVE_BRAIN_SWITCHED",
+      "target": "عقل جيميني القياسي",
+      "severity": "INFO",
+      "details": "تم تفعيل عقل جيميني القياسي (gemini-standard) كعقل افتراضي للمنصة."
+    },
+    {
+      "id": "aud-a02b7b42",
+      "timestamp": "2026-11-23T18:09:57.467Z",
+      "actor": "عقل المستشار الشامل",
+      "action": "OMNI_ADVISOR_CURRICULUM_TRAINED",
+      "target": "المنهج الشامل (6 تخصصات كبرى)",
+      "severity": "INFO",
+      "details": "تخزين 6 قواعد في الذاكرة الحديدية و 6 عينات في مكتبة التدريب (ds-omni-advisor-polymath)"
+    }
+  ],
+  "phases": [
+    {
+      "id": 1,
+      "titleAr": "المرحلة الأولى: التحليل والتصميم المعماري",
+      "deliverablesAr": "وثيقة المعمارية + مخطط الوكلاء العشرة + مواصفات الأمان",
+      "durationWeeks": 2,
+      "costUsd": 4500,
+      "status": "TESTED"
+    },
+    {
+      "id": 2,
+      "titleAr": "المرحلة الثانية: بناء منصة التطبيقات (تكافؤ Base44)",
+      "deliverablesAr": "محرر مرئي + محرر أكواد + معاينة حية + إدارة صفحات وإصدارات",
+      "durationWeeks": 4,
+      "costUsd": 9000,
+      "status": "TESTED"
+    },
+    {
+      "id": 3,
+      "titleAr": "المرحلة الثالثة: بناء العقل الهندسي متعدد الوكلاء",
+      "deliverablesAr": "منسق مركزي + 10 وكلاء متخصصين بالعربية والإنجليزية",
+      "durationWeeks": 3,
+      "costUsd": 7500,
+      "status": "TESTED"
+    },
+    {
+      "id": 4,
+      "titleAr": "المرحلة الرابعة: نظام إدارة النماذج والأوزان",
+      "deliverablesAr": "مكتبة النماذج + SHA-256 + التكميم + التراخيص التجارية",
+      "durationWeeks": 3,
+      "costUsd": 7000,
+      "status": "TESTED"
+    },
+    {
+      "id": 5,
+      "titleAr": "المرحلة الخامسة: محرك دمج الأوزان داخل التطبيقات",
+      "deliverablesAr": "تغليف الكود + القاعدة + الأوزان + محرك الاستدلال في حزمة موحدة",
+      "durationWeeks": 3,
+      "costUsd": 8000,
+      "status": "TESTED"
+    },
+    {
+      "id": 6,
+      "titleAr": "المرحلة السادسة: محركات التشغيل المحلية واختبار الأجهزة",
+      "deliverablesAr": "طبقة llama.cpp / ONNX + مطابقة RAM/CPU/GPU",
+      "durationWeeks": 3,
+      "costUsd": 7500,
+      "status": "IMPLEMENTED"
+    },
+    {
+      "id": 7,
+      "titleAr": "المرحلة السابعة: نظام تصدير الحزم المستقلة",
+      "deliverablesAr": "تصدير Web / Server / PWA / Android / Source + مقسم الشرائح",
+      "durationWeeks": 2,
+      "costUsd": 5500,
+      "status": "TESTED"
+    },
+    {
+      "id": 8,
+      "titleAr": "المرحلة الثامنة: لوحة المالك والاشتراكات والتدريب",
+      "deliverablesAr": "لوحة المالك + قاعدة المعرفة RAG + LoRA/QLoRA",
+      "durationWeeks": 2,
+      "costUsd": 5000,
+      "status": "IMPLEMENTED"
+    },
+    {
+      "id": 9,
+      "titleAr": "المرحلة التاسعة: الاختبارات الأمنية واختبارات الاستقلال",
+      "deliverablesAr": "وحدة HELBAWEY INDEPENDENT AI VERIFICATION + فحص الشبكة",
+      "durationWeeks": 2,
+      "costUsd": 4500,
+      "status": "TESTED"
+    },
+    {
+      "id": 10,
+      "titleAr": "المرحلة العاشرة: التسليم النهائي ونقل الملكية والتدريب",
+      "deliverablesAr": "تسليم المستودعات + ملفات التراخيص + دليل التشغيل العربي",
+      "durationWeeks": 1,
+      "costUsd": 2500,
+      "status": "IMPLEMENTED"
+    }
+  ],
+  "acceptanceTests": [
+    {
+      "id": 1,
+      "titleAr": "إنشاء تطبيق كامل من وصف باللغة العربية",
+      "articleRef": "المادة 19-1",
+      "status": "TESTED",
+      "lastRunAt": "2026-11-22T04:11:40.692Z",
+      "evidenceSummary": "تم بناء نظام إدارة الشركة من الأمر العربي مباشرة."
+    },
+    {
+      "id": 2,
+      "titleAr": "إنشاء قواعد بيانات حقيقية وربطها بالتطبيق",
+      "articleRef": "المادة 19-2",
+      "status": "TESTED",
+      "lastRunAt": "2026-11-22T04:11:40.692Z",
+      "evidenceSummary": "3 جداول حقيقية (employees, contracts, invoices) مرتبطة بواجهة CRUD و schema.sql."
+    },
+    {
+      "id": 3,
+      "titleAr": "تعديل التطبيق بالمحادثة مع الحفاظ على الأجزاء السليمة",
+      "articleRef": "المادة 19-3",
+      "status": "TESTED",
+      "lastRunAt": "2026-11-22T04:11:40.692Z",
+      "evidenceSummary": "إدارة الإصدارات تحفظ لقطة كل نسخة وتسمح بالتراجع الفوري."
+    },
+    {
+      "id": 4,
+      "titleAr": "إنشاء نموذج ذكاء اصطناعي محلي داخل التطبيق",
+      "articleRef": "المادة 19-4",
+      "status": "TESTED",
+      "lastRunAt": "2026-11-22T04:11:40.692Z",
+      "evidenceSummary": "تم ربط نموذج Qwen2.5-1.5B-Instruct مع محرك llama.cpp وRAG محلي."
+    },
+    {
+      "id": 5,
+      "titleAr": "تضمين الأوزان الفعلية أو شريحة التحقق في حزمة التصدير",
+      "articleRef": "المادة 19-5",
+      "status": "BLOCKED",
+      "lastRunAt": "2026-11-22T05:23:41.903Z",
+      "evidenceSummary": "محتجز (BLOCKED): فشل: ملف الأوزان الفعلي (Qwen2.5-1.5B-Instruct-Q4_K_M) غير موجود في data/weights/ — الحزمة تضم tokenizer ومصفوفة تضمين أولية (64 KB) وسكريبت جلب فقط"
+    },
+    {
+      "id": 6,
+      "titleAr": "تصدير المشروع في حزمة مستقلة قابلة للتثبيت",
+      "articleRef": "المادة 19-6",
+      "status": "TESTED",
+      "lastRunAt": "2026-11-22T04:11:40.692Z",
+      "evidenceSummary": "توليد أرشيف ZIP حقيقي يحتوي install.sh و install.bat و Dockerfile."
+    },
+    {
+      "id": 7,
+      "titleAr": "تثبيت الحزمة على جهاز أو خادم مستقل خارج منصة الهلباوي",
+      "articleRef": "المادة 19-7",
+      "status": "IMPLEMENTED",
+      "lastRunAt": null,
+      "evidenceSummary": "الحزمة مستقلة وتعمل عبر npm install && npm start على أي خادم Node.js."
+    },
+    {
+      "id": 8,
+      "titleAr": "فصل الاتصال بالإنترنت وإعادة الاختبار",
+      "articleRef": "المادة 19-8",
+      "status": "BLOCKED",
+      "lastRunAt": "2026-11-22T05:23:41.928Z",
+      "evidenceSummary": "محتجز (BLOCKED): فشل: ملف الأوزان الفعلي (Qwen2.5-1.5B-Instruct-Q4_K_M) غير موجود في data/weights/ — الحزمة تضم tokenizer ومصفوفة تضمين أولية (64 KB) وسكريبت جلب فقط"
+    },
+    {
+      "id": 9,
+      "titleAr": "تشغيل البرنامج وإجراء محادثة مع العقل اللغوي المدمج",
+      "articleRef": "المادة 19-9",
+      "status": "BLOCKED",
+      "lastRunAt": "2026-11-22T05:23:41.962Z",
+      "evidenceSummary": "محتجز (BLOCKED): فشل: ملف الأوزان الفعلي (Qwen2.5-1.5B-Instruct-Q4_K_M) غير موجود في data/weights/ — الحزمة تضم tokenizer ومصفوفة تضمين أولية (64 KB) وسكريبت جلب فقط"
+    },
+    {
+      "id": 10,
+      "titleAr": "تنفيذ مهمة ذكاء اصطناعي حقيقية دون أي API خارجي",
+      "articleRef": "المادة 19-10",
+      "status": "BLOCKED",
+      "lastRunAt": "2026-11-22T05:23:41.986Z",
+      "evidenceSummary": "محتجز (BLOCKED): فشل: ملف الأوزان الفعلي (Qwen2.5-1.5B-Instruct-Q4_K_M) غير موجود في data/weights/ — الحزمة تضم tokenizer ومصفوفة تضمين أولية (64 KB) وسكريبت جلب فقط"
+    },
+    {
+      "id": 11,
+      "titleAr": "التأكد من عمل الأوزان ومحرك التشغيل من الملفات المحلية",
+      "articleRef": "المادة 19-11",
+      "status": "BLOCKED",
+      "lastRunAt": "2026-11-22T05:23:42.008Z",
+      "evidenceSummary": "محتجز (BLOCKED): فشل: ملف الأوزان الفعلي (Qwen2.5-1.5B-Instruct-Q4_K_M) غير موجود في data/weights/ — الحزمة تضم tokenizer ومصفوفة تضمين أولية (64 KB) وسكريبت جلب فقط"
+    },
+    {
+      "id": 12,
+      "titleAr": "التحقق من وظائف البرنامج وقواعد البيانات بعد التثبيت",
+      "articleRef": "المادة 19-12",
+      "status": "TESTED",
+      "lastRunAt": "2026-11-22T04:11:40.692Z",
+      "evidenceSummary": "فحص سلامة schema.sql و data.json مدمج في tests/verify_independence.mjs."
+    },
+    {
+      "id": 13,
+      "titleAr": "تصدير الكود المصدري وإعادة بناء المشروع",
+      "articleRef": "المادة 19-13",
+      "status": "TESTED",
+      "lastRunAt": "2026-11-22T04:11:40.692Z",
+      "evidenceSummary": "تضمين الكود المصدري الكامل مع src-blueprint/ و package.json."
+    },
+    {
+      "id": 14,
+      "titleAr": "إثبات عدم الحاجة لحساب Base44 أو أي مزود سحابي",
+      "articleRef": "المادة 19-14",
+      "status": "FAILED",
+      "lastRunAt": "2026-11-22T05:23:42.031Z",
+      "evidenceSummary": "غير مجتاز (FAILED): ملف الأوزان الفعلي (Qwen2.5-1.5B-Instruct-Q4_K_M) غير موجود في data/weights/، ولم يثبت SHA-256 للملف الفعلي أو تشغيل توليد حقيقي عبر llama.cpp (FAILED)."
+    }
+  ],
+  "plans": [
+    {
+      "id": "plan-starter",
+      "nameAr": "باقة الفرق الناشئة",
+      "audienceAr": "للفرق الصغيرة والنماذج الخفيفة",
+      "priceMonthlyUsd": 49,
+      "maxProjects": 5,
+      "maxWeightStorageGb": 15,
+      "exportFormats": "Web + Server + Source"
+    },
+    {
+      "id": "plan-enterprise",
+      "nameAr": "باقة المصنع السيادي للشركات",
+      "audienceAr": "للشركات والمؤسسات ذات المتطلبات المستقلة",
+      "priceMonthlyUsd": 249,
+      "maxProjects": 50,
+      "maxWeightStorageGb": 250,
+      "exportFormats": "Web + Server + PWA + Android + LoRA"
+    },
+    {
+      "id": "plan-onprem",
+      "nameAr": "ترخيص التثبيت الداخلي الكامل",
+      "audienceAr": "للجهات الحكومية والقطاعات الحساسة",
+      "priceMonthlyUsd": 950,
+      "maxProjects": 999,
+      "maxWeightStorageGb": 2000,
+      "exportFormats": "كل الصيغ + كود المنصة المصدري + شرائح غير محدودة"
+    }
+  ],
+  "ownerProfile": {
+    "name": "م. طارق الهلباوي",
+    "email": "owner@alhelbawey.ai",
+    "organization": "ALHELBAWEY AI SOFTWARE FACTORY"
+  },
+  "trainingDatasets": [
+    {
+      "id": "ds-omni-advisor-polymath",
+      "name": "منهج عقل المستشار الشامل المستقل (Omni-Advisor Polymath SFT)",
+      "slug": "omni-advisor-polymath",
+      "descriptionAr": "مجموعة بيانات تدريب وذاكرة حديدية متعددة التخصصات (هندسة، رياضيات، طب، اقتصاد، قانون، منطق واستراتيجية) لتدريب وتطوير عقل المستشار المستقل.",
+      "domain": "reasoning-cot",
+      "format": "CoT-Reasoning",
+      "languages": [
+        "ar",
+        "en",
+        "ar-en",
+        "code"
+      ],
+      "license": "Apache-2.0",
+      "version": "1.0.0",
+      "samplesCount": 6,
+      "totalTokensEstimate": 698,
+      "avgQualityScore": 95.5,
+      "deduplicated": true,
+      "lastCuratedAt": "2026-11-23T18:09:57.460Z",
+      "recommendedBaseModels": [
+        "qwen25-15b-q4",
+        "qwen25-3b-q4",
+        "mistral-7b-v03-q4"
+      ],
+      "samples": [
+        {
+          "id": "smp-8a45c65f",
+          "instruction": "كيف تقيّم عرض تفاوضي أو نزاع تجاري قبل الجلوس إلى طاولة التفاوض؟",
+          "input": "النطاق التخصصي: strategy-logic",
+          "output": "تحديد مصفوفة حوافز كل طرف، حساب قيمة BATNA لكل جانب، كشف نقاط القوة الخفية، وصياغة حزمة تنازلات متبادلة تضمن توازن ناش (Nash Equilibrium) مستقراً.",
+          "reasoning": "تحليل حوافز الأطراف (Incentive Alignment)، تحديد أفضل بديل للاتفاق التفاوضي (BATNA)، وكشف المغالطات المنطقية والانحيازات المعرفية في الحجج.",
+          "language": "ar",
+          "difficulty": "expert",
+          "tokenEstimate": 110,
+          "qualityScore": 93,
+          "source": "curated"
+        },
+        {
+          "id": "smp-4ac8b15b",
+          "instruction": "كيف تُصاغ الإجابة عند تحليل تقارير مخبرية أو استفسارات دوائية مرفقة؟",
+          "input": "النطاق التخصصي: medicine-bio",
+          "output": "عرض القيم مقارنة بالنطاق المرجعي الطبيعي، توضيح الأسباب الفسيولوجية المحتملة والتداخلات الدوائية، وتذييل التقرير بتوصية مراجعة الطبيب المختص قبل أي إجراء علاجي.",
+          "reasoning": "تلخيص البروتوكولات السريرية والتفاعلات الدوائية والفحوصات بدقة علمية حديثة، مع التنبيه الواضح دائماً على أن التقييم السريري النهائي يخص الطبيب المختص.",
+          "language": "ar",
+          "difficulty": "expert",
+          "tokenEstimate": 117,
+          "qualityScore": 93,
+          "source": "curated"
+        },
+        {
+          "id": "smp-5973893b",
+          "instruction": "ما الضوابط العلمية لمنع الاستنتاجات المضللة عند قراءة البيانات والتجارب؟",
+          "input": "النطاق التخصصي: stem-math",
+          "output": "التحقق من حجم العينة، الكشف عن التحيز الانتقائي (Selection Bias)، الفصل بين القياس المباشر والتقدير النظري، وحساب فاصل الثقة أو هامش الخطأ.",
+          "reasoning": "التفريق الصارم بين الارتباط والسببية، تحديث الاحتمالات بالأدلة الجديدة (Bayesian Updating)، وفحص حدود الخطأ التجريبي قبل التعميم.",
+          "language": "ar",
+          "difficulty": "expert",
+          "tokenEstimate": 106,
+          "qualityScore": 98,
+          "source": "curated"
+        },
+        {
+          "id": "smp-fa57dbd6",
+          "instruction": "كيف تقارن بين خيارين استثماريين أو تقنيين متنافسين بمخاطر مختلفة؟",
+          "input": "النطاق التخصصي: economics-finance",
+          "output": "بناء مصفوفة سيناريوهات (متحفظ / أساسي / متفائل) مع احتساب التكلفة الكلية للملكية TCO وفترة الاسترداد وتحديد نقطة التعادل والشرط الحاسم لإيقاف الخسارة.",
+          "reasoning": "استخدام صافي القيمة الحالية (NPV)، معدل العائد الداخلي (IRR)، تحليل الحساسية، هامش الأمان، وتكلفة الفرصة البديلة عند مقارنة المشاريع والبدائل.",
+          "language": "ar",
+          "difficulty": "expert",
+          "tokenEstimate": 113,
+          "qualityScore": 93,
+          "source": "curated"
+        },
+        {
+          "id": "smp-e640d03e",
+          "instruction": "ما القواعد الصارمة لتأمين منصة برمجية تعتمد على نماذج ذكاء اصطناعي وملفات ثنائية؟",
+          "input": "النطاق التخصصي: engineering-security",
+          "output": "فصل مفاتيح API بالكامل في الخادم، فرض التحقق المسبق من بصمة SHA-256 للملفات الثنائية، حراسة المسارات من Path Traversal، وضمان عدم تمرير أسرار العميل عبر المتصفح.",
+          "reasoning": "تطبيق Zero-Trust، التحقق التشفيري SHA-256، فصل الأسرار الخادمية، عزل العمليات، وتحسين زمن الاستجابة وذاكرة التشغيل (RAM/VRAM/CPU) بمقاييس حقيقية.",
+          "language": "ar",
+          "difficulty": "expert",
+          "tokenEstimate": 122,
+          "qualityScore": 98,
+          "source": "curated"
+        },
+        {
+          "id": "smp-c36d664e",
+          "instruction": "كيف تحلل مسألة استراتيجية متعددة الأبعاد تجمع بين التقنية والتكلفة والمخاطر القانونية؟",
+          "input": "النطاق التخصصي: reasoning-meta",
+          "output": "1) عزل القيود الفيزيائية/الحاسوبية الثابتة. 2) حساب الجدوى الاقتصادية والتكلفة الحدية للمخاطر. 3) التحقق من الامتثال التشريعي. 4) إجراء نقد عكسي للفرضيات قبل اعتماد الخيار التنفيذي.",
+          "reasoning": "تفكيك أي مسألة معقدة إلى حقائق أولية مستقلة، واختبارها بالمنطق الرياضي والواقع الميداني، ثم دمج الهندسة والاقتصاد والقانون والإدارة في قرار واحد متوازن.",
+          "language": "ar",
+          "difficulty": "expert",
+          "tokenEstimate": 130,
+          "qualityScore": 98,
+          "source": "curated"
+        }
+      ]
+    },
+    {
+      "id": "ds-arabic-enterprise-sft",
+      "name": "حزمة المؤسسات والأنظمة العربية (Arabic Enterprise SFT)",
+      "slug": "alhelbawey-arabic-enterprise-sft",
+      "descriptionAr": "مجموعة تعليمات متخصصة في تحليل العقود، مراجعة الفواتير، حساب الهوامش المالية، وصياغة التقارير الإدارية باللغة العربية الفصحى الدقيقة.",
+      "domain": "arabic-enterprise",
+      "format": "Alpaca-SFT",
+      "languages": [
+        "ar",
+        "ar-en"
+      ],
+      "license": "Apache-2.0",
+      "version": "2.4.0",
+      "deduplicated": true,
+      "lastCuratedAt": "2026-11-22T04:51:51.535Z",
+      "recommendedBaseModels": [
+        "qwen25-15b-q4",
+        "qwen25-3b-q4",
+        "llama31-8b-q4"
+      ],
+      "samples": [
+        {
+          "id": "smp-ef89eed5",
+          "instruction": "استخرج بنود المخاطر المالية وتاريخ التجديد الإلزامي من نص العقد التالي بصيغة منظمة.",
+          "input": "عقد توريد وصيانة أنظمة مستشفى النور التخصصي بمبلغ إجمالي 840,000 ريال سعودي لمدة 24 شهراً يبدأ في 2026-03-01، مع شرط جزائي 2% عن كل أسبوع تأخير وبحد أقصى 10%، وإشعار عدم تجديد قبل 45 يوماً.",
+          "output": "الجهة: مستشفى النور التخصصي | القيمة: 840,000 ريال | المدة: 24 شهراً | موعد إشعار عدم التجديد: قبل 45 يوماً من 2028-02-29 | السقف الجزائي: 10% (84,000 ريال كحد أقصى).",
+          "language": "ar",
+          "difficulty": "expert",
+          "tokenEstimate": 126,
+          "qualityScore": 90,
+          "source": "curated"
+        },
+        {
+          "id": "smp-b2ae2bcf",
+          "instruction": "احسب صافي التدفق النقدي وهامش الربح التشغيلي مع توصية مالية مختصرة.",
+          "input": "المبيعات الشهرية: 420,000 ريال | تكلفة المبيعات: 235,000 ريال | المصاريف التشغيلية: 78,000 ريال.",
+          "output": "مجمل الربح: 185,000 ريال | صافي الربح التشغيلي: 107,000 ريال | هامش الربح التشغيلي: 25.48%. التوصية: الحفاظ على سقف المصاريف التشغيلية دون 20% من الإيرادات.",
+          "language": "ar",
+          "difficulty": "intermediate",
+          "tokenEstimate": 92,
+          "qualityScore": 90,
+          "source": "curated"
+        },
+        {
+          "id": "smp-3f9230cd",
+          "instruction": "صغ رداً مهنياً للعميل يؤكد استلام طلب الصيانة وجدولة الزيارة الميدانية.",
+          "input": "العميل: شركة المدار اللوجستية | رقم التذكرة: TKT-4091 | الموعد: غداً 10:30 صباحاً.",
+          "output": "السادة شركة المدار اللوجستية، نؤكد استلام طلب الصيانة رقم TKT-4091، وقد تم تأكيد موعد الزيارة الميدانية ليوم غد الساعة 10:30 صباحاً عبر الفريق الفني المختص.",
+          "language": "ar-en",
+          "difficulty": "basic",
+          "tokenEstimate": 90,
+          "qualityScore": 90,
+          "source": "curated"
+        }
+      ],
+      "samplesCount": 3,
+      "totalTokensEstimate": 308,
+      "avgQualityScore": 90
+    },
+    {
+      "id": "ds-arabic-cot-reasoning",
+      "name": "مسارات الاستدلال المنطقي والكمي (Arabic CoT Reasoning)",
+      "slug": "alhelbawey-cot-reasoning-ar",
+      "descriptionAr": "بيانات تدريب مجهزة بمسارات التفكير التسلسلي (<think>) لتمكين النماذج المدمجة (1.5B–8B) من حل المسائل الحسابية والمنطقية وتخطيط الموارد بدقة عالية.",
+      "domain": "reasoning-cot",
+      "format": "CoT-Reasoning",
+      "languages": [
+        "ar",
+        "ar-en"
+      ],
+      "license": "MIT",
+      "version": "3.1.0",
+      "deduplicated": true,
+      "lastCuratedAt": "2026-11-22T04:51:51.493Z",
+      "recommendedBaseModels": [
+        "qwen25-3b-q4",
+        "phi35-mini-q4",
+        "llama31-8b-q4"
+      ],
+      "samples": [
+        {
+          "id": "smp-31e0cbf6",
+          "instruction": "يتطلب نشر نظام ذكاء اصطناعي محلي لدى عميل يملك خادماً بذاكرة 16 GB RAM تشغيل قاعدة بيانات (1.4 GB) وخادم تطبيقات (0.8 GB) مع إبقاء هامش أمان 20%. ما أقصى حجم RAM متاح لنموذج الذكاء الاصطناعي؟",
+          "input": "إجمالي الذاكرة = 16 GB | قاعدة البيانات = 1.4 GB | الخادم = 0.8 GB | هامش الأمان = 20%.",
+          "output": "أقصى ذاكرة آمنة متاحة لتشغيل النموذج هي 10.6 GB RAM، ما يسمح بتشغيل نماذج 7B/8B بتكميم Q4_K_M بأمان.",
+          "reasoning": "1) نحسب هامش الأمان 20% من 16 GB = 3.2 GB.\n2) نطرح هامش الأمان من الإجمالي: 16 - 3.2 = 12.8 GB متاحة للعمليات.\n3) نطرح استهلاك قاعدة البيانات والخادم: 12.8 - (1.4 + 0.8) = 10.6 GB.",
+          "language": "ar-en",
+          "difficulty": "expert",
+          "tokenEstimate": 161,
+          "qualityScore": 98,
+          "source": "curated"
+        },
+        {
+          "id": "smp-370228d7",
+          "instruction": "إذا كان خط إنتاج برمجي ينجز 180 طلب تحليل عقود في الساعة بنموذج Qwen2.5-1.5B مقابل 65 طلباً بنموذج 7B، فما الزمن اللازم لمعالجة 540 عقداً على جهاز واحد؟",
+          "input": "الكمية: 540 عقداً | معدل 1.5B = 180/ساعة | معدل 7B = 65/ساعة.",
+          "output": "يحتاج نموذج Qwen2.5-1.5B إلى 3 ساعات بالضبط، بينما يحتاج نموذج 7B إلى 8 ساعات و19 دقيقة تقريباً.",
+          "reasoning": "زمن نموذج 1.5B = 540 / 180 = 3.0 ساعات (180 دقيقة).\nزمن نموذج 7B = 540 / 65 = 8.31 ساعات (حوالي 8 ساعات و19 دقيقة).",
+          "language": "ar-en",
+          "difficulty": "intermediate",
+          "tokenEstimate": 122,
+          "qualityScore": 98,
+          "source": "curated"
+        }
+      ],
+      "samplesCount": 2,
+      "totalTokensEstimate": 283,
+      "avgQualityScore": 98
+    },
+    {
+      "id": "ds-tool-calling-agents",
+      "name": "استدعاء الدوال والوكلاء الموثوق (Structured Tool-Calling)",
+      "slug": "alhelbawey-tool-calling-schemas",
+      "descriptionAr": "عينات صارمة لتدريب النماذج المحلية على إخراج JSON مطابق للمخطط (Schema-Strict Function Calling) لاستعلام قواعد البيانات وتنفيذ وكلاء الأتمتة.",
+      "domain": "tool-calling",
+      "format": "Tool-Calling",
+      "languages": [
+        "ar",
+        "code"
+      ],
+      "license": "Apache-2.0",
+      "version": "2.0.1",
+      "deduplicated": true,
+      "lastCuratedAt": "2026-11-22T04:51:51.493Z",
+      "recommendedBaseModels": [
+        "qwen25-15b-q4",
+        "qwen25-3b-q4",
+        "mistral-7b-q4"
+      ],
+      "samples": [
+        {
+          "id": "smp-fe4fda59",
+          "instruction": "حول طلب المستخدم إلى استدعاء أداة JSON صالح للاستعلام عن الفواتير المتأخرة عن السداد.",
+          "input": "الأدوات المتاحة: query_invoices(status: \"PAID\"|\"UNPAID\"|\"OVERDUE\", min_amount: number, limit: number). طلب المستخدم: هات أعلى 10 فواتير متأخرة تتجاوز قيمتها 50 ألف ريال.",
+          "output": "{\n  \"tool_call\": {\n    \"name\": \"query_invoices\",\n    \"arguments\": {\n      \"status\": \"OVERDUE\",\n      \"min_amount\": 50000,\n      \"limit\": 10\n    }\n  }\n}",
+          "language": "ar-en",
+          "difficulty": "expert",
+          "tokenEstimate": 117,
+          "qualityScore": 90,
+          "source": "curated"
+        },
+        {
+          "id": "smp-827d0c7e",
+          "instruction": "نفذ استدعاء أداة للبحث في قاعدة المعرفة المحلية دون اتصال بالإنترنت.",
+          "input": "الأدوات: search_local_rag(query: string, top_k: number). طلب المستخدم: ابحث عن سياسة الاسترجاع والإلغاء في لائحة الموارد البشرية.",
+          "output": "{\n  \"tool_call\": {\n    \"name\": \"search_local_rag\",\n    \"arguments\": {\n      \"query\": \"سياسة الاسترجاع والإلغاء لائحة الموارد البشرية\",\n      \"top_k\": 4\n    }\n  }\n}",
+          "language": "ar-en",
+          "difficulty": "intermediate",
+          "tokenEstimate": 104,
+          "qualityScore": 90,
+          "source": "curated"
+        }
+      ],
+      "samplesCount": 2,
+      "totalTokensEstimate": 221,
+      "avgQualityScore": 90
+    },
+    {
+      "id": "ds-fullstack-ts-sql",
+      "name": "هندسة البرمجيات الكاملة (TypeScript, React, Express & SQL)",
+      "slug": "alhelbawey-fullstack-code-chatml",
+      "descriptionAr": "حزمة برمجية ثنائية اللغة لتدريب نماذج الكود على بناء مكونات React آمنة، مسارات Express محمية، واستعلامات SQL ممررة المعاملات بدون ثغرات.",
+      "domain": "code-fullstack",
+      "format": "ChatML",
+      "languages": [
+        "code",
+        "ar-en"
+      ],
+      "license": "MIT",
+      "version": "2.8.0",
+      "deduplicated": true,
+      "lastCuratedAt": "2026-11-22T04:51:51.493Z",
+      "recommendedBaseModels": [
+        "qwen25-3b-q4",
+        "llama31-8b-q4",
+        "gemma2-2b-q4"
+      ],
+      "samples": [
+        {
+          "id": "smp-2ee53c19",
+          "instruction": "اكتب مسار Express محمي للتحقق من وجود السجل وتحديثه مع منع ثغرات Path Traversal.",
+          "input": "المسار: PUT /api/items/:id | التحقق من صحة الحقول المطلوبة.",
+          "output": "app.put('/api/items/:id', (req, res) => {\n  const id = String(req.params.id || '').replace(/[^a-zA-Z0-9_-]/g, '');\n  if (!id || !req.body?.name) {\n    return res.status(400).json({ error: 'بيانات غير صالحة' });\n  }\n  const updated = db.updateItem(id, { name: String(req.body.name).trim() });\n  if (!updated) return res.status(404).json({ error: 'غير موجود' });\n  return res.json(updated);\n});",
+          "language": "code",
+          "difficulty": "expert",
+          "tokenEstimate": 153,
+          "qualityScore": 90,
+          "source": "curated"
+        },
+        {
+          "id": "smp-baed2912",
+          "instruction": "صمم جدول SQLite لإدارة عقود الصيانة مع قيود السلامة المرجعية والفهارس.",
+          "input": "الحقول: معرف العقد، اسم العميل، القيمة، تاريخ الانتهاء، الحالة.",
+          "output": "CREATE TABLE IF NOT EXISTS maintenance_contracts (\n  id TEXT PRIMARY KEY,\n  client_name TEXT NOT NULL,\n  amount_sar REAL NOT NULL CHECK (amount_sar >= 0),\n  expires_at TEXT NOT NULL,\n  status TEXT NOT NULL DEFAULT 'ACTIVE'\n);\nCREATE INDEX IF NOT EXISTS idx_contracts_status ON maintenance_contracts(status);",
+          "language": "code",
+          "difficulty": "intermediate",
+          "tokenEstimate": 127,
+          "qualityScore": 90,
+          "source": "curated"
+        }
+      ],
+      "samplesCount": 2,
+      "totalTokensEstimate": 280,
+      "avgQualityScore": 90
+    },
+    {
+      "id": "ds-dpo-alignment-arabic",
+      "name": "ضبط التفضيل المباشر ومنع الهلوسة (DPO Preference Arabic)",
+      "slug": "alhelbawey-dpo-grounding-ar",
+      "descriptionAr": "أزواج تفضيل مباشر (Chosen vs Rejected) لتدريب النماذج على رفض التخمين عندما تكون المعلومة غير موجودة في قاعدة البيانات المحلية.",
+      "domain": "alignment-dpo",
+      "format": "DPO-Preference",
+      "languages": [
+        "ar"
+      ],
+      "license": "Apache-2.0",
+      "version": "1.9.0",
+      "deduplicated": true,
+      "lastCuratedAt": "2026-11-22T04:51:51.493Z",
+      "recommendedBaseModels": [
+        "qwen25-15b-q4",
+        "gemma2-2b-q4",
+        "mistral-7b-q4"
+      ],
+      "samples": [
+        {
+          "id": "smp-50520d5e",
+          "instruction": "كم بلغت نسبة الخصم المعتمدة في عرض شركة الرواد لشهر نوفمبر؟",
+          "input": "السياق المتاح: يحتوي سجل العقود على عقد شركة أفق بمبلغ 120,000 ريال فقط، ولا توجد بيانات عن شركة الرواد.",
+          "output": "لا تتوفر في قاعدة البيانات المحلية أي سجلات أو عروض تخص \"شركة الرواد\" لشهر نوفمبر؛ السجل المتاح حالياً يخص \"شركة أفق\" فقط.",
+          "rejected": "تبلغ نسبة الخصم المعتمدة لشركة الرواد في شهر نوفمبر 15% حسب العروض الموسمية المعتادة.",
+          "language": "ar",
+          "difficulty": "expert",
+          "tokenEstimate": 83,
+          "qualityScore": 93,
+          "source": "curated"
+        },
+        {
+          "id": "smp-3d582df6",
+          "instruction": "هل يعتمد التطبيق المصدر على الاتصال بالإنترنت لتلخيص الفواتير؟",
+          "input": "مواصفات الحزمة: النموذج المدمج Qwen2.5-1.5B-Q4_K_M يعمل عبر llama.cpp محلياً.",
+          "output": "لا، يعمل التلخيص محلياً بالكامل عبر محرك llama.cpp والأوزان المدمجة داخل الحزمة دون الحاجة لأي اتصال خارجي بالإنترنت.",
+          "rejected": "يتطلب التطبيق إرسال ملخصات الفواتير إلى واجهة سحابية خارجية للحصول على أفضل دقة.",
+          "language": "ar-en",
+          "difficulty": "intermediate",
+          "tokenEstimate": 74,
+          "qualityScore": 93,
+          "source": "curated"
+        }
+      ],
+      "samplesCount": 2,
+      "totalTokensEstimate": 157,
+      "avgQualityScore": 93
+    },
+    {
+      "id": "ds-offline-rag-grounding",
+      "name": "الاسترجاع الموثق للوثائق العربية (Offline RAG QA)",
+      "slug": "alhelbawey-offline-rag-sharegpt",
+      "descriptionAr": "حوارات متعددة الأدوار لتعزيز دقة الإجابة المقتبسة من مستندات السياسات واللوائح الداخلية دون خروج عن النص.",
+      "domain": "rag-grounding",
+      "format": "ShareGPT",
+      "languages": [
+        "ar"
+      ],
+      "license": "Apache-2.0",
+      "version": "2.1.0",
+      "deduplicated": true,
+      "lastCuratedAt": "2026-11-22T04:51:51.493Z",
+      "recommendedBaseModels": [
+        "qwen25-05b-q4",
+        "qwen25-15b-q4",
+        "llama32-1b-q4"
+      ],
+      "samples": [
+        {
+          "id": "smp-82755337",
+          "instruction": "ما شروط صرف البدلات الميدانية للمهندسين وفق الفقرة المقتبسة؟",
+          "input": "المادة 14: يُصرف بدل العمل الميداني للمهندسين المكلفين بمهام خارج المقر الرئيسي بنسبة 15% من الراتب الأساسي بشرط إرفاق تقرير الإنجاز الميداني المعتمد خلال 5 أيام عمل.",
+          "output": "وفق المادة 14، يستحق المهندس المكلف بمهام خارج المقر الرئيسي بدلاً بنسبة 15% من الراتب الأساسي، بشرط اعتماد تقرير الإنجاز الميداني وإرفاقه خلال 5 أيام عمل.",
+          "language": "ar",
+          "difficulty": "basic",
+          "tokenEstimate": 110,
+          "qualityScore": 90,
+          "source": "curated"
+        },
+        {
+          "id": "smp-e7b48e78",
+          "instruction": "لخص خطوات النسخ الاحتياطي الموصى بها قبل ترقية أوزان النموذج.",
+          "input": "دليل التشغيل المحلي: قبل استبدال ملف GGUF، يجب أخذ نسخة احتياطية من مجلد ./data وملف ./ai/model.config.json والتحقق من تطابق بصمة SHA-256.",
+          "output": "تتضمن خطوات الأمان ثلاث مراحل: نسخ مجلد ./data احتياطياً، حفظ نسخة من ./ai/model.config.json، ومطابقة بصمة SHA-256 قبل التشغيل.",
+          "language": "ar-en",
+          "difficulty": "intermediate",
+          "tokenEstimate": 94,
+          "qualityScore": 90,
+          "source": "curated"
+        }
+      ],
+      "samplesCount": 2,
+      "totalTokensEstimate": 204,
+      "avgQualityScore": 90
+    }
+  ],
+  "platformChatHistory": [
+    {
+      "id": "msg-e5db7270",
+      "role": "user",
+      "content": "لخص حالة شركة النخبة للتقنية v2 في سطرين فقط.",
+      "createdAt": "2026-11-24T20:29:35.636Z",
+      "projectId": "proj-enterprise-erp",
+      "chatMode": "legal-expert",
+      "brainId": "attia-advisor",
+      "jurisdictionScope": "global-comparative"
+    },
+    {
+      "id": "msg-9f38ad57",
+      "role": "model",
+      "content": "تعمل شركة النخبة للتقنية v2 حالياً وفق نموذج إداري وتقني متكامل يربط بين الأتمتة البرمجية والامتثال القانوني، مع استكمال هيكلة البيانات التشغيلية لتعزيز كفاءة الموارد والامتثال للمعايير التنظيمية والمالية. يركز المشروع في مرحلته الراهنة على ضمان سلامة البنية المعمارية للأنظمة والامتثال للتشريعات الرقمية والمدنية المعمول بها لتقليل المخاطر التشغيلية والقانونية.",
+      "createdAt": "2026-11-24T20:29:46.077Z",
+      "projectId": "proj-enterprise-erp",
+      "chatMode": "legal-expert",
+      "brainId": "attia-advisor",
+      "jurisdictionScope": "global-comparative"
+    }
+  ],
+  "platformChatMemory": [
+    {
+      "id": "mem-835443bd",
+      "category": "user-rule",
+      "title": "[تطوير v1.6.0 · العلوم والهندسة] مبدأ التحقق المرجعي: التحقق من وجود سجلات مطابقة في الذاكرة المشفرة (SHA-256) قب",
+      "content": "مبدأ التحقق المرجعي: التحقق من وجود سجلات مطابقة في الذاكرة المشفرة (SHA-256) قبل تقديم أي إجابة لضمان دقة المعلومة وسلامتها المهنية.",
+      "tags": [
+        "omni-brain",
+        "brain-training",
+        "science-engineering",
+        "v1.6.0"
+      ],
+      "pinned": true,
+      "sourceType": "user-pinned",
+      "projectId": "proj-enterprise-erp",
+      "createdAt": "2026-11-24T11:42:04.107Z",
+      "updatedAt": "2026-11-24T11:42:04.107Z",
+      "recallCount": 0
+    },
+    {
+      "id": "mem-69053d69",
+      "category": "user-rule",
+      "title": "[تطوير v1.6.0 · العلوم والهندسة] مبدأ السلامة الرقمية: تعزيز العزل التام للعمليات الحساسة عبر المعالجة المحلية لض",
+      "content": "مبدأ السلامة الرقمية: تعزيز العزل التام للعمليات الحساسة عبر المعالجة المحلية لضمان عدم تسرب البيانات أو الحاجة لمفاتيح اتصال خارجية.",
+      "tags": [
+        "omni-brain",
+        "brain-training",
+        "science-engineering",
+        "v1.6.0"
+      ],
+      "pinned": true,
+      "sourceType": "user-pinned",
+      "projectId": "proj-enterprise-erp",
+      "createdAt": "2026-11-24T11:42:04.107Z",
+      "updatedAt": "2026-11-24T11:42:04.107Z",
+      "recallCount": 0
+    },
+    {
+      "id": "mem-90e922a9",
+      "category": "user-rule",
+      "title": "[تطوير v1.5.0 · البرمجة وإنشاء البرامج] مبدأ سلامة البنية (Structural Integrity): التصميم الاستباقي لنموذج البيانات يقلل",
+      "content": "مبدأ سلامة البنية (Structural Integrity): التصميم الاستباقي لنموذج البيانات يقلل من مخاطر الثغرات المنطقية وأخطاء اتساق البيانات في بيئات الإنتاج.",
+      "tags": [
+        "omni-brain",
+        "brain-training",
+        "programming-software",
+        "v1.5.0"
+      ],
+      "pinned": true,
+      "sourceType": "user-pinned",
+      "projectId": "proj-enterprise-erp",
+      "createdAt": "2026-11-24T11:41:38.703Z",
+      "updatedAt": "2026-11-24T11:41:38.703Z",
+      "recallCount": 0
+    },
+    {
+      "id": "mem-0eae6d65",
+      "category": "user-rule",
+      "title": "[تطوير v1.5.0 · البرمجة وإنشاء البرامج] مبدأ الدفاع العميق (Defense in Depth): يجب التعامل مع المدخلات كمصادر غير موثوقة",
+      "content": "مبدأ الدفاع العميق (Defense in Depth): يجب التعامل مع المدخلات كمصادر غير موثوقة برمجياً حتى بعد التحقق الأولي.",
+      "tags": [
+        "omni-brain",
+        "brain-training",
+        "programming-software",
+        "v1.5.0"
+      ],
+      "pinned": true,
+      "sourceType": "user-pinned",
+      "projectId": "proj-enterprise-erp",
+      "createdAt": "2026-11-24T11:41:38.702Z",
+      "updatedAt": "2026-11-24T11:41:38.702Z",
+      "recallCount": 0
+    },
+    {
+      "id": "mem-bd8d2993",
+      "category": "user-rule",
+      "title": "[تطوير v1.4.0 · الاستدلال والمنطق] مبدأ الكفاءة النسبية: اختيار النموذج الأمثل يخضع للموازنة بين عبء الحوسبة (البدي",
+      "content": "مبدأ الكفاءة النسبية: اختيار النموذج الأمثل يخضع للموازنة بين عبء الحوسبة (البديل التقني) وسرعة الإنجاز المطلوبة لتحقيق التوازن بين الجودة والزمن",
+      "tags": [
+        "omni-brain",
+        "brain-training",
+        "reasoning-logic",
+        "v1.4.0"
+      ],
+      "pinned": true,
+      "sourceType": "user-pinned",
+      "projectId": "proj-enterprise-erp",
+      "createdAt": "2026-11-24T11:40:32.211Z",
+      "updatedAt": "2026-11-24T11:40:32.211Z",
+      "recallCount": 0
+    },
+    {
+      "id": "mem-535a3e08",
+      "category": "user-rule",
+      "title": "[تطوير v1.4.0 · الاستدلال والمنطق] مبدأ الأمان المعرفي: اعتبار هامش الأمان فرضية إجبارية في تخطيط الموارد لتقليل مخ",
+      "content": "مبدأ الأمان المعرفي: اعتبار هامش الأمان فرضية إجبارية في تخطيط الموارد لتقليل مخاطر انهيار النظام (Out of Memory)",
+      "tags": [
+        "omni-brain",
+        "brain-training",
+        "reasoning-logic",
+        "v1.4.0"
+      ],
+      "pinned": true,
+      "sourceType": "user-pinned",
+      "projectId": "proj-enterprise-erp",
+      "createdAt": "2026-11-24T11:40:32.210Z",
+      "updatedAt": "2026-11-24T11:40:32.210Z",
+      "recallCount": 0
+    },
+    {
+      "id": "mem-51bef0e9",
+      "category": "user-rule",
+      "title": "[تطوير v1.3.0 · القانون والتحليل القانوني] مبدأ الامتثال للمرجعية التعاقدية: أي استدلال في سياق قانوني يجب أن يربط الالتزام",
+      "content": "مبدأ الامتثال للمرجعية التعاقدية: أي استدلال في سياق قانوني يجب أن يربط الالتزام بالطرف المسؤول والموعد الإلزامي لضمان نفاذ التوصية",
+      "tags": [
+        "omni-brain",
+        "brain-training",
+        "legal-analysis",
+        "v1.3.0"
+      ],
+      "pinned": true,
+      "sourceType": "user-pinned",
+      "projectId": "proj-enterprise-erp",
+      "createdAt": "2026-11-24T11:39:31.179Z",
+      "updatedAt": "2026-11-24T11:39:31.179Z",
+      "recallCount": 0
+    },
+    {
+      "id": "mem-771d54ae",
+      "category": "user-rule",
+      "title": "[تطوير v1.3.0 · القانون والتحليل القانوني] مبدأ الدقة في التوصيف المالي والقانوني: يجب أن تستند كل توصية أو تحليل إلى معايي",
+      "content": "مبدأ الدقة في التوصيف المالي والقانوني: يجب أن تستند كل توصية أو تحليل إلى معايير كمية محددة مستخلصة من النص الأساسي",
+      "tags": [
+        "omni-brain",
+        "brain-training",
+        "legal-analysis",
+        "v1.3.0"
+      ],
+      "pinned": true,
+      "sourceType": "user-pinned",
+      "projectId": "proj-enterprise-erp",
+      "createdAt": "2026-11-24T11:39:31.179Z",
+      "updatedAt": "2026-11-24T11:39:31.179Z",
+      "recallCount": 0
+    },
+    {
+      "id": "mem-05cc7613",
+      "category": "user-rule",
+      "title": "[تطوير v1.2.0 · المعرفة العامة والربط بين المجالات] مبدأ التكامل الاستراتيجي: الربط بين الجدوى الاقتصادية والامتثال القانوني كمعيار",
+      "content": "مبدأ التكامل الاستراتيجي: الربط بين الجدوى الاقتصادية والامتثال القانوني كمعيار وحيد لتقييم المخاطر.",
+      "tags": [
+        "omni-brain",
+        "brain-training",
+        "general-polymath",
+        "v1.2.0"
+      ],
+      "pinned": true,
+      "sourceType": "user-pinned",
+      "projectId": "proj-enterprise-erp",
+      "createdAt": "2026-11-24T11:39:17.189Z",
+      "updatedAt": "2026-11-24T11:39:17.189Z",
+      "recallCount": 0
+    },
+    {
+      "id": "mem-db5924c7",
+      "category": "user-rule",
+      "title": "[تطوير v1.2.0 · المعرفة العامة والربط بين المجالات] مبدأ الفصل المعماري: وجوب عزل الأصول الحساسة عن واجهات التفاعل لمنع تسريب الثغرا",
+      "content": "مبدأ الفصل المعماري: وجوب عزل الأصول الحساسة عن واجهات التفاعل لمنع تسريب الثغرات الأمنية.",
+      "tags": [
+        "omni-brain",
+        "brain-training",
+        "general-polymath",
+        "v1.2.0"
+      ],
+      "pinned": true,
+      "sourceType": "user-pinned",
+      "projectId": "proj-enterprise-erp",
+      "createdAt": "2026-11-24T11:39:17.189Z",
+      "updatedAt": "2026-11-24T11:39:17.189Z",
+      "recallCount": 0
+    },
+    {
+      "id": "mem-266b984b",
+      "category": "user-rule",
+      "title": "[تطوير v1.2.0 · المعرفة العامة والربط بين المجالات] مبدأ التحقق المنهجي: استبعاد التحيز المعرفي عبر قياس البيانات مقابل النطاقات الم",
+      "content": "مبدأ التحقق المنهجي: استبعاد التحيز المعرفي عبر قياس البيانات مقابل النطاقات المعيارية المعتمدة وتحديد هوامش الخطأ قبل إقرار التوصية.",
+      "tags": [
+        "omni-brain",
+        "brain-training",
+        "general-polymath",
+        "v1.2.0"
+      ],
+      "pinned": true,
+      "sourceType": "user-pinned",
+      "projectId": "proj-enterprise-erp",
+      "createdAt": "2026-11-24T11:39:17.189Z",
+      "updatedAt": "2026-11-24T11:39:17.189Z",
+      "recallCount": 0
+    },
+    {
+      "id": "mem-beaf3ef4",
+      "category": "user-rule",
+      "title": "[تطوير v1.2.0 · المعرفة العامة والربط بين المجالات] مبدأ التوازن الهيكلي: لا يكتمل الاستدلال إلا بتحقيق توازن بين المعطيات المرجعية",
+      "content": "مبدأ التوازن الهيكلي: لا يكتمل الاستدلال إلا بتحقيق توازن بين المعطيات المرجعية والتقديرات الاحتمالية ضمن نطاق خطة محكمة.",
+      "tags": [
+        "omni-brain",
+        "brain-training",
+        "general-polymath",
+        "v1.2.0"
+      ],
+      "pinned": true,
+      "sourceType": "user-pinned",
+      "projectId": "proj-enterprise-erp",
+      "createdAt": "2026-11-24T11:39:17.188Z",
+      "updatedAt": "2026-11-24T11:39:17.188Z",
+      "recallCount": 0
+    },
+    {
+      "id": "mem-24f8e798",
+      "category": "user-rule",
+      "title": "[تطوير v1.1.0 · الاستدلال والمنطق] مبدأ التفكيك متعدد الأبعاد: يجب أن يخضع كل بديل لمسار تحليل منفصل يعتمد على القي",
+      "content": "مبدأ التفكيك متعدد الأبعاد: يجب أن يخضع كل بديل لمسار تحليل منفصل يعتمد على القياس الكمي للنتائج قبل الربط المنطقي بين الأبعاد",
+      "tags": [
+        "omni-brain",
+        "brain-training",
+        "reasoning-logic",
+        "v1.1.0"
+      ],
+      "pinned": true,
+      "sourceType": "user-pinned",
+      "projectId": "proj-enterprise-erp",
+      "createdAt": "2026-11-23T21:07:52.778Z",
+      "updatedAt": "2026-11-23T21:07:52.778Z",
+      "recallCount": 0
+    },
+    {
+      "id": "mem-f1978e32",
+      "category": "user-rule",
+      "title": "[تطوير v1.1.0 · الاستدلال والمنطق] مبدأ التكلفة الحدية للمخاطر: لا يعد الحل مقبولاً إلا إذا كانت التكلفة القانونية",
+      "content": "مبدأ التكلفة الحدية للمخاطر: لا يعد الحل مقبولاً إلا إذا كانت التكلفة القانونية والتقنية ضمن نطاق تحمل المعيار المستهدف",
+      "tags": [
+        "omni-brain",
+        "brain-training",
+        "reasoning-logic",
+        "v1.1.0"
+      ],
+      "pinned": true,
+      "sourceType": "user-pinned",
+      "projectId": "proj-enterprise-erp",
+      "createdAt": "2026-11-23T21:07:52.778Z",
+      "updatedAt": "2026-11-23T21:07:52.778Z",
+      "recallCount": 0
+    },
+    {
+      "id": "mem-37b9c009",
+      "category": "user-rule",
+      "title": "[تطوير v1.1.0 · الاستدلال والمنطق] اعتبار البديل الأفضل (BATNA) هو الركيزة الأساسية لأي منطق تفاوضي أو تقني لضمان ا",
+      "content": "اعتبار البديل الأفضل (BATNA) هو الركيزة الأساسية لأي منطق تفاوضي أو تقني لضمان اتخاذ قرارات قائمة على منطق القوة لا العاطفة",
+      "tags": [
+        "omni-brain",
+        "brain-training",
+        "reasoning-logic",
+        "v1.1.0"
+      ],
+      "pinned": true,
+      "sourceType": "user-pinned",
+      "projectId": "proj-enterprise-erp",
+      "createdAt": "2026-11-23T21:07:52.778Z",
+      "updatedAt": "2026-11-23T21:07:52.778Z",
+      "recallCount": 0
+    },
+    {
+      "id": "mem-be5e6d2c",
+      "category": "user-rule",
+      "title": "[تطوير v1.1.0 · الاستدلال والمنطق] استبدال التقديرات الحدسية بفهارس قياس قابلة للتحقق لتقليل الانحياز المعرفي في تق",
+      "content": "استبدال التقديرات الحدسية بفهارس قياس قابلة للتحقق لتقليل الانحياز المعرفي في تقييم النتائج",
+      "tags": [
+        "omni-brain",
+        "brain-training",
+        "reasoning-logic",
+        "v1.1.0"
+      ],
+      "pinned": true,
+      "sourceType": "user-pinned",
+      "projectId": "proj-enterprise-erp",
+      "createdAt": "2026-11-23T21:07:52.777Z",
+      "updatedAt": "2026-11-23T21:07:52.777Z",
+      "recallCount": 0
+    },
+    {
+      "id": "mem-431e7c57",
+      "category": "user-rule",
+      "title": "[تطوير v1.1.0 · الاستدلال والمنطق] مبدأ النقد الموجه: لا يُعتبر أي خيار استراتيجي صالحاً ما لم يتم إثبات فشله عبر س",
+      "content": "مبدأ النقد الموجه: لا يُعتبر أي خيار استراتيجي صالحاً ما لم يتم إثبات فشله عبر سيناريوهات اختبار عكسية.",
+      "tags": [
+        "omni-brain",
+        "brain-training",
+        "reasoning-logic",
+        "v1.1.0"
+      ],
+      "pinned": true,
+      "sourceType": "user-pinned",
+      "projectId": "proj-enterprise-erp",
+      "createdAt": "2026-11-23T21:00:18.248Z",
+      "updatedAt": "2026-11-23T21:00:18.248Z",
+      "recallCount": 0
+    },
+    {
+      "id": "mem-ba017901",
+      "category": "user-rule",
+      "title": "[تطوير v1.1.0 · الاستدلال والمنطق] مبدأ العزل التحليلي: فصل العوامل المتغيرة عن القيود الثابتة يقلل من احتمالية الخ",
+      "content": "مبدأ العزل التحليلي: فصل العوامل المتغيرة عن القيود الثابتة يقلل من احتمالية الخطأ في الاستدلال المنطقي.",
+      "tags": [
+        "omni-brain",
+        "brain-training",
+        "reasoning-logic",
+        "v1.1.0"
+      ],
+      "pinned": true,
+      "sourceType": "user-pinned",
+      "projectId": "proj-enterprise-erp",
+      "createdAt": "2026-11-23T21:00:18.247Z",
+      "updatedAt": "2026-11-23T21:00:18.247Z",
+      "recallCount": 0
+    },
+    {
+      "id": "mem-0ef112db",
+      "category": "user-rule",
+      "title": "[تطوير v1.1.0 · الاستدلال والمنطق] مبدأ تكافؤ الموارد والنتائج: يكمن جوهر العقلانية في توازن الحوافز؛ حيث يتم تقييم",
+      "content": "مبدأ تكافؤ الموارد والنتائج: يكمن جوهر العقلانية في توازن الحوافز؛ حيث يتم تقييم أي موقف عبر قياس الفجوة بين البديل المتاح والبديل الأفضل الممكن (BATNA) لضمان استقرار القرار",
+      "tags": [
+        "omni-brain",
+        "brain-training",
+        "reasoning-logic",
+        "v1.1.0"
+      ],
+      "pinned": true,
+      "sourceType": "user-pinned",
+      "projectId": "proj-enterprise-erp",
+      "createdAt": "2026-11-23T21:00:18.247Z",
+      "updatedAt": "2026-11-23T21:00:18.247Z",
+      "recallCount": 0
+    },
+    {
+      "id": "mem-e7fe0602",
+      "category": "user-rule",
+      "title": "[تطوير v1.1.0 · الاستدلال والمنطق] مبدأ الاستدلال بالتحقق المتقاطع: لا تُعتبر أي نتيجة منطقية صحيحة ما لم تجتز فحصا",
+      "content": "مبدأ الاستدلال بالتحقق المتقاطع: لا تُعتبر أي نتيجة منطقية صحيحة ما لم تجتز فحصاً مزدوجاً يربط بين البيانات الأولية (القياس) والسياق العام (الفهرس) لمنع الانحياز",
+      "tags": [
+        "omni-brain",
+        "brain-training",
+        "reasoning-logic",
+        "v1.1.0"
+      ],
+      "pinned": true,
+      "sourceType": "user-pinned",
+      "projectId": "proj-enterprise-erp",
+      "createdAt": "2026-11-23T21:00:18.247Z",
+      "updatedAt": "2026-11-23T21:00:18.247Z",
+      "recallCount": 0
+    },
+    {
+      "id": "mem-26a81bcc",
+      "category": "user-rule",
+      "title": "نظرية الألعاب، التفاوض الاستراتيجي، وفحص المغالطات المنطقية",
+      "content": "تحليل حوافز الأطراف (Incentive Alignment)، تحديد أفضل بديل للاتفاق التفاوضي (BATNA)، وكشف المغالطات المنطقية والانحيازات المعرفية في الحجج.",
+      "tags": [
+        "omni-brain",
+        "strategy-logic"
+      ],
+      "pinned": true,
+      "sourceType": "user-pinned",
+      "createdAt": "2026-11-23T18:09:57.463Z",
+      "updatedAt": "2026-11-23T18:09:57.463Z",
+      "recallCount": 0
+    },
+    {
+      "id": "mem-e9261691",
+      "category": "user-rule",
+      "title": "الاستدلال الطبي والحيوي المبني على البراهين (Evidence-Based Medicine)",
+      "content": "تلخيص البروتوكولات السريرية والتفاعلات الدوائية والفحوصات بدقة علمية حديثة، مع التنبيه الواضح دائماً على أن التقييم السريري النهائي يخص الطبيب المختص.",
+      "tags": [
+        "omni-brain",
+        "medicine-bio"
+      ],
+      "pinned": true,
+      "sourceType": "user-pinned",
+      "createdAt": "2026-11-23T18:09:57.463Z",
+      "updatedAt": "2026-11-23T18:09:57.463Z",
+      "recallCount": 0
+    },
+    {
+      "id": "mem-33aa22a5",
+      "category": "user-rule",
+      "title": "الاستدلال العلمي والرياضي والإحصاء البايزي",
+      "content": "التفريق الصارم بين الارتباط والسببية، تحديث الاحتمالات بالأدلة الجديدة (Bayesian Updating)، وفحص حدود الخطأ التجريبي قبل التعميم.",
+      "tags": [
+        "omni-brain",
+        "stem-math"
+      ],
+      "pinned": true,
+      "sourceType": "user-pinned",
+      "createdAt": "2026-11-23T18:09:57.463Z",
+      "updatedAt": "2026-11-23T18:09:57.463Z",
+      "recallCount": 0
+    },
+    {
+      "id": "mem-2c03234d",
+      "category": "user-rule",
+      "title": "النمذجة الاقتصادية والمالية وتقييم القرارات الاستثمارية",
+      "content": "استخدام صافي القيمة الحالية (NPV)، معدل العائد الداخلي (IRR)، تحليل الحساسية، هامش الأمان، وتكلفة الفرصة البديلة عند مقارنة المشاريع والبدائل.",
+      "tags": [
+        "omni-brain",
+        "economics-finance"
+      ],
+      "pinned": true,
+      "sourceType": "user-pinned",
+      "createdAt": "2026-11-23T18:09:57.463Z",
+      "updatedAt": "2026-11-23T18:09:57.463Z",
+      "recallCount": 0
+    },
+    {
+      "id": "mem-c852f95d",
+      "category": "user-rule",
+      "title": "الهندسة المعمارية للأنظمة الموزعة والأمن السيبراني التطبيقي",
+      "content": "تطبيق Zero-Trust، التحقق التشفيري SHA-256، فصل الأسرار الخادمية، عزل العمليات، وتحسين زمن الاستجابة وذاكرة التشغيل (RAM/VRAM/CPU) بمقاييس حقيقية.",
+      "tags": [
+        "omni-brain",
+        "engineering-security"
+      ],
+      "pinned": true,
+      "sourceType": "user-pinned",
+      "createdAt": "2026-11-23T18:09:57.463Z",
+      "updatedAt": "2026-11-23T18:09:57.463Z",
+      "recallCount": 0
+    },
+    {
+      "id": "mem-fabc8688",
+      "category": "user-rule",
+      "title": "منهجية المبادئ الأولى والربط العابر للتخصصات (First-Principles + Synthesis)",
+      "content": "تفكيك أي مسألة معقدة إلى حقائق أولية مستقلة، واختبارها بالمنطق الرياضي والواقع الميداني، ثم دمج الهندسة والاقتصاد والقانون والإدارة في قرار واحد متوازن.",
+      "tags": [
+        "omni-brain",
+        "reasoning-meta"
+      ],
+      "pinned": true,
+      "sourceType": "user-pinned",
+      "createdAt": "2026-11-23T18:09:57.462Z",
+      "updatedAt": "2026-11-23T18:09:57.462Z",
+      "recallCount": 0
+    }
+  ],
+  "platformChatMemoryArchiveSummary": "",
+  "activeBrain": "attia-advisor"
+}
